@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Somalia Anticipatory Action Trigger Tool</title>
+<meta name="description" content="SAAT turns El Nino flood forecasts into pre-agreed financing triggers. Interactive Trigger Economics explorer and the Somalia El Nino Anticipatory Action brief.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --paper: #f5f4f1; --surface: #fbfaf8; --sunk: #eeece7;
+    --ink: #22201b; --ink-2: #4a463d; --ink-mut: #736d61;
+    --rule: #ddd8ce; --rule-2: #c9c3b6;
+    --blue: #1c5b8c; --blue-deep: #16496f; --blue-wash: #e4ecf3;
+    --ochre: #b06a26;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #14130f; --surface: #1b1a15; --sunk: #211f19;
+      --ink: #eae7df; --ink-2: #c3bdad; --ink-mut: #948d7c;
+      --rule: #322f27; --rule-2: #423e33;
+      --blue: #4f9ad4; --blue-deep: #6cb0e4; --blue-wash: #16283618;
+      --ochre: #cc9557;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Spectral", Georgia, serif; font-size: 17.5px; line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 64px 26px 96px; }
+  .kicker {
+    font-family: "IBM Plex Sans", sans-serif; font-size: 11.5px; font-weight: 600;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--ochre); margin-bottom: 14px;
+  }
+  h1 { font-weight: 600; font-size: 36px; line-height: 1.12; letter-spacing: -.018em; margin: 0 0 14px; }
+  .lede { font-size: 18px; color: var(--ink-2); margin: 0 0 40px; max-width: 60ch; }
+  a { color: var(--blue-deep); }
+  .card {
+    display: block; text-decoration: none; color: inherit;
+    background: var(--surface); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 22px 24px; margin-bottom: 18px; transition: border-color .15s;
+  }
+  .card:hover { border-color: var(--blue); }
+  .card .t { font-family: "IBM Plex Sans", sans-serif; font-weight: 600; font-size: 18px; margin-bottom: 6px; color: var(--ink); }
+  .card .d { font-size: 15px; color: var(--ink-mut); line-height: 1.5; }
+  .card .go { display: inline-block; margin-top: 10px; font-family: "IBM Plex Sans", sans-serif; font-size: 13px; font-weight: 600; color: var(--blue-deep); }
+  footer {
+    margin-top: 40px; border-top: 1px solid var(--rule); padding-top: 18px;
+    font-family: "IBM Plex Sans", sans-serif; font-size: 13px; line-height: 1.6; color: var(--ink-mut);
+  }
+  footer a { color: var(--blue-deep); }
+  code { font-family: "IBM Plex Mono", monospace; font-size: .9em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Somalia &middot; Anticipatory Action</div>
+  <h1>Somalia Anticipatory Action Trigger Tool</h1>
+  <p class="lede">SAAT turns El Ni&ntilde;o flood forecasts into pre-agreed, verifiable financing
+    triggers, with displacement caseload forecasting and monetised economic loss. These are the
+    decision-support documents that sit on top of it.</p>
+
+  <a class="card" href="el-nino-preparedness-brief.html">
+    <div class="t">Somalia El Ni&ntilde;o Anticipatory Action</div>
+    <div class="d">A ministerial brief by Hassan Mumin: the flood premise, an interactive 2026 Deyr
+      displacement and cash-planning scenario, the four economic loss channels each with its own
+      chart, the readiness ladder, and a decisions-and-owners table.</div>
+    <span class="go">Read the brief &rarr;</span>
+  </a>
+
+  <a class="card" href="trigger-economics.html">
+    <div class="t">Trigger Economics</div>
+    <div class="d">An interactive cost&ndash;loss model. Move the cost of action, the loss, the
+      mitigation effectiveness and the base rate, and watch the optimal release threshold, its
+      contingency table, and its relative economic value respond.</div>
+    <span class="go">Open the explorer &rarr;</span>
+  </a>
+
+  <footer>
+    <p>Source, method and limitations:
+      <a href="https://github.com/hassanmumin-collab/Somalia-Anticipatory-Action-Trigger-Tool-SAAT-">github.com/hassanmumin-collab/Somalia-Anticipatory-Action-Trigger-Tool-SAAT-</a>.</p>
+    <p>Nothing here is calibrated for operational fund release. The gauge thresholds, cost-loss
+      parameters and loss magnitudes are pending agreement by the anticipatory action working group.</p>
+  </footer>
+</div>
+</body>
+</html>
