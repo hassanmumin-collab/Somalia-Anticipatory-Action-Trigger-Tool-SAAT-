@@ -1,0 +1,909 @@
+<title>Trigger Economics</title>
+<meta name="description" content="Move the four cost-loss parameters and watch a flood trigger's optimal release threshold and its economic value respond.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap">
+
+<style>
+  :root {
+    --bg: #eaeef0;
+    --surface: #ffffff;
+    --surface-2: #f3f6f7;
+    --ink: #17211f;
+    --ink-muted: #566462;
+    --ink-faint: #8b9997;
+    --line: #d7dedd;
+    --line-strong: #b9c3c1;
+    --accent: #0e7c86;
+    --accent-strong: #0a5d64;
+    --accent-wash: #e3f0f0;
+    --pos: #2f7d51;
+    --pos-wash: #e7f1ea;
+    --neg: #b23f2b;
+    --neg-wash: #f6e7e3;
+    --caution: #97700c;
+    --caution-wash: #f4ecd8;
+    --shadow: 0 1px 2px rgba(20, 30, 28, .06), 0 8px 24px -12px rgba(20, 30, 28, .12);
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0c1213;
+      --surface: #151d1e;
+      --surface-2: #1b2425;
+      --ink: #e7edec;
+      --ink-muted: #a1b0ae;
+      --ink-faint: #6d7c7a;
+      --line: #2a3536;
+      --line-strong: #3a4749;
+      --accent: #3cb4bd;
+      --accent-strong: #64ccd3;
+      --accent-wash: #123033;
+      --pos: #58b984;
+      --pos-wash: #16302536;
+      --neg: #e07357;
+      --neg-wash: #3a201933;
+      --caution: #d9ab48;
+      --caution-wash: #33291333;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 30px -14px rgba(0, 0, 0, .55);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0c1213;
+    --surface: #151d1e;
+    --surface-2: #1b2425;
+    --ink: #e7edec;
+    --ink-muted: #a1b0ae;
+    --ink-faint: #6d7c7a;
+    --line: #2a3536;
+    --line-strong: #3a4749;
+    --accent: #3cb4bd;
+    --accent-strong: #64ccd3;
+    --accent-wash: #123033;
+    --pos: #58b984;
+    --pos-wash: #16302536;
+    --neg: #e07357;
+    --neg-wash: #3a201933;
+    --caution: #d9ab48;
+    --caution-wash: #33291333;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 30px -14px rgba(0, 0, 0, .55);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 40px 24px 72px; }
+
+  h1, h2, h3, .ui, label, button, .mono, .stat-label, .chip, .pill, th {
+    font-family: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  }
+  .mono, .num, code, .formula { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  header.masthead {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 18px;
+    border-bottom: 1px solid var(--line); padding-bottom: 20px; margin-bottom: 28px;
+  }
+  h1 {
+    font-size: 26px; font-weight: 700; letter-spacing: -.01em; margin: 0;
+    text-wrap: balance;
+  }
+  .masthead .tag {
+    font-family: "Source Serif 4", serif; color: var(--ink-muted);
+    font-size: 15px; flex: 1 1 260px; min-width: 220px;
+  }
+  .pill {
+    font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
+    color: var(--caution); background: var(--caution-wash);
+    border: 1px solid color-mix(in srgb, var(--caution) 35%, transparent);
+    padding: 4px 9px; border-radius: 999px; white-space: nowrap;
+  }
+  .theme-btn {
+    margin-left: auto; background: var(--surface); color: var(--ink-muted);
+    border: 1px solid var(--line-strong); border-radius: 8px; padding: 6px 10px;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+  .theme-btn:hover { color: var(--ink); border-color: var(--accent); }
+
+  .lede {
+    font-size: 17px; line-height: 1.65; max-width: 64ch; margin: 0 0 30px;
+    color: var(--ink);
+  }
+  .lede b { font-weight: 600; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 22px 24px; margin-bottom: 22px;
+  }
+  .card > h2 {
+    font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-muted); margin: 0 0 18px;
+  }
+
+  /* ---- controls ---- */
+  .sliders { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 28px; }
+  @media (max-width: 620px) { .sliders { grid-template-columns: 1fr; } }
+  .ctrl label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 13px; font-weight: 600; color: var(--ink); gap: 10px;
+  }
+  .ctrl .val { color: var(--accent-strong); font-family: "IBM Plex Mono", monospace; font-size: 14px; }
+  .ctrl .hint { font-family: "Source Serif 4", serif; font-size: 13px; color: var(--ink-faint); margin-top: 2px; }
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 4px; margin: 12px 0 2px;
+    background: var(--line-strong); border-radius: 3px; cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--accent);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px; height: 16px; border-radius: 50%; background: var(--accent);
+    border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--accent);
+  }
+  input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+  .derived {
+    margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--line-strong);
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
+    font-size: 13px; color: var(--ink-muted);
+  }
+  .derived .ratio { font-family: "IBM Plex Mono", monospace; color: var(--ink); font-weight: 500; }
+  .derived.bad .ratio, .derived.bad .verdict-mini { color: var(--neg); }
+
+  .constraints { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; }
+  .constraints .cbox { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; }
+  .constraints input[type="number"] {
+    width: 62px; font-family: "IBM Plex Mono", monospace; font-size: 13px; padding: 4px 6px;
+    border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface-2); color: var(--ink);
+  }
+  .constraints input:disabled { opacity: .4; }
+
+  .presets { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .presets button {
+    font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: 7px; cursor: pointer;
+    background: var(--surface-2); color: var(--ink-muted); border: 1px solid var(--line-strong);
+  }
+  .presets button:hover { color: var(--ink); border-color: var(--accent); }
+  .presets button[aria-pressed="true"] {
+    background: var(--accent-wash); color: var(--accent-strong);
+    border-color: var(--accent);
+  }
+
+  /* ---- verdict ---- */
+  .verdict {
+    border-radius: var(--radius); padding: 16px 20px; margin-bottom: 22px;
+    border: 1px solid var(--line-strong); background: var(--surface);
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .verdict .mark {
+    font-family: "Archivo", sans-serif; font-weight: 700; font-size: 12px; letter-spacing: .08em;
+    text-transform: uppercase; padding: 4px 8px; border-radius: 6px; white-space: nowrap; margin-top: 2px;
+  }
+  .verdict .body { font-size: 15px; line-height: 1.55; }
+  .verdict .body b { font-weight: 600; }
+  .verdict.pos { background: var(--pos-wash); border-color: color-mix(in srgb, var(--pos) 40%, transparent); }
+  .verdict.pos .mark { background: var(--pos); color: #fff; }
+  .verdict.caution { background: var(--caution-wash); border-color: color-mix(in srgb, var(--caution) 40%, transparent); }
+  .verdict.caution .mark { background: var(--caution); color: #fff; }
+  .verdict.neg { background: var(--neg-wash); border-color: color-mix(in srgb, var(--neg) 45%, transparent); }
+  .verdict.neg .mark { background: var(--neg); color: #fff; }
+
+  /* ---- chart ---- */
+  .chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .chart-head h2 { margin-bottom: 4px; }
+  .chart-sub { font-size: 13px; color: var(--ink-faint); margin: 0 0 14px; }
+  .chartbox { position: relative; width: 100%; }
+  svg.plot { display: block; width: 100%; height: auto; overflow: visible; }
+  .grid-line { stroke: var(--line); stroke-width: 1; }
+  .grid-line.zero { stroke: var(--line-strong); stroke-width: 1.5; }
+  .grid-line.one { stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 4; }
+  .axis-text { fill: var(--ink-faint); font-family: "IBM Plex Mono", monospace; font-size: 11px; }
+  .axis-title { fill: var(--ink-muted); font-family: "Archivo", sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .v-curve { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .v-fill { fill: var(--accent); opacity: .12; }
+  .mk-opt { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+  .mk-pss { fill: var(--surface); stroke: var(--ink-muted); stroke-width: 2; }
+  .mk-label { font-family: "Archivo", sans-serif; font-size: 10.5px; font-weight: 600; fill: var(--ink-muted); }
+  .mk-label.opt { fill: var(--accent-strong); }
+  .cross { stroke: var(--ink-faint); stroke-width: 1; stroke-dasharray: 2 3; }
+  .hit-rect { fill: transparent; cursor: crosshair; }
+  .tip {
+    position: absolute; pointer-events: none; opacity: 0; transform: translate(-50%, -100%);
+    background: var(--ink); color: var(--surface); border-radius: 7px; padding: 8px 10px;
+    font-family: "IBM Plex Mono", monospace; font-size: 11.5px; line-height: 1.5; white-space: nowrap;
+    box-shadow: 0 6px 20px -6px rgba(0,0,0,.4); z-index: 5;
+  }
+  .tip b { color: var(--accent-strong); font-weight: 600; }
+
+  /* ---- operating point ---- */
+  .op-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-top: 18px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  @media (max-width: 620px) { .op-row { grid-template-columns: repeat(2, 1fr); } }
+  .op {
+    background: var(--surface-2); padding: 12px 14px;
+  }
+  .op .stat-label { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-faint); }
+  .op .num { font-size: 20px; font-weight: 500; display: block; margin-top: 3px; color: var(--ink); }
+  .op.key .num { color: var(--accent-strong); }
+  .op-note { font-size: 13.5px; color: var(--ink-muted); margin: 14px 0 0; }
+  .op-note b { color: var(--ink); font-weight: 600; }
+
+  /* ---- two-up ---- */
+  .twoup { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 780px) { .twoup { grid-template-columns: 1fr; } }
+
+  .ctable { border-collapse: separate; border-spacing: 2px; width: 100%; }
+  .ctable th {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    color: var(--ink-faint); padding: 6px 8px; text-align: center; font-weight: 600;
+  }
+  .ctable th.row { text-align: right; white-space: nowrap; }
+  .ctable td {
+    text-align: center; padding: 14px 8px; border-radius: 7px;
+    font-family: "IBM Plex Mono", monospace;
+  }
+  .ctable td .cn { display: block; font-size: 22px; font-weight: 600; }
+  .ctable td .cl { display: block; font-size: 10px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; margin-top: 3px; opacity: .8; font-family: "Archivo", sans-serif; }
+  td.good { background: var(--pos-wash); color: var(--pos); }
+  td.bad { background: var(--neg-wash); color: var(--neg); }
+  .metrics { display: flex; flex-wrap: wrap; gap: 6px 8px; margin-top: 14px; }
+  .metrics .chip {
+    font-size: 11px; padding: 5px 9px; border-radius: 6px; background: var(--surface-2);
+    border: 1px solid var(--line); color: var(--ink-muted); font-weight: 600;
+  }
+  .metrics .chip b { font-family: "IBM Plex Mono", monospace; color: var(--ink); font-weight: 600; margin-left: 4px; }
+
+  .bars { display: flex; flex-direction: column; gap: 12px; margin-top: 2px; }
+  .bar-row { display: grid; grid-template-columns: 130px 1fr; gap: 10px; align-items: center; }
+  .bar-row .bl { font-family: "Archivo", sans-serif; font-size: 12px; font-weight: 600; color: var(--ink-muted); text-align: right; }
+  .bar-track { position: relative; height: 24px; background: var(--surface-2); border-radius: 4px; }
+  .bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 4px; opacity: .4; }
+  .bar-row.key .bar-fill { opacity: 1; }
+  .bar-val { position: absolute; top: 50%; transform: translateY(-50%); font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--ink); padding-left: 8px; }
+
+  /* ---- methods ---- */
+  .methods h2 { margin-bottom: 12px; }
+  .methods p { font-size: 14.5px; max-width: 66ch; color: var(--ink); margin: 0 0 12px; }
+  .methods .formula {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px;
+    padding: 14px 16px; font-size: 12.5px; line-height: 1.85; color: var(--ink-muted);
+    overflow-x: auto; white-space: pre; margin: 4px 0 14px;
+  }
+  .methods .formula b { color: var(--ink); font-weight: 600; }
+  .foot { font-size: 13px; color: var(--ink-faint); margin-top: 8px; border-top: 1px solid var(--line); padding-top: 16px; }
+  .foot b { color: var(--ink-muted); font-weight: 600; }
+  a { color: var(--accent-strong); text-underline-offset: 2px; }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <h1>Trigger Economics</h1>
+    <p class="tag">A trigger is a decision rule. Its quality is not R&sup2; &mdash; it is whether acting on it beats <em>always act</em> and <em>never act</em>.</p>
+    <span class="pill" title="The forecast record below is synthetic">Illustrative data</span>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle colour theme">Theme</button>
+  </header>
+
+  <p class="lede">
+    Somalia's anticipatory-action framework releases money when a flood forecast crosses a
+    pre-agreed threshold. This page runs the <b>cost&ndash;loss model</b> that decides where
+    that threshold should sit. Move the four parameters and watch the optimal release point,
+    its contingency table, and its <b>relative economic value</b> <span class="mono">V</span>
+    respond. The recurring surprise: the threshold that maximises forecast skill is usually
+    <em>not</em> the one that releases money most wisely.
+  </p>
+
+  <section class="card">
+    <h2>Parameters</h2>
+    <div class="sliders">
+      <div class="ctrl">
+        <label for="C">Cost of acting early <span class="val" id="Cv">1.0</span></label>
+        <input type="range" id="C" min="0.5" max="12" step="0.5" value="1">
+        <div class="hint"><span class="mono">C</span> &mdash; what one activation costs, whether or not the flood comes.</div>
+      </div>
+      <div class="ctrl">
+        <label for="L">Loss if unmitigated <span class="val" id="Lv">30</span></label>
+        <input type="range" id="L" min="4" max="60" step="1" value="30">
+        <div class="hint"><span class="mono">L</span> &mdash; damage from a flood nobody prepared for.</div>
+      </div>
+      <div class="ctrl">
+        <label for="f">Mitigation effectiveness <span class="val" id="fv">0.60</span></label>
+        <input type="range" id="f" min="0.1" max="0.95" step="0.01" value="0.6">
+        <div class="hint"><span class="mono">f</span> &mdash; fraction of <span class="mono">L</span> avoided by acting early and correctly.</div>
+      </div>
+      <div class="ctrl">
+        <label for="s">Climatological base rate <span class="val" id="sv">0.091</span></label>
+        <input type="range" id="s" min="0.02" max="0.30" step="0.001" value="0.091">
+        <div class="hint"><span class="mono">s</span> &mdash; how often the flood happens, absent any forecast.</div>
+      </div>
+    </div>
+
+    <div class="derived" id="derived">
+      <span><span class="ratio" id="ratio">C / L = 0.033</span></span>
+      <span class="verdict-mini" id="feasMini">feasible while C / L &lt; f</span>
+    </div>
+
+    <div class="constraints">
+      <span class="ui" style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint)">Operational limits</span>
+      <label class="cbox"><input type="checkbox" id="podOn"> min POD
+        <input type="number" id="podVal" min="0" max="1" step="0.05" value="0.80" disabled></label>
+      <label class="cbox"><input type="checkbox" id="farOn"> max FAR
+        <input type="number" id="farVal" min="0" max="1" step="0.05" value="0.30" disabled></label>
+    </div>
+
+    <div class="presets" id="presets">
+      <button type="button" data-preset="default">Flood cash transfer &middot; cheap action</button>
+      <button type="button" data-preset="infra">Canal &amp; embankment repair &middot; costly</button>
+      <button type="button" data-preset="weak">Intervention barely works</button>
+      <button type="button" data-preset="infeasible">Infeasible &middot; C/L &ge; f</button>
+      <button type="button" data-preset="constraint">Demand POD&nbsp;&ge;&nbsp;0.9 and FAR&nbsp;&le;&nbsp;0.3</button>
+    </div>
+  </section>
+
+  <div class="verdict" id="verdict" role="status" aria-live="polite">
+    <span class="mark" id="vMark">&mdash;</span>
+    <div class="body" id="vBody">&mdash;</div>
+  </div>
+
+  <section class="card">
+    <div class="chart-head">
+      <div>
+        <h2>Economic value across the decision threshold</h2>
+        <p class="chart-sub">Every point is one candidate trigger threshold. <span class="mono">V = 1</span> matches a perfect forecast; <span class="mono">V = 0</span> ties the best trivial strategy; <span class="mono">V &lt; 0</span> destroys value.</p>
+      </div>
+    </div>
+    <div class="chartbox">
+      <svg class="plot" id="plot" viewBox="0 0 760 420" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Relative economic value plotted against the decision threshold, with the cost-minimising and skill-maximising thresholds marked."></svg>
+      <div class="tip" id="tip"></div>
+    </div>
+    <div class="op-row" id="opRow"></div>
+    <p class="op-note" id="opNote"></p>
+  </section>
+
+  <div class="twoup">
+    <section class="card">
+      <h2>Contingency table at the optimum</h2>
+      <table class="ctable" aria-describedby="ctableCap">
+        <thead>
+          <tr><th></th><th>Trigger fires</th><th>Trigger holds</th></tr>
+        </thead>
+        <tbody>
+          <tr><th class="row">Flood occurs</th>
+            <td class="good"><span class="cn" id="cHit">0</span><span class="cl">hits</span></td>
+            <td class="bad"><span class="cn" id="cMiss">0</span><span class="cl">misses</span></td></tr>
+          <tr><th class="row">No flood</th>
+            <td class="bad"><span class="cn" id="cFa">0</span><span class="cl">false alarms</span></td>
+            <td class="good"><span class="cn" id="cCn">0</span><span class="cl">correct holds</span></td></tr>
+        </tbody>
+      </table>
+      <div class="metrics" id="metrics"></div>
+      <p id="ctableCap" style="font-size:12.5px;color:var(--ink-faint);margin:12px 0 0">
+        Use <b>PSS</b>, not accuracy: at a ~9% base rate, &ldquo;never fire&rdquo; is 91% accurate and useless.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Expected cost per season</h2>
+      <div class="bars" id="bars"></div>
+      <p style="font-size:12.5px;color:var(--ink-faint);margin:16px 0 0">
+        Model units. The trigger is worth funding when its bar sits below both <em>always act</em> and <em>never act</em>.
+      </p>
+    </section>
+  </div>
+
+  <section class="card methods">
+    <h2>How this is computed</h2>
+    <p>
+      For cost of action <span class="mono">C</span>, unmitigated loss <span class="mono">L</span>,
+      mitigation effectiveness <span class="mono">f</span> and base rate <span class="mono">s</span>,
+      each strategy has an expected expense per forecasting opportunity:
+    </p>
+    <div class="formula">always act  = <b>C + (1&minus;f)&middot;s&middot;L</b>
+never act   = <b>s&middot;L</b>
+forecast    = <b>(hits + false_alarms)&middot;C + hits&middot;(1&minus;f)&middot;L + misses&middot;L</b>   <span style="color:var(--ink-faint)"># hits, false_alarms, misses as rates</span>
+perfect     = <b>s&middot;(C + (1&minus;f)&middot;L)</b>
+
+V = (E_reference &minus; E_forecast) / (E_reference &minus; E_perfect)      E_reference = min(always act, never act)</div>
+    <p>
+      The tool sweeps every threshold, builds the contingency table, and picks the one with the
+      lowest expected expense &mdash; optionally subject to a POD floor or FAR ceiling. If
+      <span class="mono">C / L &ge; f</span> the problem is infeasible: no threshold can beat the
+      trivial strategies, and the fix is the intervention, not the trigger. If a limit cannot be
+      met, the forecast is not skilful enough at that lead time &mdash; the tool says so rather
+      than quietly relaxing it.
+    </p>
+    <p class="foot">
+      <b>The forecast record is synthetic.</b> 640 district&ndash;seasons from a seeded generator,
+      base rate 0.091, discrimination AUC &asymp; 0.91 &mdash; deliberately cleaner than SAAT's current
+      displacement model (AUC &asymp; 0.83) so the cost&ndash;loss geometry reads clearly. The maths mirrors
+      <span class="mono">saat.verification</span> exactly. Nothing here is calibrated for Somalia;
+      <span class="mono">C</span>, <span class="mono">L</span>, <span class="mono">f</span> and
+      <span class="mono">s</span> are each a number someone has to defend to the working group.
+    </p>
+  </section>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- synthetic forecast record (seeded, deterministic) ---------- */
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  var EVENTS = [], SCORES = [];
+  (function build() {
+    var r = mulberry32(20260901);
+    for (var i = 0; i < 640; i++) {
+      var ev = r() < 0.085 ? 1 : 0;
+      var g = 0; for (var k = 0; k < 12; k++) g += r(); g -= 6;
+      var sc = 1 / (1 + Math.exp(-(-1.3 + 1.7 * ev + 0.95 * g)));
+      EVENTS.push(ev);
+      SCORES.push(Math.max(0.002, Math.min(0.998, sc)));
+    }
+  })();
+  var BASE_RATE = EVENTS.reduce(function (a, b) { return a + b; }, 0) / EVENTS.length;
+  var THRESHOLDS = Array.from(new Set(SCORES)).sort(function (a, b) { return b - a; });
+  THRESHOLDS.push(Math.min.apply(null, SCORES) - 1e-6);
+
+  /* ---------- cost-loss model (mirrors saat.verification) ---------- */
+  function contingency(t) {
+    var h = 0, fa = 0, m = 0, cn = 0;
+    for (var i = 0; i < EVENTS.length; i++) {
+      var fire = SCORES[i] >= t;
+      if (fire && EVENTS[i]) h++;
+      else if (fire) fa++;
+      else if (EVENTS[i]) m++;
+      else cn++;
+    }
+    return { h: h, fa: fa, m: m, cn: cn };
+  }
+  function metricsOf(c) {
+    var pod = (c.h + c.m) ? c.h / (c.h + c.m) : NaN;
+    var pofd = (c.fa + c.cn) ? c.fa / (c.fa + c.cn) : NaN;
+    var far = (c.h + c.fa) ? c.fa / (c.h + c.fa) : NaN;
+    var csi = (c.h + c.fa + c.m) ? c.h / (c.h + c.fa + c.m) : NaN;
+    var bias = (c.h + c.m) ? (c.h + c.fa) / (c.h + c.m) : NaN;
+    return { pod: pod, pofd: pofd, far: far, csi: csi, pss: pod - pofd, bias: bias };
+  }
+  function strategyExpense(C, L, f, s) {
+    return {
+      always: C + (1 - f) * s * L,
+      never: s * L,
+      perfect: s * (C + (1 - f) * L)
+    };
+  }
+  function forecastExpense(c, C, L, f) {
+    var N = c.h + c.fa + c.m + c.cn;
+    return ((c.h + c.fa) / N) * C + (c.h / N) * (1 - f) * L + (c.m / N) * L;
+  }
+  function revOf(c, C, L, f, s) {
+    var e = strategyExpense(C, L, f, s);
+    var ref = Math.min(e.always, e.never);
+    if (ref === e.perfect) return NaN;
+    return (ref - forecastExpense(c, C, L, f)) / (ref - e.perfect);
+  }
+
+  function analyse(C, L, f, s, minPod, maxFar) {
+    var feasible = (C / L) < f;
+    var rows = [], best = null, pssMax = null;
+    for (var i = 0; i < THRESHOLDS.length; i++) {
+      var t = THRESHOLDS[i];
+      var c = contingency(t);
+      var mt = metricsOf(c);
+      var e = forecastExpense(c, C, L, f);
+      var v = revOf(c, C, L, f, s);
+      var row = { t: t, c: c, e: e, v: v, pod: mt.pod, pofd: mt.pofd, far: mt.far, csi: mt.csi, pss: mt.pss, bias: mt.bias };
+      rows.push(row);
+      // Match saat.verification: a non-finite POD/FAR (e.g. a threshold that
+      // never fires) fails an operational limit rather than vacuously passing it.
+      var okPod = minPod == null || (isFinite(row.pod) && row.pod >= minPod - 1e-9);
+      var okFar = maxFar == null || (isFinite(row.far) && row.far <= maxFar + 1e-9);
+      if (feasible && okPod && okFar && (best === null || e < best.e)) best = row;
+      if (pssMax === null || row.pss > pssMax.pss) pssMax = row;
+    }
+    return {
+      feasible: feasible, rows: rows, best: best, pssMax: pssMax,
+      strat: strategyExpense(C, L, f, s),
+      constrained: minPod != null || maxFar != null
+    };
+  }
+
+  /* ---------- number formatting ---------- */
+  var f2 = function (x) { return isNaN(x) ? "–" : x.toFixed(2); };
+  var f3 = function (x) { return isNaN(x) ? "–" : x.toFixed(3); };
+
+  /* ---------- DOM ---------- */
+  var $ = function (id) { return document.getElementById(id); };
+  var els = {
+    C: $("C"), L: $("L"), f: $("f"), s: $("s"),
+    Cv: $("Cv"), Lv: $("Lv"), fv: $("fv"), sv: $("sv"),
+    ratio: $("ratio"), derived: $("derived"), feasMini: $("feasMini"),
+    podOn: $("podOn"), podVal: $("podVal"), farOn: $("farOn"), farVal: $("farVal"),
+    verdict: $("verdict"), vMark: $("vMark"), vBody: $("vBody"),
+    plot: $("plot"), tip: $("tip"),
+    opRow: $("opRow"), opNote: $("opNote"),
+    cHit: $("cHit"), cMiss: $("cMiss"), cFa: $("cFa"), cCn: $("cCn"),
+    metrics: $("metrics"), bars: $("bars"), presets: $("presets")
+  };
+
+  var SVGNS = "http://www.w3.org/2000/svg";
+  function svg(tag, attrs) {
+    var e = document.createElementNS(SVGNS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  /* plot geometry */
+  var PW = 760, PH = 420, M = { t: 30, r: 96, b: 46, l: 52 };
+  var innerW = PW - M.l - M.r, innerH = PH - M.t - M.b;
+  var V_MIN = -1, V_MAX = 1;
+  var xOf = function (thr) { return M.l + thr * innerW; };
+  var yOf = function (v) {
+    var cv = Math.max(V_MIN, Math.min(V_MAX, v));
+    return M.t + (V_MAX - cv) / (V_MAX - V_MIN) * innerH;
+  };
+
+  var lastAnalysis = null;
+
+  function drawChart(a) {
+    var p = els.plot;
+    while (p.firstChild) p.removeChild(p.firstChild);
+
+    /* gridlines + labels */
+    [-1, -0.5, 0, 0.5, 1].forEach(function (v) {
+      var y = yOf(v);
+      var cls = v === 0 ? "grid-line zero" : (v === 1 ? "grid-line one" : "grid-line");
+      p.appendChild(svg("line", { x1: M.l, y1: y, x2: M.l + innerW, y2: y, class: cls }));
+      var lab = p.appendChild(svg("text", { x: M.l - 10, y: y + 4, class: "axis-text", "text-anchor": "end" }));
+      lab.textContent = v.toFixed(1).replace("0.0", "0");
+    });
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (t) {
+      var x = xOf(t);
+      p.appendChild(svg("line", { x1: x, y1: M.t, x2: x, y2: M.t + innerH, class: "grid-line" }));
+      var lab = p.appendChild(svg("text", { x: x, y: M.t + innerH + 20, class: "axis-text", "text-anchor": "middle" }));
+      lab.textContent = t.toFixed(2);
+    });
+    var xt = p.appendChild(svg("text", { x: M.l + innerW / 2, y: PH - 6, class: "axis-title", "text-anchor": "middle" }));
+    xt.textContent = "Decision threshold  →  fire more readily";
+    var yt = p.appendChild(svg("text", { x: 0, y: 0, class: "axis-title", "text-anchor": "middle",
+      transform: "translate(14," + (M.t + innerH / 2) + ") rotate(-90)" }));
+    yt.textContent = "Relative economic value  V";
+
+    /* zero / one annotations */
+    var zt = p.appendChild(svg("text", { x: M.l + innerW + 6, y: yOf(0) + 3, class: "axis-text", "text-anchor": "start" }));
+    zt.textContent = "break-even";
+    var ot = p.appendChild(svg("text", { x: M.l + innerW + 6, y: yOf(1) + 3, class: "axis-text", "text-anchor": "start" }));
+    ot.textContent = "perfect";
+
+    if (!a.feasible) {
+      var msg = p.appendChild(svg("text", {
+        x: M.l + innerW / 2, y: M.t + innerH / 2, "text-anchor": "middle",
+        class: "mk-label", "font-size": "13"
+      }));
+      msg.textContent = "C / L ≥ f  —  V is undefined; no threshold can beat the trivial strategies";
+      return;
+    }
+
+    /* rows sorted by threshold ascending for a left-to-right path */
+    var rs = a.rows.slice().sort(function (x, y) { return x.t - y.t; })
+      .filter(function (r) { return r.t >= 0 && r.t <= 1 && isFinite(r.v); });
+
+    /* positive-area fill (between curve and V=0, where V>0) */
+    var fillPts = [];
+    rs.forEach(function (r) {
+      var vv = Math.max(V_MIN, Math.min(V_MAX, r.v));
+      fillPts.push([xOf(r.t), yOf(vv > 0 ? vv : 0)]);
+    });
+    for (var i = rs.length - 1; i >= 0; i--) fillPts.push([xOf(rs[i].t), yOf(0)]);
+    p.appendChild(svg("polygon", { class: "v-fill", points: fillPts.map(function (q) { return q.join(","); }).join(" ") }));
+
+    /* V curve */
+    var d = rs.map(function (r, i) {
+      return (i ? "L" : "M") + xOf(r.t).toFixed(1) + " " + yOf(r.v).toFixed(1);
+    }).join(" ");
+    p.appendChild(svg("path", { class: "v-curve", d: d }));
+
+    /* markers — dodge the two labels apart when the thresholds are close */
+    var bx = a.best ? xOf(a.best.t) : null;
+    var pmx = (a.pssMax && a.pssMax.t >= 0 && a.pssMax.t <= 1) ? xOf(a.pssMax.t) : null;
+    var close = bx != null && pmx != null && Math.abs(bx - pmx) < 70;
+
+    if (pmx != null) {
+      var pm = a.pssMax;
+      p.appendChild(svg("circle", { class: "mk-pss", cx: pmx, cy: yOf(pm.v), r: 5.5 }));
+      var pl = p.appendChild(svg("text", {
+        class: "mk-label",
+        x: pmx + (close ? 12 : 0),
+        y: yOf(pm.v) - (close ? 8 : 13),
+        "text-anchor": close ? "start" : "middle"
+      }));
+      pl.textContent = "max-skill threshold";
+    }
+    if (a.best) {
+      var b = a.best;
+      p.appendChild(svg("line", { x1: bx, y1: M.t, x2: bx, y2: M.t + innerH, class: "cross" }));
+      p.appendChild(svg("path", {
+        class: "mk-opt",
+        d: "M" + bx + " " + (yOf(b.v) - 7) + " L" + (bx + 7) + " " + yOf(b.v) +
+           " L" + bx + " " + (yOf(b.v) + 7) + " L" + (bx - 7) + " " + yOf(b.v) + " Z"
+      }));
+      var by = Math.min(yOf(b.v) + 26, M.t + innerH - 6);
+      var bl = p.appendChild(svg("text", {
+        class: "mk-label opt",
+        x: bx - (close ? 10 : 0),
+        y: by,
+        "text-anchor": close ? "end" : "middle"
+      }));
+      bl.textContent = "cost-optimal threshold";
+    }
+
+    /* hover layer */
+    var hit = svg("rect", { class: "hit-rect", x: M.l, y: M.t, width: innerW, height: innerH });
+    p.appendChild(hit);
+    hit.addEventListener("mousemove", function (ev) { hover(ev, rs); });
+    hit.addEventListener("mouseleave", function () { els.tip.style.opacity = 0; clearCross(); });
+  }
+
+  var crossEls = [];
+  function clearCross() { crossEls.forEach(function (e) { if (e.parentNode) e.parentNode.removeChild(e); }); crossEls = []; }
+  function hover(ev, rs) {
+    if (!rs.length) return;
+    var rect = els.plot.getBoundingClientRect();
+    var scaleX = PW / rect.width;
+    var px = (ev.clientX - rect.left) * scaleX;
+    var thr = Math.max(0, Math.min(1, (px - M.l) / innerW));
+    var near = rs[0], bd = Infinity;
+    rs.forEach(function (r) { var dd = Math.abs(r.t - thr); if (dd < bd) { bd = dd; near = r; } });
+    clearCross();
+    var cx = xOf(near.t), cy = yOf(near.v);
+    var l = svg("line", { x1: cx, y1: M.t, x2: cx, y2: M.t + innerH, class: "cross" });
+    var c = svg("circle", { cx: cx, cy: cy, r: 3.5, fill: "var(--accent)", stroke: "var(--surface)", "stroke-width": 1.5 });
+    els.plot.appendChild(l); els.plot.appendChild(c);
+    crossEls = [l, c];
+    var rect2 = els.plot.getBoundingClientRect();
+    var scr = rect2.width / PW;
+    els.tip.style.left = (cx * scr) + "px";
+    els.tip.style.top = (cy * scr - 12) + "px";
+    els.tip.style.opacity = 1;
+    els.tip.innerHTML =
+      "thr <b>" + f2(near.t) + "</b>&nbsp; POD <b>" + f2(near.pod) +
+      "</b>&nbsp; FAR <b>" + (isNaN(near.far) ? "–" : f2(near.far)) +
+      "</b><br>PSS <b>" + f2(near.pss) + "</b>&nbsp; V <b>" + f2(near.v) + "</b>";
+  }
+
+  /* ---------- render ---------- */
+  function currentParams() {
+    return {
+      C: parseFloat(els.C.value),
+      L: parseFloat(els.L.value),
+      f: parseFloat(els.f.value),
+      s: parseFloat(els.s.value),
+      minPod: els.podOn.checked ? parseFloat(els.podVal.value) : null,
+      maxFar: els.farOn.checked ? parseFloat(els.farVal.value) : null
+    };
+  }
+
+  function setVerdict(kind, mark, html) {
+    els.verdict.className = "verdict " + kind;
+    els.vMark.textContent = mark;
+    els.vBody.innerHTML = html;
+  }
+
+  function render() {
+    var pr = currentParams();
+    els.Cv.textContent = pr.C.toFixed(1);
+    els.Lv.textContent = pr.L.toFixed(0);
+    els.fv.textContent = pr.f.toFixed(2);
+    els.sv.textContent = pr.s.toFixed(3);
+    els.podVal.disabled = !els.podOn.checked;
+    els.farVal.disabled = !els.farOn.checked;
+
+    var ratio = pr.C / pr.L;
+    els.ratio.textContent = "C / L = " + ratio.toFixed(3);
+    var infeasible = ratio >= pr.f;
+    els.derived.classList.toggle("bad", infeasible);
+    els.feasMini.textContent = infeasible
+      ? "C / L ≥ f — no threshold can return positive value"
+      : "feasible while C / L < f (= " + pr.f.toFixed(2) + ")";
+
+    var a = analyse(pr.C, pr.L, pr.f, pr.s, pr.minPod, pr.maxFar);
+    lastAnalysis = a;
+    drawChart(a);
+
+    /* verdict */
+    if (!a.feasible) {
+      setVerdict("neg", "Infeasible",
+        "<b>C / L = " + ratio.toFixed(3) + " ≥ f = " + pr.f.toFixed(2) + ".</b> " +
+        "No threshold can beat <em>always act</em> or <em>never act</em>. The problem is the " +
+        "intervention design &mdash; make the action cheaper or more effective &mdash; not the trigger.");
+    } else if (!a.best) {
+      var want = [];
+      if (pr.minPod != null) want.push("POD ≥ " + pr.minPod.toFixed(2));
+      if (pr.maxFar != null) want.push("FAR ≤ " + pr.maxFar.toFixed(2));
+      setVerdict("neg", "No threshold",
+        "No threshold meets <b>" + want.join(" and ") + "</b>. The forecast is not skilful enough " +
+        "at this lead time. Loosen the requirement, buy more lead time, or improve the forecast &mdash; " +
+        "the tool will not quietly relax the limit for you.");
+    } else {
+      var b = a.best, V = b.v, far = b.far;
+      var podPct = Math.round(far * 100);
+      if (V > 0.05) {
+        var farClause = far > 0.5
+          ? " Roughly <b>" + podPct + "% of activations are false alarms</b> &mdash; and it is still worth funding, because acting is cheap next to the loss it prevents."
+          : "";
+        setVerdict("pos", "Worth funding",
+          "Acting on this trigger is worth <b>V = " + V.toFixed(2) + "</b> of a perfect forecast, " +
+          "at threshold <b>" + b.t.toFixed(2) + "</b> (POD " + f2(b.pod) + ", FAR " + f2(far) + ")." + farClause);
+      } else if (V > -0.05) {
+        setVerdict("caution", "Adds nothing",
+          "At its best (<b>V = " + V.toFixed(2) + "</b>) this trigger barely beats the better of " +
+          "<em>always act</em> and <em>never act</em>. The forecast is not earning its keep here.");
+      } else {
+        setVerdict("neg", "Destroys value",
+          "Every threshold here has <b>V &lt; 0</b>: acting on this forecast costs more than the best " +
+          "trivial strategy. Do not build a trigger on it as configured.");
+      }
+    }
+
+    /* operating-point row */
+    var opDefs;
+    if (a.best) {
+      var b2 = a.best;
+      opDefs = [
+        ["Threshold", b2.t.toFixed(2), true],
+        ["POD", f2(b2.pod), false],
+        ["FAR", isNaN(b2.far) ? "–" : f2(b2.far), false],
+        ["PSS", f2(b2.pss), false],
+        ["Exp. cost", b2.e.toFixed(2), false]
+      ];
+    } else {
+      opDefs = [["Threshold", "–", true], ["POD", "–", false], ["FAR", "–", false],
+        ["PSS", "–", false], ["Exp. cost", "–", false]];
+    }
+    els.opRow.innerHTML = opDefs.map(function (d) {
+      return '<div class="op' + (d[2] ? " key" : "") + '"><span class="stat-label">' + d[0] +
+        '</span><span class="num">' + d[1] + "</span></div>";
+    }).join("");
+
+    /* op note: compare to PSS-max threshold */
+    if (a.best && a.pssMax) {
+      var same = Math.abs(a.best.t - a.pssMax.t) < 0.02;
+      if (same) {
+        els.opNote.innerHTML = "Here the skill-maximising threshold and the cost-minimising threshold " +
+          "<b>coincide</b>. They usually do not.";
+      } else {
+        els.opNote.innerHTML = "The <b>skill-maximising</b> threshold (max PSS) sits at <b>" +
+          a.pssMax.t.toFixed(2) + "</b> and would give you <b>V = " + f2(a.pssMax.v) +
+          "</b> &mdash; " + (a.pssMax.v < a.best.v - 0.005 ? "worse than" : "not better than") +
+          " the cost-optimal <b>V = " + f2(a.best.v) + "</b>. Picking a threshold on skill scores leaves value on the table.";
+      }
+    } else {
+      els.opNote.textContent = "";
+    }
+
+    /* contingency + metrics — only meaningful at a real optimum */
+    var dash = "–";
+    var cc = a.best || { c: { h: dash, fa: dash, m: dash, cn: dash }, pod: NaN, pofd: NaN, far: NaN, csi: NaN, pss: NaN, bias: NaN };
+    els.cHit.textContent = cc.c.h;
+    els.cMiss.textContent = cc.c.m;
+    els.cFa.textContent = cc.c.fa;
+    els.cCn.textContent = cc.c.cn;
+    var mchips = [
+      ["POD", f2(cc.pod)], ["POFD", f2(cc.pofd)], ["FAR", isNaN(cc.far) ? dash : f2(cc.far)],
+      ["CSI", f2(cc.csi)], ["PSS", f2(cc.pss)], ["Freq bias", isNaN(cc.bias) ? dash : cc.bias.toFixed(1)]
+    ];
+    els.metrics.innerHTML = mchips.map(function (m) {
+      return '<span class="chip">' + m[0] + "<b>" + m[1] + "</b></span>";
+    }).join("");
+
+    /* strategy bars */
+    var st = a.strat;
+    var fcost = a.best ? a.best.e : NaN;
+    var barDefs = [
+      ["Always act", st.always, false],
+      ["Never act", st.never, false],
+      ["This trigger", fcost, true],
+      ["Perfect forecast", st.perfect, false]
+    ];
+    var maxCost = Math.max(st.always, st.never, st.perfect, isFinite(fcost) ? fcost : 0) * 1.08;
+    els.bars.innerHTML = barDefs.map(function (d) {
+      var w = isFinite(d[1]) ? Math.max(2, (d[1] / maxCost) * 100) : 0;
+      return '<div class="bar-row' + (d[2] ? " key" : "") + '">' +
+        '<span class="bl">' + d[0] + "</span>" +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + w + '%"></div>' +
+        '<span class="bar-val" style="left:' + w + '%">' + (isFinite(d[1]) ? d[1].toFixed(2) : "–") + "</span></div></div>";
+    }).join("");
+  }
+
+  /* ---------- presets ---------- */
+  var PRESETS = {
+    "default":    { C: 1,  L: 30, f: 0.60, s: BASE_RATE, podOn: false, farOn: false },
+    "infra":      { C: 2,  L: 30, f: 0.55, s: BASE_RATE, podOn: false, farOn: false },
+    "weak":       { C: 8,  L: 20, f: 0.50, s: BASE_RATE, podOn: false, farOn: false },
+    "infeasible": { C: 11, L: 20, f: 0.50, s: BASE_RATE, podOn: false, farOn: false },
+    "constraint": { C: 1,  L: 30, f: 0.60, s: BASE_RATE, podOn: true, podVal: 0.90, farOn: true, farVal: 0.30 }
+  };
+  function applyPreset(name) {
+    var p = PRESETS[name];
+    if (!p) return;
+    els.C.value = p.C; els.L.value = p.L; els.f.value = p.f;
+    els.s.value = Math.round(p.s * 1000) / 1000;
+    els.podOn.checked = !!p.podOn;
+    els.farOn.checked = !!p.farOn;
+    if (p.podVal != null) els.podVal.value = p.podVal;
+    if (p.farVal != null) els.farVal.value = p.farVal;
+    [].forEach.call(els.presets.querySelectorAll("button"), function (b) {
+      b.setAttribute("aria-pressed", b.dataset.preset === name ? "true" : "false");
+    });
+    render();
+  }
+  els.presets.addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-preset]");
+    if (btn) applyPreset(btn.dataset.preset);
+  });
+
+  /* clear preset highlight on manual change */
+  function clearPresetHighlight() {
+    [].forEach.call(els.presets.querySelectorAll("button"), function (b) { b.setAttribute("aria-pressed", "false"); });
+  }
+  ["C", "L", "f", "s"].forEach(function (id) {
+    els[id].addEventListener("input", function () { clearPresetHighlight(); render(); });
+  });
+  [els.podOn, els.podVal, els.farOn, els.farVal].forEach(function (el) {
+    el.addEventListener("input", function () { clearPresetHighlight(); render(); });
+    el.addEventListener("change", function () { clearPresetHighlight(); render(); });
+  });
+
+  /* ---------- theme toggle ---------- */
+  var THEME_KEY = "trigger-economics-theme";
+  function applyTheme(mode) {
+    if (mode === "light" || mode === "dark") document.documentElement.setAttribute("data-theme", mode);
+    else document.documentElement.removeAttribute("data-theme");
+    if (lastAnalysis) drawChart(lastAnalysis);
+  }
+  function cycleTheme() {
+    var cur = document.documentElement.getAttribute("data-theme") || "system";
+    var next = cur === "system" ? "light" : (cur === "light" ? "dark" : "system");
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+    els.themeBtn && (els.themeBtn.textContent = "Theme: " + next);
+    applyTheme(next);
+  }
+  els.themeBtn = $("themeBtn");
+  els.themeBtn.addEventListener("click", cycleTheme);
+  (function initTheme() {
+    var forced = (location.hash || location.search).match(/theme=(dark|light|system)/);
+    if (forced) {
+      els.themeBtn.textContent = "Theme: " + forced[1];
+      applyTheme(forced[1]);
+      return;
+    }
+    var saved = null;
+    try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+    if (saved) { els.themeBtn.textContent = "Theme: " + saved; applyTheme(saved); }
+    else els.themeBtn.textContent = "Theme";
+  })();
+
+  /* ---------- go ---------- */
+  var pQ = (location.hash || location.search).match(/preset=(default|infra|weak|infeasible|constraint)/);
+  applyPreset(pQ ? pQ[1] : "default");
+  window.addEventListener("resize", function () { if (lastAnalysis) drawChart(lastAnalysis); });
+})();
+</script>

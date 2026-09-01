@@ -1,0 +1,299 @@
+# SAAT Geography Configuration
+# Gauges, routing lags, catchment definitions, livelihood zones
+
+version: 1.0
+date_created: 2026-08-31
+
+# ============================================================================
+# Riverine Gauges and Routing Lags
+# ============================================================================
+# These towns flood from rainfall in the Ethiopian highlands, not local rainfall.
+# Routing lag is the tool's single largest source of usable lead time.
+# Ignoring it is the most common structural error in Somalia flood models.
+
+river_systems:
+  shabelle:
+    name: "Shabelle River"
+    source_region: "Ethiopian Highlands (Bale, Arsi)"
+    receiving_region: "Southern Somalia (Middle Shabelle, Lower Shabelle)"
+    length_km: 2250
+    main_stations:
+      belet_weyne:
+        coordinates: [5.21, 46.30]
+        admin_region: "Hiiraan"
+        population_risk: 200000
+        routing_lag_days: 4
+        upstream_catchment_area_km2: null  # Placeholder - use HydroSHEDS
+        high_risk_level_m: null  # Placeholder - confirm from SoDMA
+        
+      bulo_burti:
+        coordinates: [5.95, 45.28]
+        admin_region: "Hiiraan"
+        population_risk: 50000
+        routing_lag_days: 4
+        upstream_catchment_area_km2: null
+        high_risk_level_m: null
+        
+      jowhar:
+        coordinates: [5.57, 46.41]
+        admin_region: "Middle Shabelle"
+        population_risk: 150000
+        routing_lag_days: 4
+        upstream_catchment_area_km2: null
+        high_risk_level_m: null
+        
+      afgooye:
+        coordinates: [2.93, 45.53]
+        admin_region: "Lower Shabelle"
+        population_risk: 100000
+        routing_lag_days: 4
+        upstream_catchment_area_km2: null
+        high_risk_level_m: null
+        note: "Lower Shabelle is rarely in high-risk window. Verify."
+        
+  juba:
+    name: "Juba River"
+    source_region: "Ethiopian Highlands (Bale, Borana Highlands)"
+    receiving_region: "Southern Somalia (Lower Juba, Bay/Bakool)"
+    length_km: 1500
+    main_stations:
+      doolow:
+        coordinates: [4.41, 42.59]
+        admin_region: "Gedo"
+        population_risk: 80000
+        idp_settlements: ["Doolow IDP settlement"]
+        routing_lag_days: 6
+        upstream_catchment_area_km2: null  # Placeholder
+        high_risk_level_m: null  # Placeholder - confirm from SoDMA
+        
+      luuq:
+        coordinates: [3.74, 43.10]
+        admin_region: "Gedo"
+        population_risk: 60000
+        routing_lag_days: 6
+        upstream_catchment_area_km2: null
+        high_risk_level_m: null
+        
+      bardheere:
+        coordinates: [1.54, 41.84]
+        admin_region: "Bay"
+        population_risk: 40000
+        routing_lag_days: 6
+        upstream_catchment_area_km2: null
+        high_risk_level_m: null
+
+# ============================================================================
+# Catchment Definitions for Rainfall Accumulation
+# ============================================================================
+# Use upstream rainfall as primary predictor (not local rainfall).
+# Currently bounding boxes; should be replaced with HydroSHEDS basin polygons.
+
+catchments:
+  shabelle_upstream:
+    name: "Shabelle Upstream (Ethiopian Highlands)"
+    bbox:
+      north: 10.5
+      south: 7.0
+      east: 44.0
+      west: 41.0
+    note: |
+      PLACEHOLDER BBOX. Replace with HydroSHEDS basin polygon for 3 main tributaries:
+      1. Genale (Dawa) - feeds southern Shabelle
+      2. Web - feeds central Shabelle
+      3. Weyb - feeds central Shabelle
+    target_stations: ["belet_weyne", "bulo_burti", "jowhar", "afgooye"]
+    
+  juba_upstream:
+    name: "Juba Upstream (Ethiopian Highlands)"
+    bbox:
+      north: 9.0
+      south: 5.0
+      east: 44.0
+      west: 40.5
+    note: |
+      PLACEHOLDER BBOX. Replace with HydroSHEDS basin polygon. Main sources:
+      1. Borana Highland tributaries
+      2. Omo-Turkana tributaries (transboundary)
+    target_stations: ["doolow", "luuq", "bardheere"]
+
+# Which admin-1 regions drain from which upstream catchment. Used to attach the
+# upstream Ethiopian-highland rainfall feature to riverine districts in the
+# district-month panel. Regions not listed have no gauged upstream catchment
+# (is_riverine = false); their flood pathway is flash / rain-fed, not routed.
+# PLACEHOLDER mapping at admin-1 resolution: refine to the actual riverine
+# districts once HydroSHEDS basin polygons replace the bboxes above.
+river_basin_regions:
+  shabelle_upstream: ["Hiiraan", "Middle Shabelle", "Lower Shabelle"]
+  juba_upstream: ["Gedo", "Middle Juba", "Lower Juba", "Bay"]
+
+# PRMN district name -> COD som_admin2 name, where they differ beyond fuzzy
+# tolerance. Used to attach CHIRPS centroid rainfall to the right district.
+district_name_aliases:
+  Baidoa: "Baydhaba"
+
+# Approximate centroids (lat, lon) for panel districts absent from the COD
+# admin-2 layer (contested / re-districted areas, or Banadir which PRMN treats as
+# one district). PLACEHOLDER coordinates - refine against an authoritative
+# gazetteer. None of these are riverine.
+district_extra_centroids:
+  Banadir: [2.05, 45.34]    # central Mogadishu
+  Badhan: [10.72, 48.33]    # Sanaag
+  Dhahar: [9.50, 48.50]     # Bari/Sanaag border
+
+# ============================================================================
+# IDP Settlements and Site Locations
+# ============================================================================
+# For Tier 2 displacement caseload forecasting and site pressure calculation.
+
+idp_sites:
+  baidoa:
+    name: "Baidoa (Al-Noor, Aw-Barre camps + dispersed)"
+    region: "Bay"
+    coordinates: [3.10, 43.65]
+    standing_idp_population: null  # Query HAPI/CCCM for current
+    major_communities: ["Rahanweyn", "Somali", "mixed"]
+    main_livelihood: "Agropastoral"
+    elevation_m: 55
+    flood_risk: "Indirect from Juba confluence via runoff"
+    
+  jowhar:
+    name: "Jowhar (Shabelle riverine)"
+    region: "Middle Shabelle"
+    coordinates: [5.57, 46.41]
+    standing_idp_population: null
+    major_communities: ["various"]
+    main_livelihood: "Riverine agriculture"
+    elevation_m: 19
+    flood_risk: "Direct from Shabelle gauge"
+    
+  belet_weyne:
+    name: "Belet Weyne (scattered settlements)"
+    region: "Hiiraan"
+    coordinates: [5.21, 46.30]
+    standing_idp_population: null
+    major_communities: ["various"]
+    main_livelihood: "Riverine agriculture"
+    elevation_m: 114
+    flood_risk: "Direct from Shabelle gauge"
+    
+  doolow:
+    name: "Doolow IDP settlement"
+    region: "Gedo"
+    coordinates: [4.41, 42.59]
+    standing_idp_population: null
+    major_communities: ["Somali", "Oromo"]
+    main_livelihood: "Pastoral/mixed"
+    elevation_m: 235
+    flood_risk: "Direct from Juba gauge + local flash flood"
+
+# ============================================================================
+# Livelihood Zones (For Contextual Feature Engineering)
+# ============================================================================
+# Used in displacement and economic models to condition feature elasticities.
+
+livelihood_zones:
+  agropastoral_gedo_bakool:
+    name: "Agropastoral (Gedo, Bakool, Bay)"
+    districts: ["Gedo", "Bakool", "Bay"]
+    main_activities: ["rainfed agriculture", "pastoralism"]
+    flood_vulnerability: "High"
+    drought_vulnerability: "High"
+    displacement_base_rate: null
+    
+  riverine_shabelle_juba:
+    name: "Riverine/Agricultural (Shabelle, Juba)"
+    districts: ["Hiiraan", "Middle Shabelle", "Lower Shabelle", "Lower Juba"]
+    main_activities: ["irrigated agriculture", "flood-recession agriculture"]
+    flood_vulnerability: "Very High"
+    drought_vulnerability: "Low to Moderate"
+    displacement_base_rate: null
+    
+  pastoral_central_northern:
+    name: "Pastoral (Central/Northern ranges)"
+    districts: ["Togdheer", "Sool", "Sanaag", "Bari", "Awdal", "Woqooyi Galbeed"]
+    main_activities: ["pastoralism"]
+    flood_vulnerability: "Low (flash flood risk in high-rain years)"
+    drought_vulnerability: "Extreme"
+    displacement_base_rate: null
+    note: "No gauge network. Not covered by Tier 3."
+    
+  urban_informal:
+    name: "Urban Informal Settlements"
+    main_cities: ["Mogadishu", "Baidoa", "Kismayo"]
+    main_activities: ["informal trade", "casual labor"]
+    flood_vulnerability: "Moderate to High (inadequate drainage)"
+    drought_vulnerability: "High (depends on food market)"
+    displacement_base_rate: null
+
+# ============================================================================
+# Terrain and Infiltration Characteristics
+# ============================================================================
+# For AMC classification and runoff modelling (SCS curve number).
+
+soil_types:
+  # AMC-I treatment INVERTED on semi-arid soils
+  crusted_semi_arid:
+    description: "Crusted, desiccated soil (after 4+ failed seasons)"
+    region: "Widespread Somalia 2022-2026"
+    infiltration_rate_mm_per_hour: 5  # Low infiltration
+    scs_curve_number_amc_i: 80  # HIGH curve number (inverted!)
+    scs_curve_number_amc_ii: 70
+    scs_curve_number_amc_iii: 85
+    physical_motivation: |
+      Standard SCS was calibrated on temperate agricultural soils where dry means
+      higher infiltration. On crusted semi-arid soils the relationship reverses:
+      a long dry spell raises the effective curve number. Consistent with observed
+      2023 flash flood behavior. **No Somalia-specific calibration confirmed.**
+    note: "Label clearly in code and output as modelling judgement."
+    
+  normal_soil:
+    description: "Soil with normal moisture history"
+    infiltration_rate_mm_per_hour: 15
+    scs_curve_number_amc_i: 60
+    scs_curve_number_amc_ii: 70
+    scs_curve_number_amc_iii: 80
+
+# ============================================================================
+# Administrative Boundaries (For Panel Assembly)
+# ============================================================================
+# Used to define the district-month matrix for training data.
+
+administrative_levels:
+  level_1:
+    name: "Region"
+    examples: ["Bay", "Bakool", "Gedo", "Hiiraan", "Middle Shabelle", "Lower Shabelle", "Lower Juba"]
+    
+  level_2:
+    name: "District"
+    note: "PRMN and HDX data are typically at district resolution."
+    
+  level_3:
+    name: "Sub-district/IDP settlement"
+    note: "Site-level data available from CCCM. Not used in first model iteration."
+
+# ============================================================================
+# Known Data Gaps and Placeholders
+# ============================================================================
+
+data_gaps:
+  gauge_thresholds:
+    status: "ALL NULL"
+    note: |
+      All high-risk level thresholds at FRRIMS stations are null pending
+      official FRRIMS station metadata release. Confirm the high-risk level
+      matches the SoDMA action trigger exactly.
+    
+  catchment_polygons:
+    status: "PLACEHOLDER BBOXES ONLY"
+    note: |
+      Current catchment definitions are bounding boxes. Replace with HydroSHEDS
+      basin polygons. A bbox over the Bale highlands includes terrain that does
+      not drain to the Shabelle.
+      
+      See: https://www.hydrosheds.org/
+    
+  idp_population_current:
+    status: "REQUIRES LIVE QUERY"
+    note: |
+      Standing IDP population at each settlement must be queried from HAPI
+      or CCCM at runtime. Use fixture values for testing only.

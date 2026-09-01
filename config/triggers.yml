@@ -1,0 +1,310 @@
+# SAAT Trigger Definitions
+# 
+# Four tiers specifying indicator, source, threshold, lead time, combination logic,
+# actions, envelope share, and deactivation condition.
+#
+# No discretion at activation time: thresholds are pre-set here with verification
+# evidence attached. If a threshold can be renegotiated when the forecast arrives,
+# it is not a trigger, it is a meeting.
+
+version: 1.0
+date_created: 2026-08-31
+
+# ============================================================================
+# Tier 0: Seasonal Readiness (60-120 days)
+# ============================================================================
+# Long-lead actions (vaccination, prepositioning, canal repair) that must fire here
+# or not at all. Skill at this lead is tercile-level, not magnitude-level.
+# No-regrets actions only.
+
+tier_0:
+  name: "Seasonal Readiness"
+  lead_time_days: [60, 120]
+  envelope_share: 0.20  # 20% of total action envelope
+
+  indicators:
+    icpac_tercile:
+      source: "ICPAC seasonal outlook"
+      description: "Above-normal tercile probability for OND"
+      threshold: 0.45
+      operator: ">="
+      url: "https://www.icpac.net"
+      
+    c3s_precip_anomaly:
+      source: "Copernicus C3S/SEAS5"
+      description: "OND catchment precipitation anomaly vs 1991-2020"
+      threshold: 0.25  # +25% of historical mean
+      operator: ">="
+      url: "https://cds.climate.copernicus.eu"
+      
+    enso_iod_coincidence:
+      source: "NOAA CPC ONI + BoM DMI"
+      description: "El Niño (ONI >= +1.0) AND positive IOD (DMI >= +0.4)"
+      oni_threshold: 1.0
+      dmi_threshold: 0.4
+      operator: "AND"
+      url: "https://ggweather.com/enso/oni.htm"
+
+  combination_logic:
+    type: "majority"  # At least 2 of 3 indicators
+    min_indicators: 2
+    
+  actions:
+    - "Preposition humanitarian stock at Baidoa, Jowhar, Belet Weyne, Doolow"
+    - "Execute standby supplier contracts"
+    - "**Livestock vaccination in RVF-susceptible zones** (3-4 week lead, must fire here)"
+    - "Seed distribution to pastoralists and farmers"
+    - "Canal desilting and embankment repair in Shabelle/Juba basins"
+
+  deactivation_condition: |
+    Deactivate if seasonal outlook reverses or moves to below-normal tercile by
+    end of lead window (pre-October).
+
+  cost_loss_parameters:
+    cost_action: null  # Placeholder - confirm with SoDMA
+    loss_event: null   # Placeholder - confirm with FEWS NET
+    mitigation_effectiveness: null  # Placeholder - judge with HCT
+    climatological_base_rate: null  # Use 1991-2020 OND flood frequency
+
+  verification_evidence: |
+    ICPAC's August 2026 OND outlook indicates wetter-than-normal conditions with
+    0.45+ above-normal tercile probability. C3S/SEAS5 shows +25-30% catchment
+    precipitation anomaly. ONI trajectory Aug 2026 shows El Niño at Advisory with
+    >90% chance of strong event. DMI positive since July 2026.
+
+
+# ============================================================================
+# Tier 1: Sub-seasonal Readiness (10-30 days)
+# ============================================================================
+# Move stock to district level, community early warning, beneficiary registration.
+
+tier_1:
+  name: "Sub-seasonal Readiness"
+  lead_time_days: [10, 30]
+  envelope_share: 0.25  # 25% of total action envelope
+
+  indicators:
+    ecmwf_extended_range:
+      source: "ECMWF or NOAA GEFS"
+      description: "Week 2-4 catchment precipitation forecast >= 80th percentile"
+      percentile: 80
+      weeks: [2, 3, 4]
+      operator: ">="
+      url: "https://confluence.ecmwf.int/display/FCST/Extended+Range"
+      
+    amc_classification:
+      source: "SAAT hazard module"
+      description: "Antecedent Moisture Class: AMC-III (saturated) or AMC-I (hardened)"
+      amc_iii_threshold: 40  # >= 40mm in prior 5 days
+      amc_i_threshold: null  # <= 15th percentile of 90-day climatology
+      operator: "OR"  # Either AMC-III or AMC-I
+
+  combination_logic:
+    type: "and"  # Both indicators required
+    
+  actions:
+    - "Move humanitarian stock from regional to district warehouses"
+    - "Activate community early warning through SoDMA"
+    - "Open beneficiary registration and data systems"
+    - "Advise early harvest of marginal crops"
+    - "Alert pastoralists to prepare for emergency livestock sales"
+
+  deactivation_condition: |
+    Deactivate if week 2-4 forecast revises to <80th percentile or antecedent
+    moisture drops below triggering class by end of forecast window.
+
+  cost_loss_parameters:
+    cost_action: null
+    loss_event: null
+    mitigation_effectiveness: null
+    climatological_base_rate: null
+
+  verification_evidence: |
+    Requires ECMWF operational forecast validation. Antecedent moisture classes
+    must be validated against CHIRPS-derived soil water index.
+
+
+# ============================================================================
+# Tier 2: Displacement Caseload (7-21 days)
+# ============================================================================
+# Size cash envelope to forecast caseload, not prior-year actuals.
+# Pre-position WASH and site management at forecast receiving settlements.
+
+tier_2:
+  name: "Displacement Caseload Forecast"
+  lead_time_days: [7, 21]
+  envelope_share: 0.15  # 15% of total action envelope
+
+  indicators:
+    district_outflow_forecast:
+      source: "SAAT displacement model Stage 1"
+      description: "District outflow forecast exceeds 90th percentile of 2016-2025 record"
+      percentile: 90
+      threshold_probability: 0.5
+      operator: ">="
+      
+    site_pressure:
+      source: "SAAT displacement model Stage 2"
+      description: "Forecast arrivals >= 20% of standing IDP site population"
+      threshold_pct: 20  # Arrivals as % of current site population
+      operator: ">="
+
+  combination_logic:
+    type: "or"  # Either indicator sufficient to trigger
+    
+  actions:
+    - "Size cash transfer envelope based on forecast caseload, not actuals"
+    - "Pre-position WASH materials and site management capacity"
+    - "Secure additional land for site expansion"
+    - "Activate site planning committees"
+    - "Alert health and nutrition partners"
+
+  deactivation_condition: |
+    Deactivate if forecast revises downward to <90th percentile or if observed
+    arrivals fall >20% short of forecast by mid-forecast window.
+
+  cost_loss_parameters:
+    cost_action: null
+    loss_event: null
+    mitigation_effectiveness: null
+    climatological_base_rate: null
+
+  vulnerability_multiplier_default: 1.0
+  vulnerability_multiplier_description: |
+    Scenario parameter exposing the 2026 asset-depletion effect from four failed
+    seasons. Default 1.0 (neutral) means user gets raw historical-elasticity forecast.
+    Values > 1.0 scale up forecast for expected behavioural shift.
+
+  coverage_weight_description: |
+    PRMN is a humanitarian monitoring network, not a census. Coverage correlates
+    with humanitarian presence. Accept explicit coverage_weight correction or
+    document that running without one is a decision.
+
+  verification_evidence: |
+    Displacement model must be validated against 2023 Deyr flood and 2022 drought
+    peak in held-out temporal folds (blocked forward-chaining, embargo gap).
+    Report skill against persistence and climatology, never against zero.
+
+
+# ============================================================================
+# Tier 3: Immediate Action (1-7 days)
+# ============================================================================
+# Unconditional cash transfers, evacuation, emergency WASH, livestock offtake.
+# This tier exactly replicates the SoDMA-led trigger and source.
+
+tier_3:
+  name: "Immediate Action (Riverine)"
+  lead_time_days: [1, 7]
+  envelope_share: 0.40  # 40% of total action envelope
+  
+  description: |
+    Replicates SoDMA operational trigger exactly. Do not modify threshold.
+    Interoperability with the working group is the entire argument for adoption.
+
+  indicators:
+    frrims_gauge_primary:
+      source: "FAO SWALIM FRRIMS (scraped from frrims.faoswalim.org)"
+      description: "Observed river stage >= station high-risk level"
+      url: "http://frrims.faoswalim.org/rivers/levels"
+      
+      stations:
+        shabelle:
+          - name: "Belet Weyne"
+            high_risk_level: null  # Placeholder - confirm from SoDMA
+            routing_lag_days: 4
+            
+          - name: "Bulo Burti"
+            high_risk_level: null
+            routing_lag_days: 4
+            
+          - name: "Jowhar"
+            high_risk_level: null
+            routing_lag_days: 4
+            
+          - name: "Afgooye"
+            high_risk_level: null
+            routing_lag_days: 4
+            
+        juba:
+          - name: "Doolow"
+            high_risk_level: null  # Placeholder
+            routing_lag_days: 6
+            
+          - name: "Luuq"
+            high_risk_level: null
+            routing_lag_days: 6
+            
+          - name: "Bardheere"
+            high_risk_level: null
+            routing_lag_days: 6
+
+    glofas_fallback:
+      source: "Copernicus GloFAS (explicit fallback only)"
+      description: "5-day exceedance probability >= 0.6 when gauge is down"
+      threshold_probability: 0.6
+      operator: ">="
+      url: "https://cds.climate.copernicus.eu"
+      
+      note: |
+        Do not average FRRIMS and GloFAS. Do not quietly substitute GloFAS when
+        they disagree. The gauge is authoritative when reporting because that is
+        what the operational framework uses. Use GloFAS as explicit fallback when
+        gauge is down (missing > 24 hours).
+
+  combination_logic:
+    type: "or"  # Either indicator sufficient
+    
+  actions:
+    - "Unconditional cash transfers (UCS) to affected households"
+    - "Emergency evacuation and emergency shelter"
+    - "Emergency WASH and AWD/cholera preparedness"
+    - "Livestock emergency offtake and animal health intervention"
+    - "Activate emergency food assistance"
+
+  deactivation_condition: |
+    Deactivate when:
+    1. Observed river stage falls below high-risk level for 72 hours, AND
+    2. Forecast catchment rainfall returns to <80th percentile for the next 5 days
+
+  data_status_protocol: |
+    Fail loud. Do not silently de-activate.
+    - OK: gauge reporting, last update < 24 hours
+    - DEGRADED: gauge reporting but delayed (24-48 hours old)
+    - MISSING: gauge down > 48 hours, falling back to GloFAS
+    - STALE: no update for > 48 hours and GloFAS fallback unavailable
+    
+    If status = MISSING or STALE, escalate for human review even if threshold not met.
+
+  cost_loss_parameters:
+    cost_action: null  # Confirm with OCHA/SoDMA
+    loss_event: null   # Confirm with FEWS NET famine assessment
+    mitigation_effectiveness: null  # AA program evaluation
+    climatological_base_rate: null  # Use 1991-2025 OND flood occurrence
+
+  verification_evidence: |
+    Threshold must match SoDMA action trigger exactly. Verify with SoDMA-WFP
+    working group. Calibration against 2023 Deyr flood and historical gauge records.
+
+
+# ============================================================================
+# Explicit Non-Coverage (Record Uncovered Pathways)
+# ============================================================================
+
+uncovered_pathways:
+  
+  northern_pastoral_flash_flood:
+    description: |
+      Northern pastoral flash flood (Togdheer, Sool, Sanaag, Awdal, Woqooyi
+      Galbeed, Bari) has no gauge network. Needs rainfall-threshold trigger
+      calibrated on impact records.
+    status: "Not implemented"
+    note: "FEWS NET impact records available from 2020 onward."
+    
+  rift_valley_fever:
+    description: |
+      RVF is modelled economically but not trigger-linked. Conditional probability
+      P(outbreak | flood) and P(ban | outbreak) are poorly constrained.
+    status: "Economic module only, no trigger"
+    note: |
+      Model rest on small number of reference events (1997-98, 2006-07).
+      Report conditional loss alongside expected loss.
