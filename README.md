@@ -22,7 +22,7 @@ Key principle: **The optimal threshold is generally NOT the one maximising skill
 ### Companion documents (`docs/`)
 
 - [`docs/el-nino-preparedness-brief.html`](docs/el-nino-preparedness-brief.html) —
-  "Somalia El Niño Anticipatory Action", a ministerial brief authored by Hassan Mumin:
+  "The Somalia El Niño Anticipatory Action", a ministerial brief authored by Hassan Mumin:
   the flood premise with a world teleconnection map, an exposure map of the river
   corridor, an **interactive 2026 Deyr displacement and cash-planning scenario**
   (reference event, asset-depletion multiplier, transfer value; live district/timing/
