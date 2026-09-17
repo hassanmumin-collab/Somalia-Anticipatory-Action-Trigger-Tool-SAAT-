@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The 2026 Deyr El Niño: A Scaled-Analogue Impact Assessment for Somalia</title>
+<meta name="description" content="A historical-analogue assessment of the 2026 Deyr El Niño's likely displacement, mortality and economic impact in Somalia, scaled from the documented 2023 Deyr floods, with a case study of Mogadishu urban drainage capacity.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #f7f6f2; --surface: #ffffff; --sunk: #efeee8;
+    --ink: #1b1a17; --ink-2: #46443c; --ink-mut: #78766a;
+    --rule: #dcdaCF; --rule-2: #c7c4b5;
+    --accent: #1c4f73; --accent-2: #123a54;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #161512; --surface: #1c1b17; --sunk: #201f1a;
+      --ink: #e8e6dd; --ink-2: #c1beb0; --ink-mut: #918e7e;
+      --rule: #322f26; --rule-2: #423e30;
+      --accent: #6fa8d2; --accent-2: #8fbde0;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #161512; --surface: #1c1b17; --sunk: #201f1a;
+    --ink: #e8e6dd; --ink-2: #c1beb0; --ink-mut: #918e7e;
+    --rule: #322f26; --rule-2: #423e30;
+    --accent: #6fa8d2; --accent-2: #8fbde0;
+  }
+  * { box-sizing: border-box; }
+  html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Source Serif 4", Georgia, serif; font-size: 17.5px; line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  .sans { font-family: "IBM Plex Sans", sans-serif; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  .wrap { max-width: 700px; margin: 0 auto; padding: 52px 22px 100px; }
+  a { color: var(--accent-2); }
+
+  header.masthead { margin-bottom: 8px; border-bottom: 2px solid var(--ink); padding-bottom: 22px; }
+  .doctype { font-family: "IBM Plex Sans", sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mut); margin-bottom: 14px; }
+  h1.headline { font-weight: 600; font-size: 28px; line-height: 1.28; letter-spacing: -.005em; margin: 0 0 14px; }
+  .authorline { font-family: "IBM Plex Sans", sans-serif; font-size: 14px; color: var(--ink-2); margin: 0 0 4px; }
+  .authorline b { color: var(--ink); font-weight: 600; }
+  .datestamp { font-family: "IBM Plex Sans", sans-serif; font-size: 12.5px; color: var(--ink-mut); }
+
+  .frontmatter { margin: 26px 0 40px; padding: 20px 24px; background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; }
+  .frontmatter h2 { font-family: "IBM Plex Sans", sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-mut); margin: 0 0 10px; }
+  .frontmatter p { margin: 0 0 14px; font-size: 15.5px; line-height: 1.6; color: var(--ink-2); }
+  .frontmatter p:last-child { margin-bottom: 0; }
+  .keywords { font-family: "IBM Plex Sans", sans-serif; font-size: 12.5px; color: var(--ink-mut); }
+  .keywords b { color: var(--ink-2); font-weight: 600; }
+
+  article { counter-reset: secnum; }
+  article h2 {
+    font-size: 20px; font-weight: 600; margin: 40px 0 14px; line-height: 1.3;
+    padding-bottom: 6px; border-bottom: 1px solid var(--rule);
+  }
+  article h2::before { counter-increment: secnum; content: counter(secnum) ". "; color: var(--ink-mut); }
+  article h2.nonum::before { content: none; counter-increment: none; }
+  article h3 { font-size: 16px; font-weight: 600; margin: 26px 0 10px; color: var(--ink-2); }
+  article p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  article ul, article ol { margin: 0 0 16px; padding-left: 1.3em; }
+  article li { margin-bottom: 7px; }
+  sup.cite { font-size: 0.75em; color: var(--accent-2); font-weight: 600; }
+  sup.cite a { color: inherit; text-decoration: none; }
+
+  figure { margin: 26px 0; }
+  .fig-body { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 18px 20px 10px; }
+  figcaption { font-size: 14px; line-height: 1.55; margin-top: 10px; color: var(--ink-2); }
+  figcaption b { color: var(--ink); }
+  .axl { font-family: "IBM Plex Sans", sans-serif; font-size: 11px; fill: var(--ink-2); }
+  .axv { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; fill: var(--ink); font-weight: 500; }
+  .axn { font-family: "IBM Plex Sans", sans-serif; font-size: 10px; fill: var(--ink-mut); }
+  svg { width: 100%; height: auto; display: block; }
+
+  table.datatable { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 14.5px; }
+  table.datatable caption { text-align: left; font-size: 14px; margin-bottom: 8px; color: var(--ink-2); caption-side: top; }
+  table.datatable th, table.datatable td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  table.datatable thead th { font-family: "IBM Plex Sans", sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-mut); border-bottom: 1.5px solid var(--ink-mut); }
+  table.datatable td.num, table.datatable th.num { font-family: "IBM Plex Mono", monospace; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; margin: 10px 0 22px; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 8px 0 4px; }
+  .stat-row > div { background: var(--surface); padding: 12px 14px; }
+  .stat-row .k { font-family: "IBM Plex Sans", sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-mut); }
+  .stat-row .v { font-family: "IBM Plex Mono", monospace; font-size: 18px; color: var(--ink); display: block; margin-top: 3px; }
+
+  ol.refs { list-style: none; padding-left: 0; counter-reset: refnum; }
+  ol.refs li { counter-increment: refnum; padding-left: 2.3em; text-indent: -2.3em; margin-bottom: 10px; font-size: 14.5px; color: var(--ink-2); }
+  ol.refs li::before { content: "[" counter(refnum) "]"; color: var(--ink-mut); font-family: "IBM Plex Mono", monospace; font-size: 13px; margin-right: 6px; }
+  ol.refs li a { color: var(--accent-2); }
+
+  details.assumptions { margin: 36px 0 10px; border: 1px solid var(--rule-2); border-radius: 4px; background: var(--surface); }
+  details.assumptions > summary {
+    cursor: pointer; list-style: none; padding: 14px 20px; font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 600; font-size: 13.5px; letter-spacing: .01em; display: flex; justify-content: space-between; align-items: center;
+    background: var(--sunk);
+  }
+  details.assumptions[open] > summary { border-bottom: 1px solid var(--rule); }
+  details.assumptions > summary::-webkit-details-marker { display: none; }
+  details.assumptions > summary::after { content: "show \25be"; font-weight: 400; color: var(--ink-mut); font-size: 12px; }
+  details.assumptions[open] > summary::after { content: "hide \25b4"; }
+  .assump-body { padding: 4px 22px 20px; font-size: 14.5px; }
+  .assump-body h4 { font-family: "IBM Plex Sans", sans-serif; font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-mut); margin: 20px 0 8px; }
+  .assump-body h4:first-child { margin-top: 4px; }
+  .assump-body ul { padding-left: 1.2em; }
+  .assump-body li { margin-bottom: 7px; font-size: 14px; color: var(--ink-2); }
+  .assump-body table.datatable { font-size: 13.5px; }
+
+  footer.endnote { margin-top: 40px; border-top: 1px solid var(--rule); padding-top: 16px; font-family: "IBM Plex Sans", sans-serif; font-size: 12.5px; line-height: 1.6; color: var(--ink-mut); }
+  footer.endnote a { color: var(--accent-2); }
+
+  @media (max-width: 480px) {
+    body { font-size: 16.5px; }
+    h1.headline { font-size: 23px; }
+    article p { text-align: left; hyphens: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="doctype">Analysis &middot; Climate risk and anticipatory action</div>
+    <h1 class="headline">The 2026 Deyr El Niño in Somalia: A Historical-Analogue Impact Assessment Scaled From the 2023 Floods, With a Mogadishu Urban Drainage Case Study</h1>
+    <p class="authorline"><b>Hassan Mumin</b></p>
+    <p class="datestamp">17 September 2026</p>
+  </header>
+
+  <div class="frontmatter">
+    <h2>Abstract</h2>
+    <p>This analysis develops an order-of-magnitude assessment of the likely humanitarian and
+      economic impact of the 2026 Deyr rains on Somalia, using a historical-analogue method rather
+      than a mechanistic hazard model. Sea-surface temperature and Indian Ocean Dipole indices place
+      the current El Niño event on a trajectory that, by the World Meteorological Organization's own
+      median forecast, exceeds the peak strength of the event that produced Somalia's 2023 Deyr
+      floods &mdash; the most recent, most thoroughly documented flood disaster in the country, with
+      an independently assessed toll of 188 deaths, $176.0 million in direct damage and losses, and
+      approximately 418,000 people displaced by flooding specifically. Scaling that documented
+      baseline by the ratio of forecast-to-observed peak ocean strength (1.3) yields planning
+      estimates of approximately 543,000 people displaced, 244 deaths, and $228.8 million in damage
+      and lost economic activity nationally for the 2026 Deyr season. A case study of Mogadishu's
+      urban drainage system, drawing on a September 2026 rainfall event and a documented May 2025
+      flash flood, indicates that the binding constraint on urban flood risk in the capital is
+      drainage capacity relative to short-duration rainfall intensity, rather than seasonal rainfall
+      totals: approximately 5&#8201;mm of rainfall was sufficient to flood major arterial roads,
+      while a single 2025 storm delivering on the order of 115&#8201;mm in eight hours killed at
+      least seven people. The analysis closes with four preparedness recommendations addressing
+      municipal drainage maintenance, household-level financial resilience among daily-wage workers,
+      riverine early-warning operations, and pre-positioned agricultural recovery inputs, and
+      discusses the material limitations of the scaling method in detail.</p>
+    <p class="keywords"><b>Keywords:</b> El Niño&ndash;Southern Oscillation; Indian Ocean Dipole;
+      Somalia; Deyr rains; flood risk; anticipatory action; urban drainage; historical-analogue
+      forecasting</p>
+  </div>
+
+  <article>
+    <h2>Introduction</h2>
+    <p>Somalia's most severe flood disasters have historically coincided with El Niño events
+      accompanied by a positive Indian Ocean Dipole (IOD), a combination that enhances, rather than
+      suppresses, the October&ndash;December Deyr rains over the Horn of Africa.<sup class="cite">[1,4]</sup>
+      The 1997&ndash;98 event, associated with more than 2,000 flood-related deaths in Somalia and
+      regional rainfall totals five to ten times the seasonal norm, remains the principal historical
+      reference point for catastrophic Deyr flooding in the country. The most recent comparable
+      event occurred in 2023, when a moderate El Niño combined with an extreme positive IOD &mdash;
+      one of only five such events identified in the post-1980 instrumental record<sup class="cite">[9]</sup>
+      &mdash; produced flooding that killed 188 people and caused $176.0 million in documented
+      damage and losses.<sup class="cite">[5,6]</sup></p>
+    <p>As of September 2026, oceanic and atmospheric indices indicate that the current El Niño event
+      is on a trajectory to exceed the 2023 event in strength, and by some measures may approach the
+      strongest event in the instrumental record of the relevant index.<sup class="cite">[1,2]</sup>
+      This raises an immediate, practical question for humanitarian and municipal planning: in the
+      absence of a validated, Somalia-specific hazard-impact model, what is a defensible,
+      evidence-based estimate of the scale of impact to prepare for?</p>
+    <p>This analysis addresses that question with a historical-analogue method: rather than model
+      flood impact from first principles &mdash; which would require calibrated exposure,
+      vulnerability and drainage-capacity data that does not yet exist for Somalia at the necessary
+      resolution &mdash; the 2023 Deyr floods are treated as an empirical baseline and scaled by the
+      ratio of this event's forecast peak ocean strength to 2023's confirmed peak. Section 2 sets out
+      this method and its data sources in full. Sections 3&ndash;4 place the 2026 event in its
+      climatic and geographic context. Section 5 develops a focused case study of Mogadishu's urban
+      flood risk, motivated by the city's documented sensitivity to comparatively small rainfall
+      totals. Sections 6&ndash;8 present the scaled displacement, mortality and economic-loss
+      estimates. Section 9 sets out preparedness recommendations, Section 10 discusses the method's
+      limitations, and Section 11 concludes.</p>
+
+    <h2>Data and methods</h2>
+    <h3>2.1 Oceanic and climatic indices</h3>
+    <p>Pacific sea-surface temperature anomalies are reported using the weekly Niño&#8201;3.4 index
+      (NOAA Climate Prediction Center / Physical Sciences Laboratory) and the associated Oceanic
+      Niño Index (ONI), a three-month running mean of the same quantity.<sup class="cite">[2]</sup>
+      NOAA adopted a revised, relative ONI (RONI) standard in February 2026, which changes the
+      ranking of historical events relative to the traditional ONI methodology used for the
+      multi-decade comparison in Section 3; we report traditional-method values for historical
+      events throughout and flag this methodological transition explicitly rather than mix
+      methodologies silently. Indian Ocean conditions are reported using the Dipole Mode Index
+      (DMI).<sup class="cite">[3]</sup></p>
+    <h3>2.2 Historical baseline</h3>
+    <p>We use the 2023 Deyr floods (October&ndash;December 2023) as the empirical baseline for this
+      assessment because it is the most recent Somalia flood event for which an independent,
+      multi-agency Post-Disaster Needs Assessment (PDNA) exists, covering mortality, displacement
+      and sectoral economic loss,<sup class="cite">[5]</sup> cross-checked against contemporaneous
+      OCHA situation reporting<sup class="cite">[7]</sup> and FEWS&#8201;NET/FSNAU agricultural field
+      assessments.<sup class="cite">[8]</sup> The baseline figures used are: 188 confirmed deaths;
+      $176.0 million in total documented damage ($126.6 million) and losses ($49.5 million); and,
+      for displacement specifically, 418,000 people displaced by flooding once concurrent
+      drought- and conflict-driven displacement is excluded from the roughly 826,000 total recorded
+      movements associated with the same reference period. We note that the PDNA itself reports a
+      larger displacement figure &mdash; over 2 million &mdash; using a broader, cumulative
+      definition of displacement across the 2023 season and multiple hazards.<sup class="cite">[5,6]</sup>
+      We use the narrower, flood-attributed figure for consistency with the flood-specific scope of
+      this analysis, and record this discrepancy explicitly here rather than resolve it by selecting
+      whichever figure is more convenient for the argument.</p>
+    <h3>2.3 Scaling procedure</h3>
+    <p>The scaling factor applied to the 2023 baseline is the ratio of the World Meteorological
+      Organization's median forecast for this event's October&ndash;December 2026 peak
+      Niño&#8201;3.4 anomaly (+2.67&#8201;°C)<sup class="cite">[1]</sup> to 2023&ndash;24's confirmed
+      peak (+2.0&#8201;°C, November&ndash;January)<sup class="cite">[2]</sup>: a factor of 1.3. This
+      factor is applied uniformly to the displacement, mortality and economic-loss baselines
+      described above. This is a deliberately simple method, and Section 10 discusses its
+      limitations at length; it is preferred here to a more elaborate model because Somalia does not
+      currently have the calibrated exposure, vulnerability and drainage-capacity data that a more
+      mechanistic estimate would require, and a simple, transparent, falsifiable method is
+      preferable to a more complex one whose additional apparent precision the underlying data
+      cannot support.</p>
+    <h3>2.4 Mogadishu case study data</h3>
+    <p>Mogadishu-specific rainfall figures are drawn from published long-run climate
+      normals,<sup class="cite">[13]</sup> local and press reporting on a 16 September 2026 rainfall
+      event,<sup class="cite">[14]</sup> and a SoDMA field report on a 9 May 2025 flash
+      flood,<sup class="cite">[10]</sup> cross-checked against independent press reporting on that
+      event's death toll.<sup class="cite">[11]</sup> Bajaaj (motorised three-wheeler) driver
+      population figures are drawn from Benadir Regional Administration registration data and
+      published fieldwork;<sup class="cite">[12]</sup> we treat this as an approximate, dated
+      estimate rather than a current census figure, and state that limitation explicitly wherever
+      the figure is used.</p>
+
+    <h2>Climatic context: the 2026 Deyr in historical perspective</h2>
+    <p>For the week of 9 September 2026, the Niño&#8201;3.4 anomaly reached +2.9&#8201;°C, the
+      highest reading of this event to date, the warmest September week in this index since 1981,
+      and within 0.1&#8201;°C of the all-time weekly maximum of +3.0&#8201;°C recorded on 18 November
+      2015.<sup class="cite">[2]</sup> The WMO's multi-model forecast places the median
+      October&ndash;December 2026 peak at +2.67&#8201;°C, assigns a 75&#8201;percent probability that
+      this peak will exceed the previous record set in 1982&ndash;83, and now assigns a
+      98&#8201;percent probability to this event reaching "Super El Niño" status.<sup class="cite">[1]</sup>
+      The WMO Secretary-General has characterised the event's current trajectory as potentially
+      "off the charts," language not previously used in a WMO seasonal update.<sup class="cite">[1]</sup>
+      For comparison, the 2023&ndash;24 event used as this analysis's baseline peaked at
+      +2.0&#8201;°C.</p>
+
+    <figure>
+      <div class="fig-body">
+        <svg viewBox="0 0 620 225" role="img" aria-label="Bar chart comparing peak Nino 3.4 anomalies across El Nino events: 1982-83 at 2.2 degrees, 1997-98 at 2.3 degrees, 2015-16 at 2.6 degrees, 2023-24 at 2.0 degrees, and 2026 forecast at 2.67 degrees.">
+          <line x1="70" y1="180" x2="600" y2="180" style="stroke:var(--rule-2)" stroke-width="1"/>
+          <!-- plot area y:28 (max, 2.67°) to y:180 (baseline) -->
+          <rect x="80" y="55" width="64" height="125" style="fill:var(--ink-mut)" opacity="0.55"/>
+          <text x="112" y="45" text-anchor="middle" class="axv">2.2°</text>
+          <text x="112" y="198" text-anchor="middle" class="axl">1982&ndash;83</text>
+          <rect x="184" y="49" width="64" height="131" style="fill:var(--ink-mut)" opacity="0.55"/>
+          <text x="216" y="39" text-anchor="middle" class="axv">2.3°</text>
+          <text x="216" y="198" text-anchor="middle" class="axl">1997&ndash;98</text>
+          <rect x="288" y="32" width="64" height="148" style="fill:var(--ink-mut)" opacity="0.55"/>
+          <text x="320" y="22" text-anchor="middle" class="axv">2.6°</text>
+          <text x="320" y="198" text-anchor="middle" class="axl">2015&ndash;16</text>
+          <rect x="392" y="66" width="64" height="114" style="fill:var(--accent)" opacity="0.7"/>
+          <text x="424" y="56" text-anchor="middle" class="axv">2.0°</text>
+          <text x="424" y="198" text-anchor="middle" class="axl">2023&ndash;24</text>
+          <rect x="496" y="28" width="64" height="152" style="fill:var(--accent)" opacity="1"/>
+          <text x="528" y="18" text-anchor="middle" class="axv">2.67°</text>
+          <text x="528" y="198" text-anchor="middle" class="axl">2026</text>
+          <text x="528" y="211" text-anchor="middle" class="axn">(median forecast)</text>
+        </svg>
+      </div>
+      <figcaption><b>Figure 1.</b> Peak seasonal Niño&#8201;3.4 anomaly by event, °C. The 1982&ndash;83,
+        1997&ndash;98 and 2015&ndash;16 values are traditional-method ONI peaks; the 2026 value is
+        the WMO's median multi-model forecast for October&ndash;December, not an observation. Event
+        ranking depends on the index methodology used, given NOAA's February 2026 transition to a
+        relative ONI standard; the comparison this analysis relies on is the gap between the
+        2023&ndash;24 baseline and the 2026 forecast, not the precise ordering among historical
+        events. Sources: <sup class="cite">[1,2]</sup>.</figcaption>
+    </figure>
+
+    <p>The Indian Ocean Dipole is at least as consequential for Somalia as Pacific conditions,
+      and often more so for the Deyr specifically. The 2023 positive IOD has been classified in the
+      peer-reviewed literature as one of only five "extreme positive IOD" events identified since
+      the 1980s (1994, 1997, 2006, 2019 and 2023),<sup class="cite">[9]</sup> and it reinforced,
+      rather than offset, that year's El Niño over the Horn of Africa. As of 13 September 2026, the
+      DMI stood at +0.65&#8201;°C, already positive, with forecasters expecting a moderate-to-strong
+      phase by October&ndash;December &mdash; developing on a timeline comparable to 2023's rather
+      than lagging it.<sup class="cite">[3,4]</sup> We treat the IOD as developing in line with,
+      rather than in excess of, 2023's trajectory in the scaling procedure above (Section 2.3);
+      Section 10 discusses the consequence of this conservative choice.</p>
+
+    <h2>Exposure geography</h2>
+    <p>Somalia's flood exposure concentrates in two distinct settings with different physical
+      mechanisms and different warning characteristics. Riverine flooding along the Shabelle and
+      Juba corridors originates as rainfall in the Ethiopian highlands and reaches Somali gauge
+      towns &mdash; led by Belet Weyne, Baardheere, Luuq and Jowhar &mdash; four to six days later,
+      providing genuine operational lead time where the upstream-to-downstream data chain is
+      maintained. Urban pluvial flooding in Mogadishu follows a different mechanism entirely: it is
+      driven by local rainfall intensity relative to the capacity of an already-degraded stormwater
+      network, with no equivalent lead time. A fuller geographic treatment, including
+      satellite-derived inundation-history mapping of the river corridor, is provided in the
+      companion ministerial brief on this event; the remainder of this analysis focuses in
+      particular on the Mogadishu case, both because it is comparatively under-characterised in
+      existing assessments and because of the disproportionate share of the city's population
+      dependent on daily, cash-based income (Section&#8201;8).</p>
+
+    <h2>Case study: rainfall intensity and drainage capacity in Mogadishu</h2>
+    <p>Mogadishu's long-run climate normals are, by regional standards, comparatively modest:
+      published datasets place average annual rainfall in the range of approximately
+      400&ndash;540&#8201;mm, depending on the period and dataset used, with May typically the
+      wettest month.<sup class="cite">[13]</sup> We report this as a range rather than a single
+      figure because published climate normals for Mogadishu vary appreciably across sources and
+      reference periods, and presenting a single point estimate would overstate the precision
+      actually available.</p>
+    <p>On 16 September 2026, Mogadishu received approximately 5&#8201;mm of rainfall. Within that
+      range of published normals, this is not an atypical daily total for the rainy season.
+      Nonetheless, major arterial roads &mdash; including the KM4 junction and the corridor to Aden
+      Adde International Airport &mdash; were reported flooded, with vehicles stranded and traffic
+      substantially disrupted.<sup class="cite">[14]</sup> This is consistent with independent
+      reporting identifying these same locations as recurring flood points in prior rain events
+      since 2023, attributable to silted, obstructed or otherwise non-functional drainage
+      infrastructure rather than to rainfall volume as such.</p>
+    <p>The city's own recent record indicates the scale of rainfall intensity its drainage system
+      cannot accommodate. On 9 May 2025, SoDMA's field report recorded rainfall of 95&ndash;120&#8201;mm
+      over a two-to-ten-hour window;<sup class="cite">[10]</sup> a commonly cited figure for the same
+      event, attributed to Somalia's Ministry of Energy and Water, specifies more than
+      115&#8201;mm in approximately eight hours. Independent press reporting places the resulting
+      death toll at a minimum of seven, with some reports citing up to nine or ten as
+      information was updated in the days following the event; we report "at least seven" as the
+      figure supported by the earliest, most widely corroborated reporting, while noting the
+      higher figures explicitly.<sup class="cite">[11]</sup> More than 200 families were displaced
+      and several homes were destroyed across multiple districts, and key highways were damaged
+      sufficiently to disrupt movement for days.<sup class="cite">[10,11]</sup> That single event
+      delivered on the order of twenty-three times the rainfall recorded on 16 September 2026, within a
+      broadly comparable time window.</p>
+
+    <figure>
+      <div class="fig-body">
+        <svg viewBox="0 0 620 225" role="img" aria-label="Bar chart comparing rainfall totals: an average rainy-season day at approximately 3 millimetres, 16 September 2026 at approximately 5 millimetres which still flooded major roads, and the 9 May 2025 flash flood at approximately 115 millimetres which killed at least seven people.">
+          <line x1="70" y1="180" x2="600" y2="180" style="stroke:var(--rule-2)" stroke-width="1"/>
+          <rect x="110" y="176" width="90" height="4" style="fill:var(--ink-mut)" opacity="0.55"/>
+          <text x="155" y="166" text-anchor="middle" class="axv">~3mm</text>
+          <text x="155" y="198" text-anchor="middle" class="axl">Approx. average</text>
+          <text x="155" y="211" text-anchor="middle" class="axl">rainy-season day</text>
+          <rect x="270" y="173" width="90" height="7" style="fill:var(--ink-mut)" opacity="0.8"/>
+          <text x="315" y="163" text-anchor="middle" class="axv">~5mm</text>
+          <text x="315" y="198" text-anchor="middle" class="axl">16 Sep 2026</text>
+          <text x="315" y="211" text-anchor="middle" class="axl">(roads flooded)</text>
+          <rect x="430" y="28" width="90" height="152" style="fill:var(--accent)" opacity="1"/>
+          <text x="475" y="18" text-anchor="middle" class="axv">~115mm</text>
+          <text x="475" y="198" text-anchor="middle" class="axl">9 May 2025</text>
+          <text x="475" y="211" text-anchor="middle" class="axl">(&ge;7 deaths, ~8 hrs)</text>
+        </svg>
+      </div>
+      <figcaption><b>Figure 2.</b> Approximate Mogadishu rainfall totals, not on a uniform time
+        base: the average-day and 16 September figures are 24-hour totals, while the 9 May 2025
+        figure fell within roughly eight consecutive hours &mdash; closer to how the city's flash
+        floods actually arrive. Values are approximate and drawn from the sources cited in the
+        text.<sup class="cite">[10,11,13,14]</sup></figcaption>
+    </figure>
+
+    <p>Taken together, these two events indicate that the binding constraint on Mogadishu's urban
+      flood risk is the interaction between short-duration rainfall intensity and drainage capacity,
+      rather than the seasonal rainfall total. This is broadly consistent with the general
+      characterisation of El Niño years in East Africa as producing not simply wetter seasons but a
+      higher likelihood of intense, short-duration rainfall bursts; we note, however, that no
+      official day-by-day rainfall forecast exists for the peak of the 2026 Deyr, and none is
+      offered here. The two events in Figure&#8201;2 should be read as illustrative bounds on
+      recently observed intensity, not as a forecast of what the 2026 Deyr will bring.</p>
+
+    <h2>Displacement projection for the 2026 Deyr</h2>
+    <p>Applying the 1.3&times; scaling factor (Section&#8201;2.3) to the 418,000 flood-attributable
+      displacement baseline from 2023 yields a central estimate of approximately 543,000 people
+      displaced during the 2026 Deyr, within an illustrative range of roughly 480,000 to 606,000
+      obtained by varying the multiplier by &plusmn;0.15 around its central value.<sup class="cite">[5,7]</sup></p>
+
+    <h2>Expected mortality</h2>
+    <p>Applying the same procedure to the 188 confirmed deaths recorded in 2023 yields a central
+      estimate of approximately 244 deaths for the 2026 Deyr, within a range of roughly 216 to 273.
+      This estimate is a national total and does not, and cannot, indicate what share of mortality
+      will occur in Mogadishu relative to riverine towns, because no such breakdown exists in the
+      public record even for the 2023 baseline event.<sup class="cite">[5,6,7]</sup></p>
+
+    <h2>Economic loss and household-level exposure</h2>
+    <p>Applying the same procedure to the $176.0 million baseline yields a central estimate of
+      approximately $228.8 million in damage and lost economic activity nationally, within a range
+      of roughly $202.4 million to $255.2 million.<sup class="cite">[5,6]</sup> In the 2023 baseline
+      event, agriculture and livestock constituted the single largest recovery-investment sector,
+      ahead of transport/roads and housing, consistent with FEWS&#8201;NET/FSNAU field data recording
+      approximately 83,360&#8201;hectares of cropland damaged nationally by flash and river floods
+      (37,700&#8201;ha in Juba, 20,850&#8201;ha in Hiiraan, 17,260&#8201;ha in Bay, 4,700&#8201;ha in
+      Bakool and 2,850&#8201;ha in Gedo), and separately, with cereal production in the
+      hardest-hit districts &mdash; Gedo, Hiiraan and Middle Shabelle &mdash; reported 55 to
+      58&#8201;percent below the long-term mean.<sup class="cite">[8]</sup> Five towns &mdash;
+      Beletweyn, Dolow, Baardhere, Baydhaba and Kismayo &mdash; accounted for approximately
+      70&#8201;percent of total documented losses and damages in 2023.<sup class="cite">[5,6]</sup></p>
+
+    <figure>
+      <div class="fig-body">
+        <svg viewBox="0 0 620 300" role="img" aria-label="Three paired bar charts. Displaced: 418,000 in 2023 versus 543,000 estimated for 2026. Deaths: 188 in 2023 versus 244 estimated for 2026. Economic loss: 176.0 million dollars in 2023 versus 228.8 million dollars estimated for 2026.">
+          <text x="50" y="22" class="axl" font-weight="600">People displaced</text>
+          <text x="50" y="42" class="axn">2023 baseline</text>
+          <rect x="50" y="46" width="169" height="14" style="fill:var(--ink-mut)" opacity="0.55"/>
+          <text x="227" y="57" class="axv">418,000</text>
+          <text x="50" y="74" class="axn">2026 estimate</text>
+          <rect x="50" y="78" width="220" height="14" style="fill:var(--accent)" opacity="1"/>
+          <text x="278" y="89" class="axv">543,000</text>
+
+          <text x="50" y="108" class="axl" font-weight="600">Deaths</text>
+          <text x="50" y="128" class="axn">2023 baseline</text>
+          <rect x="50" y="132" width="169" height="14" style="fill:var(--ink-mut)" opacity="0.55"/>
+          <text x="227" y="143" class="axv">188</text>
+          <text x="50" y="160" class="axn">2026 estimate</text>
+          <rect x="50" y="164" width="220" height="14" style="fill:var(--accent)" opacity="1"/>
+          <text x="278" y="175" class="axv">244</text>
+
+          <text x="50" y="194" class="axl" font-weight="600">Damage &amp; losses (USD)</text>
+          <text x="50" y="214" class="axn">2023 baseline</text>
+          <rect x="50" y="218" width="169" height="14" style="fill:var(--ink-mut)" opacity="0.55"/>
+          <text x="227" y="229" class="axv">$176.0M</text>
+          <text x="50" y="246" class="axn">2026 estimate</text>
+          <rect x="50" y="250" width="220" height="14" style="fill:var(--accent)" opacity="1"/>
+          <text x="278" y="261" class="axv">$228.8M</text>
+        </svg>
+      </div>
+      <figcaption><b>Figure 3.</b> 2023 documented baseline versus a 2026 estimate obtained by
+        applying a single fixed factor of 1.3&times; &mdash; the ratio of this event's forecast
+        peak ocean strength to 2023's confirmed peak &mdash; uniformly across three impact domains.
+        This is not an independent forecast of where deaths, displacement or damage will occur; see
+        Section&#8201;10 for limitations. Sources: <sup class="cite">[1,2,5,6,7]</sup>.</figcaption>
+    </figure>
+
+    <p>These national totals understate the point for a city such as Mogadishu, where a large share
+      of the population depends on daily, cash-in-hand income: petty trade, casual labour, market
+      vending and transport. Such households typically hold no accumulated financial buffer, have no
+      employer able to continue wages through a period of impassable roads, and have no remote-work
+      substitute for a market stall or transport route that floodwater has closed. The clearest
+      single illustration of this exposure is Mogadishu's fleet of an estimated
+      33,000&ndash;35,000 bajaajs (motorised three-wheelers), which move a large share of the
+      capital's passengers and goods.<sup class="cite">[12]</sup> Most drivers do not own the
+      vehicle they operate; a commonly reported rental arrangement has drivers paying approximately
+      $15 per day and retaining the residual after fuel costs, a structure with negligible tolerance
+      for a lost working day. We treat the driver-count figure as an approximate, dated estimate
+      rather than a current census (Section&#8201;10).</p>
+
+    <h2>Preparedness recommendations</h2>
+    <p>The following recommendations follow directly from the analysis above; they are not ranked by
+      importance, since they address distinct actors operating on different time horizons.</p>
+    <div class="tablewrap">
+      <table class="datatable">
+        <caption><b>Table 1.</b> Preparedness recommendations, responsible actors and rationale.</caption>
+        <thead>
+          <tr><th style="width:26%">Recommendation</th><th style="width:22%">Responsible actor(s)</th><th>Rationale</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Clear drainage infrastructure at documented, recurring failure points, prioritising the KM4 junction and the Airport Road (Aden Adde) corridor, before the Deyr rains intensify in October.</td>
+            <td>Benadir Regional Administration; Mogadishu Municipality</td>
+            <td>These locations have flooded repeatedly across at least three separate rain events since 2023, including on 16 September 2026 at an unremarkable rainfall total. This is a maintenance action on known infrastructure, not a new capital project, and is available on a short timeline.</td>
+          </tr>
+          <tr>
+            <td>Build household-level financial and food buffers before the rains peak, with particular attention to daily-cash-flow workers such as bajaaj drivers.</td>
+            <td>Mogadishu households; civil-society and microfinance actors that can facilitate savings mechanisms</td>
+            <td>Households dependent on daily income have no structural capacity to absorb a lost working day from road closure; infrastructure remediation will not be complete by October regardless of how promptly Recommendation&#8201;1 is acted on.</td>
+          </tr>
+          <tr>
+            <td>Maintain the operational integrity of the upstream-to-downstream riverine data chain and ensure warnings reach the household level in Belet Weyne, Baardheere and other high-exposure riverine towns.</td>
+            <td>SoDMA; FAO SWALIM; regional hydrological coordination with Ethiopia</td>
+            <td>The four-to-six-day routing lag between highland rainfall and riverine flooding at Somali gauge towns is a genuine, usable lead time that has been shown to reduce mortality where acted upon; it degrades to no benefit if the data chain or last-mile warning fails.</td>
+          </tr>
+          <tr>
+            <td>Pre-position seed, canal- and embankment-repair materials, and recovery cash in the Shabelle and Juba corridors ahead of the rains, rather than after flooding is confirmed.</td>
+            <td>FAO; Ministry of Agriculture; humanitarian partners</td>
+            <td>Agriculture and livestock was the largest documented loss category in 2023; unrepaired canals and embankments convert a single flood into a multi-season production loss rather than a one-season event.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Limitations</h2>
+    <p>The scaling method used here is deliberately simple, and its limitations should be stated
+      plainly rather than left implicit. First, it assumes that flood impact scales approximately
+      linearly with peak ocean-index strength, which is a simplification of a substantially more
+      complex relationship involving antecedent soil moisture, drainage-system condition at the time
+      of the event, and the specific spatial distribution of rainfall &mdash; none of which is
+      captured by a single strength ratio. Second, the same multiplier is applied uniformly across
+      displacement, mortality and economic loss, despite no evidence that these three domains
+      actually respond to ocean-index strength at the same rate; this uniformity is a modelling
+      convenience, not an empirical finding. Third, the method offers no mechanism-level
+      decomposition &mdash; it cannot indicate whether 2026's impact will concentrate in Mogadishu or
+      in riverine towns, nor what share of mortality will be attributable to drowning as opposed to
+      electrocution in the urban setting, because no such breakdown exists even for the 2023
+      baseline in the public record. Fourth, the IOD component of ocean forcing is treated as
+      developing in line with, rather than in excess of, 2023's trajectory (Section&#8201;3); to the
+      extent the IOD proves more extreme than 2023's, the estimates in Sections 6&ndash;8 will
+      understate the likely impact. Fifth, this analysis credits none of the preparedness actions
+      recommended in Section&#8201;9: if drainage clearance, early warning and pre-positioning
+      referenced there are implemented, the realised 2026 outcome should fall below these estimates,
+      not above them. Sixth, several figures used in the Mogadishu case study &mdash; the bajaaj
+      driver count, and Mogadishu's climate normals &mdash; are approximate, dated, or drawn from a
+      range of published values rather than a single authoritative source, and are reported as such
+      throughout rather than with false precision. Finally, the displacement baseline used here
+      (418,000, flood-attributed) differs materially from the PDNA's own broader displacement figure
+      (over 2 million, cumulative across hazards and the full 2023 season); readers should treat
+      the two figures as measuring different things rather than as competing estimates of the same
+      quantity.</p>
+    <p>Taken together, the figures presented in Sections 6&ndash;8 should be read as an
+      order-of-magnitude planning baseline derived transparently from a real, documented event and a
+      published strength forecast &mdash; not as a prediction of where or how impact will occur in
+      2026.</p>
+
+    <h2>Conclusion</h2>
+    <p>Available oceanic and atmospheric evidence indicates that the 2026 Deyr is developing under
+      conditions that already exceed, and are forecast to substantially exceed, the conditions that
+      produced Somalia's 2023 Deyr floods &mdash; the country's most recent major flood disaster and
+      the most thoroughly documented one available as an analytical baseline. Scaling that
+      documented event by the ratio of forecast-to-observed peak ocean strength provides a
+      transparent, if necessarily approximate, basis for anticipatory planning, yielding
+      order-of-magnitude estimates of roughly 543,000 people displaced, 244 deaths and $228.8
+      million in economic loss nationally. Independent of that national-scale estimate, a
+      Mogadishu-specific case study indicates that the city's urban drainage system is already
+      failing at rainfall intensities well below what a strong Deyr season has recently produced
+      elsewhere in the country, and that a substantial share of the capital's population &mdash;
+      including an estimated 33,000&ndash;35,000 bajaaj drivers and the wider daily-cash-flow
+      economy they represent &mdash; has limited structural capacity to absorb the resulting loss of
+      working days. The four recommendations in Section&#8201;9 follow directly from these findings
+      and are actionable on the time horizon remaining before the 2026 Deyr rains intensify.</p>
+
+    <h2 class="nonum">References</h2>
+    <ol class="refs">
+      <li>World Meteorological Organization. <i>El Niño/La Niña Update</i>, September 2026.</li>
+      <li>NOAA Climate Prediction Center and Physical Sciences Laboratory. Niño&#8201;3.4
+        sea-surface temperature anomaly, weekly and monthly time series; Oceanic Niño Index (ONI)
+        historical record.</li>
+      <li>NOAA Physical Sciences Laboratory. Dipole Mode Index (DMI) time series.</li>
+      <li>IGAD Climate Prediction and Applications Centre (ICPAC). <i>Greater Horn of Africa Seasonal
+        Climate Outlook</i>, 2026 Deyr season.</li>
+      <li>Government of Somalia, United Nations, World Bank and European Union. <i>Somalia 2023 Deyr
+        Floods: Rapid Post-Disaster Needs Assessment</i>, 2024.</li>
+      <li>Somali Disaster Management Agency (SoDMA). Press release: "Somalia needs US$230m to
+        support post-flood recovery and reconstruction for 2.5m affected people," 2024.</li>
+      <li>UN Office for the Coordination of Humanitarian Affairs (OCHA), Somalia. <i>2023 Deyr Season
+        Floods</i>, Situation Reports No.&#8201;1&ndash;5, November&ndash;December 2023.</li>
+      <li>FEWS NET / FSNAU. <i>Somalia Food Security Outlook Update</i>, December 2023.</li>
+      <li>Xie, X. et al. Exceptional equatorial extension of extreme Indian Ocean Dipole cooling:
+        shaping effect from strong El Niño. <i>Geophysical Research Letters</i>, 2025.</li>
+      <li>Somali Disaster Management Agency (SoDMA). Brief report: <i>The May 9, 2025 Flash Flood
+        Incident in Mogadishu</i>, 2025.</li>
+      <li>Press reporting on the 9 May 2025 Mogadishu flash flood, cross-checked across multiple
+        independent outlets for death-toll and displacement figures.</li>
+      <li>Benadir Regional Administration bajaaj registration data (2023), and published fieldwork on
+        Mogadishu's bajaaj driver economy.</li>
+      <li>Aggregated published long-run climate normals for Mogadishu, multiple datasets and
+        reference periods.</li>
+      <li>Local and press reporting on the 16 September 2026 Mogadishu rainfall event.</li>
+    </ol>
+
+    <details class="assumptions">
+      <summary>Appendix &middot; Data provenance and model assumptions</summary>
+      <div class="assump-body">
+        <h4>Core scaling assumptions</h4>
+        <ul>
+          <li>The 2026 scaling factor is fixed at 1.3&times;, calculated as the WMO's median
+            forecast peak Niño&#8201;3.4 anomaly for October&ndash;December 2026 (+2.67&#8201;°C)
+            divided by 2023&ndash;24's confirmed peak (+2.0&#8201;°C).</li>
+          <li>The same factor is applied uniformly to displacement, mortality and economic-loss
+            baselines; this is a simplifying assumption, not a mechanistic model of how each
+            domain actually responds to ocean-index strength.</li>
+          <li>The Indian Ocean Dipole is treated as developing in line with, not in excess of,
+            2023's trajectory; if it proves more extreme, the estimates in Sections 6&ndash;8
+            understate likely impact.</li>
+          <li>Illustrative ranges around each central estimate are obtained by varying the 1.3
+            multiplier by &plusmn;0.15; this range reflects sensitivity to the multiplier choice, not
+            a statistically derived confidence interval.</li>
+          <li>No mechanism-level or geographic decomposition (Mogadishu vs. riverine; drowning vs.
+            electrocution) is offered, because none exists in the public record for the 2023
+            baseline either.</li>
+        </ul>
+        <h4>Figure-by-figure source mapping</h4>
+        <div class="tablewrap">
+          <table class="datatable">
+            <thead><tr><th>Figure / value</th><th>Primary source(s)</th></tr></thead>
+            <tbody>
+              <tr><td>Niño&#8201;3.4 current value, WMO forecast, historical ONI peaks (Figure&#8201;1)</td><td>[1], [2]</td></tr>
+              <tr><td>DMI current value and IOD classification</td><td>[3], [4], [9]</td></tr>
+              <tr><td>2023 deaths, damage, losses, recovery needs, five-town loss share</td><td>[5], [6]</td></tr>
+              <tr><td>2023 in-season death-toll progression</td><td>[7]</td></tr>
+              <tr><td>Cropland hectares damaged; cereal production shortfall</td><td>[8]</td></tr>
+              <tr><td>9 May 2025 rainfall total and duration (Figure&#8201;2)</td><td>[10], [11]</td></tr>
+              <tr><td>9 May 2025 death toll and displacement</td><td>[11]</td></tr>
+              <tr><td>Bajaaj driver count and rental economics</td><td>[12]</td></tr>
+              <tr><td>Mogadishu climate normals (Figure&#8201;2)</td><td>[13]</td></tr>
+              <tr><td>16 September 2026 rainfall and road impacts</td><td>[14]</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Known data conflicts, disclosed rather than silently resolved</h4>
+        <ul>
+          <li>Displacement: the PDNA reports "over 2 million" displaced (broad, cumulative,
+            multi-hazard, full 2023 season); this analysis instead uses 418,000 (flood-attributed
+            only) for consistency with its flood-specific scope. These are not competing estimates
+            of the same quantity.</li>
+          <li>9 May 2025 death toll: earliest, most widely corroborated reporting states "at least
+            seven"; some later reports cite nine or ten as figures were updated. We report seven as
+            the supported minimum and disclose the higher figures rather than omit them.</li>
+          <li>9 May 2025 rainfall total: SoDMA's own field report gives a range (95&ndash;120mm over
+            2&ndash;10 hours); a frequently cited single figure (&gt;115mm in ~8 hours) is
+            attributed to Somalia's Ministry of Energy and Water. Both are reported; the narrative
+            text uses ~115mm as it falls within SoDMA's own range and carries an explicit duration.</li>
+          <li>Mogadishu annual rainfall: published climate-normal datasets range from approximately
+            400 to 540mm depending on period and methodology; we report the range rather than a
+            single figure.</li>
+          <li>Historical ONI peaks: values shift depending on dataset version and on NOAA's
+            February 2026 transition from the traditional ONI to a relative ONI (RONI) standard;
+            traditional-method values are used throughout for internal consistency, and this choice
+            is stated explicitly in Section&#8201;2.1.</li>
+        </ul>
+      </div>
+    </details>
+  </article>
+
+  <footer class="endnote">
+    <p>Hassan Mumin writes on climate risk and anticipatory planning in the Horn of Africa.
+      Figures cited above reflect public sources as of 17 September 2026; forecast-derived figures
+      are identified explicitly in the text and should not be read as observations.</p>
+  </footer>
+
+</div>
+</body>
+</html>

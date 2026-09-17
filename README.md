@@ -58,12 +58,15 @@ in its docstrings and flags each placeholder assumption.
   used in the brief's headline figures.
   Hosted: <https://claude.ai/code/artifact/f79d37b4-ec0c-4f0e-b60a-c6a61c955a20>
 
-- [`docs/mogadishu-el-nino-oped.html`](docs/mogadishu-el-nino-oped.html) — "Five
-  Millimetres, and Mogadishu Went Under", a general-audience op-ed authored by Hassan Mumin
-  drawing on the same 2023 PDNA/OCHA baseline and 1.3&times; multiplier as the brief, plus
-  Mogadishu-specific rainfall context (the 16 September 2026 flooding and the 9 May 2025
-  flash flood) and recommendations for the municipality, households and riverine towns
-  ahead of the 2026 Deyr. Includes a collapsible assumptions-and-sources section.
+- [`docs/2026-deyr-el-nino-impact-assessment.html`](docs/2026-deyr-el-nino-impact-assessment.html)
+  — "The 2026 Deyr El Niño in Somalia: A Historical-Analogue Impact Assessment", a
+  public-facing analysis authored by Hassan Mumin in an academic register (abstract, numbered
+  methods and results sections, figures, a references list and an appendix), drawing on the
+  same 2023 PDNA/OCHA baseline and 1.3&times; multiplier as the brief, plus a Mogadishu
+  urban-drainage case study (the 16 September 2026 rain event and the 9 May 2025 flash flood,
+  each cross-checked across multiple sources) and four preparedness recommendations. Includes
+  a collapsible appendix mapping every figure to its source and disclosing known conflicts
+  between sources rather than silently picking one.
 
 ## Quick Start
 
