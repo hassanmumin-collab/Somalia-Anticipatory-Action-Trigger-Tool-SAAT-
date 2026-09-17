@@ -44,9 +44,9 @@ in its docstrings and flags each placeholder assumption.
   "The Somalia El Niño Anticipatory Action", a ministerial brief authored by Hassan Mumin:
   the flood premise with a world teleconnection map, an exposure map of the river
   corridor cross-checked against Google Flood Hub's satellite inundation-history layer,
-  an **interactive 2026 Deyr displacement and cash-planning scenario** anchored on the
-  2023 Gu-Deyr floods (El Niño/IOD strength multiplier vs. 2023, transfer value; live
-  district/timing/map panels), the readiness ladder, and a decisions-and-owners table.
+  an **interactive 2026 Deyr displacement scenario** anchored on the 2023 Gu-Deyr floods
+  (El Niño/IOD strength multiplier vs. 2023; live district/timing/map panels), the
+  readiness ladder, and a decisions-and-owners table.
   Real ONI/DMI, PRMN, geoBoundaries and Natural Earth data; displacement figures are
   scenario or analogue outputs from stated, uncalibrated assumptions.
   **Not yet updated for the casualties/urban-productivity revamp** — the old
