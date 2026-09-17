@@ -45,14 +45,13 @@ in its docstrings and flags each placeholder assumption.
   the flood premise with a world teleconnection map, an exposure map of the river
   corridor, an **interactive 2026 Deyr displacement and cash-planning scenario**
   (reference event, asset-depletion multiplier, transfer value; live district/timing/
-  map panels), economic loss channels each with its own chart, the readiness ladder,
-  and a decisions-and-owners table. Real ONI/DMI, PRMN, geoBoundaries and Natural
-  Earth data; economic and displacement figures are scenario or analogue outputs
-  from stated, uncalibrated assumptions.
-  **Not yet updated for the casualties/urban-productivity revamp below** — it still
-  describes the pre-revamp economic channels (including RVF/livestock and an
-  embedded cost-loss "Trigger Economics" widget), which this codebase no longer
-  implements.
+  map panels), the readiness ladder, and a decisions-and-owners table. Real ONI/DMI,
+  PRMN, geoBoundaries and Natural Earth data; displacement figures are scenario or
+  analogue outputs from stated, uncalibrated assumptions.
+  **Not yet updated for the casualties/urban-productivity revamp** — the old
+  economic-loss-channel section (crop/livestock/irrigation/recovery) and the
+  cost-loss "Trigger Economics" widget have been removed from the brief, but it
+  does not yet describe the new casualties.py / urban_flood.py channels either.
   Hosted: <https://claude.ai/code/artifact/f79d37b4-ec0c-4f0e-b60a-c6a61c955a20>
 
 ## Quick Start
