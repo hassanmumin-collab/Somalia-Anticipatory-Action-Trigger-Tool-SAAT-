@@ -129,15 +129,7 @@
   .tool { border: 1px solid var(--rule-2); border-radius: 12px; background: var(--surface); overflow: hidden; margin: 24px 0; }
   .tool-hd { background: var(--sunk); padding: 12px 18px; font-family: "IBM Plex Sans", sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mut); border-bottom: 1px solid var(--rule); }
   .tool-bd { padding: 18px; }
-  .ctl { margin-top: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; }
-  @media (max-width: 560px) { .ctl { grid-template-columns: 1fr; } }
-  .ctl label { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 600; color: var(--ink); }
-  .ctl .rd { color: var(--blue-deep); font-family: "IBM Plex Mono", monospace; font-size: 13px; }
-  .ctl .hint { font-size: 12px; color: var(--ink-mut); margin-top: 2px; }
-  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; margin: 10px 0 0; background: var(--rule-2); border-radius: 3px; cursor: pointer; }
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 17px; height: 17px; border-radius: 50%; background: var(--blue); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--blue); }
-  input[type=range]::-moz-range-thumb { width: 15px; height: 15px; border-radius: 50%; background: var(--blue); border: 2px solid var(--surface); }
-  input[type=range]:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+  .hint { font-size: 12px; color: var(--ink-mut); margin-top: 2px; }
   .bigstat { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; margin: 18px 0 4px; }
   .bigstat > div { background: var(--surface); padding: 12px 14px; }
   .bigstat .k { font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-mut); font-family: "IBM Plex Sans", sans-serif; }
@@ -178,26 +170,28 @@
 
   <div class="execsum">
     <h2>Executive summary</h2>
-    <p>The Pacific has entered an exceptionally strong El Niño. The Niño 3.4 anomaly reached
-      +2.03&#8201;°C in July 2026 and continues to rise; the World Meteorological Organization has
-      warned this event could be the strongest since comparable ocean records began, ahead of the
-      previous record-holders in 1997&ndash;98 and 2015&ndash;16. The Indian Ocean Dipole is
-      positive and forecast to reach a moderate-to-strong phase by October, developing on a similar
-      timeline to 2023 rather than lagging it. In the Horn of Africa this configuration enhances the
+    <p>The Pacific has entered what the World Meteorological Organization now describes as a
+      potential "off the charts" El Niño. The Niño 3.4 anomaly reached +2.9&#8201;°C for the week
+      of 9 September 2026 &mdash; the highest reading of this event so far and the warmest
+      September week since 1981 &mdash; and WMO's median forecast puts the October&ndash;December
+      peak at +2.67&#8201;°C, with a 75&#8201;% chance of exceeding the previous record set in
+      1982&ndash;83 and a 98&#8201;% chance of reaching "Super El Niño" status. The Indian Ocean
+      Dipole is positive (DMI +0.65&#8201;°C as of 13 September) and forecast to reach a
+      moderate-to-strong phase by October&ndash;December, developing on a similar timeline to 2023
+      rather than lagging it. In the Horn of Africa this configuration enhances the
       October–December Deyr rains rather than suppressing them, which is the reverse of its effect
       in southern and eastern Africa. ICPAC's seasonal outlook indicates wetter-than-normal
       conditions across the Greater Horn and, like the WMO, names 1997 and 2023 as the reference
-      analogue years &mdash; this event is currently forecast to meet or exceed both.</p>
+      analogue years &mdash; this event is now forecast to exceed both.</p>
     <p>Flooding along the Shabelle and Juba begins with rain in the Ethiopian highlands and reaches
       the Somali gauge towns four to six days later, and it concentrates on a small number of
       receiving towns led by Belet Weyne, Baardheere and Mogadishu. The reference for this outlook
       is the 2023 Gu and Deyr floods, which displaced approximately 826,000 people in total; roughly
       half, 418,000, is attributed to flooding rather than the concurrent drought and conflict
-      displacement. The interactive scenario in Section&#8201;4 scales that flood-attributable
-      baseline for how this El Niño's ONI and Indian Ocean Dipole compare with 2023's, and because
-      the current forecast trajectory already exceeds 2023's by this point in the season, it places
-      a planning central case for the 2026 Deyr near 501,000 people, within a range of roughly
-      439,000 to 564,000.</p>
+      displacement. Section&#8201;4 scales that flood-attributable baseline by a fixed
+      1.3&times; multiplier &mdash; the ratio of this event's forecast peak strength to 2023's
+      actual peak, not an adjustable assumption &mdash; to place a planning central case for the
+      2026 Deyr near 543,000 people, within a range of roughly 480,000 to 606,000.</p>
     <p>Most of the actions that reduce a flood caseload have lead times of weeks to months and
       cannot be recovered once their window closes. The Tier&#8201;0 window covering vaccination,
       pre-positioning and canal repair is closing now. The decisions listed in Section&#8201;8 should
@@ -230,13 +224,13 @@
     <p>The recent record is consistent with this. Somalia's 2020–2023 near-famine developed during
       a prolonged La Niña that produced five consecutive failed seasons. The severe flooding at
       Belet Weyne, Luuq and Jowhar in late 2023 developed during an El Niño with a positive Indian
-      Ocean Dipole. Both regimes are visible in the ocean record, and by July 2026 this event had
-      already matched 2023's eventual seasonal peak &mdash; three months earlier in the year, with
-      the Pacific still warming.</p>
+      Ocean Dipole. Both regimes are visible in the ocean record, and as of September 2026 this
+      event has already exceeded 2023's eventual seasonal peak by a wide margin, months before its
+      own peak is even expected.</p>
 
     <div class="keyval">
-      <div><span class="k">ONI, July 2026</span><span class="v">+2.03&#8201;°C <small>rising sharply</small></span></div>
-      <div><span class="k">IOD (DMI), forecast</span><span class="v">Positive <small>moderate-to-strong by Oct</small></span></div>
+      <div><span class="k">Niño 3.4, week of 9 Sep 2026</span><span class="v">+2.9&#8201;°C <small>highest of this event; warmest Sept. week since 1981</small></span></div>
+      <div><span class="k">IOD (DMI), 13 Sep 2026</span><span class="v">+0.65&#8201;°C <small>positive; moderate-to-strong forecast by Oct&ndash;Dec</small></span></div>
       <div><span class="k">In IPC Phase 3+</span><span class="v">4.8M <small>→ 6.5M projected</small></span></div>
       <div><span class="k">Already displaced</span><span class="v">3.8M+</span></div>
     </div>
@@ -350,22 +344,21 @@
       month in the current dataset.</p>
 
     <div class="tool" id="scenTool">
-      <div class="tool-hd">Interactive · 2026 Deyr displacement scenario</div>
+      <div class="tool-hd">2026 Deyr displacement scenario</div>
       <div class="tool-bd">
-        <div class="ctl" style="grid-template-columns:1fr">
-          <div>
-            <label for="eniso">El Niño / IOD strength vs. 2023 <span class="rd" id="enisoR">1.20×</span></label>
-            <input type="range" id="eniso" min="0.6" max="1.6" step="0.05" value="1.2">
-            <div class="hint">Scales the 418,000 flood-attributable baseline for how this event's ONI
-              and Indian Ocean Dipole compare with 2023's. 1.0&times; assumes equal strength. By July
-              this event's Niño 3.4 anomaly (+2.03&#8201;°C) had already matched 2023's eventual
-              seasonal peak, and the WMO has flagged it as potentially the strongest on record; the
-              Indian Ocean Dipole is forecast to reach a comparable, moderate-to-strong phase by
-              October. The default above assumes this event moderately exceeds 2023 &mdash; move it
-              higher for the "off the charts" scenario forecasters are now warning about, or lower if
-              the IOD underdelivers relative to ONI, which matters more for the Deyr.</div>
-          </div>
+        <div class="keyval" style="margin:0 0 6px">
+          <div><span class="k">El Niño / IOD strength vs. 2023</span><span class="v flood">1.30&times;</span></div>
         </div>
+        <p class="hint" style="margin:0 0 16px">Fixed at this event's forecast strength relative to
+          2023, not an adjustable assumption. WMO's median forecast puts the
+          October&ndash;December 2026 Niño 3.4 peak at +2.67&#8201;°C against 2023's confirmed peak
+          of +2.0&#8201;°C (NDJ 2023&ndash;24) &mdash; a ratio of 1.3&times; &mdash; and NOAA gives a
+          75&#8201;% chance of that peak exceeding the 1982&ndash;83 record. The Indian Ocean
+          Dipole is developing on the same timeline as 2023 (positive by August, +0.65&#8201;°C by
+          mid-September) and is forecast to reach a comparable moderate-to-strong phase by
+          October&ndash;December, so it is treated as in line with 2023 rather than pushing the
+          ratio further; if the IOD also turns out more extreme than 2023's, the figures below
+          understate the caseload.</p>
 
         <div class="bigstat">
           <div><span class="k">Planning caseload</span><span class="v flood" id="stCase">–</span></div>
@@ -430,23 +423,12 @@
       <figcaption>2023 figure: Somalia 2023 Deyr Floods Rapid Post-Disaster Needs Assessment
         (SoDMA, UN, World Bank and EU, 2024); OCHA Somalia 2023 Deyr Season Floods Situation
         Reports No.&#8201;1&ndash;5 for the in-season death-toll progression. The 2026 figures
-        scale that confirmed toll by the same El Ni&ntilde;o/IOD strength multiplier set in Section
-        4 &mdash; move the slider there and both update together. This is a transparent scaling
-        assumption applied to a real historical count, not a mortality model: it does not know
-        whether 2026's deaths will concentrate in Mogadishu or in riverine towns, only that the
-        national total should move with event strength the way displacement does.</figcaption>
+        scale that confirmed toll by the same fixed 1.3&times; El Ni&ntilde;o/IOD strength
+        multiplier set in Section 4. This is a transparent scaling assumption applied to a real
+        historical count, not a mortality model: it does not know whether 2026's deaths will
+        concentrate in Mogadishu or in riverine towns, only that the national total should move
+        with event strength the way displacement does.</figcaption>
     </figure>
-
-    <p>What this does <i>not</i> give you is a Mogadishu-versus-riverine split, or a
-      drowning-versus-electrocution split, because neither is published: Somalia's post-disaster
-      assessments report a national fatality count, not a per-mechanism breakdown.
-      <span class="mono">casualties.py</span> in this tool is built to produce that breakdown
-      &mdash; it requires an explicit depth-mortality curve and exposure count at every call site
-      rather than defaulting to one, so a missing calibration cannot silently produce a false sense
-      of precision &mdash; but it needs a Mogadishu electrical-infrastructure survey, ideally with
-      the Benadir Regional Administration and the electricity providers, and a riverine
-      depth-mortality curve, before it can responsibly replace the national total above. Until
-      then, the honest number is the scaled historical total, not a modelled decomposition of it.</p>
   </section>
 
   <!-- 6 -->
@@ -486,10 +468,10 @@
         </div>
       </div>
       <figcaption>2023 figure: Somalia 2023 Deyr Floods Rapid Post-Disaster Needs Assessment
-        (SoDMA, UN, World Bank and EU, 2024). The 2026 figures apply the same El Ni&ntilde;o/IOD
-        strength multiplier as Sections 4 and 5 &mdash; move the Section 4 slider and all three
-        update together. This total is national and cross-sectoral (agriculture, transport,
-        housing, WASH, education); it is not a Mogadishu-specific productivity-loss estimate.</figcaption>
+        (SoDMA, UN, World Bank and EU, 2024). The 2026 figures apply the same fixed 1.3&times; El
+        Ni&ntilde;o/IOD strength multiplier as Sections 4 and 5. This total is national and
+        cross-sectoral (agriculture, transport, housing, WASH, education); it is not a
+        Mogadishu-specific productivity-loss estimate.</figcaption>
     </figure>
 
     <p>Mogadishu's productivity loss specifically &mdash; the value of trade and movement lost to
@@ -751,10 +733,14 @@
     return { total: w.total, flood: flood, dist: dist, months: months };
   }
 
-  var ST = { eniso: 1.2 };
+  // Fixed at this event's forecast strength relative to 2023, not a user-adjustable input:
+  // WMO's median OND-2026 Nino 3.4 peak forecast (+2.67C) / 2023's confirmed peak (+2.0C, NDJ
+  // 2023-24) = 1.3x. The IOD is developing on the same timeline as 2023 and is not treated as
+  // pushing the ratio further; see Section 4 for the derivation.
+  var ST = { eniso: 1.3 };
   // 2023 Deyr floods actuals (SoDMA/UN/World Bank/EU Rapid PDNA, 2024; OCHA SitReps 1-5):
   // confirmed deaths and total documented damage + losses, used as the real anchors that
-  // Sections 5 and 6 scale by the same El Nino/IOD strength multiplier as Section 4.
+  // Sections 5 and 6 scale by the same fixed multiplier as Section 4.
   var ANCHOR = { deaths: 188, econLossUsd: 176000000 };
 
   function renderScenario() {
@@ -873,17 +859,6 @@
     [figWorld, figOcean, figDispHist, figHazard, figLadder, figCal].forEach(function (fn) { try { fn(); } catch (e) {} });
     try { renderScenario(); } catch (e) {}
   }
-
-  // scenario controls
-  function bind(id, key, fmt, scale) {
-    var el = document.getElementById(id), rd = document.getElementById(id + "R");
-    el.addEventListener("input", function () {
-      ST[key] = scale ? +el.value * scale : +el.value;
-      rd.textContent = fmt(el.value);
-      renderScenario();
-    });
-  }
-  bind("eniso", "eniso", function (v) { return (+v).toFixed(2) + "×"; });
 
   var TK = "somalia-aa-brief-theme";
   function applyTheme(mode) {
