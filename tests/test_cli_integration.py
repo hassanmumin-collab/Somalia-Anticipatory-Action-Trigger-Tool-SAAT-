@@ -8,8 +8,9 @@ def test_demo_runs_every_module_offline_and_labels_synthetic_data(capsys, monkey
     assert cli.main() == 0
     out = capsys.readouterr().out
     assert "SYNTHETIC" in out
+    assert "REAL DATA" in out
     # One PASS line per module self-test suite.
-    for module in ("hazard", "displacement", "casualties", "economic", "urban_flood", "panel"):
+    for module in ("hazard", "displacement", "casualties", "economic", "urban_flood", "analogues", "panel"):
         assert module in out
-    assert out.count("PASS") >= 6
+    assert out.count("PASS") >= 7
     assert "All module self-tests passed" in out

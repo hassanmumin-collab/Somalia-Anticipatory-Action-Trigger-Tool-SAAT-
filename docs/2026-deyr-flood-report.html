@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Somalia's 2026 Deyr Flood Risk</title>
+<meta name="description" content="A historical-analogue assessment of 2026 Deyr flood risk in Somalia: five documented Deyr floods compared by ENSO and Indian Ocean Dipole state, a Mogadishu drainage case study, and preparedness recommendations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #f7f6f2; --surface: #ffffff; --sunk: #efeee8;
+    --ink: #1b1a17; --ink-2: #46443c; --ink-mut: #78766a;
+    --rule: #dcdacf; --rule-2: #c7c4b5;
+    --accent: #1c4f73; --accent-2: #123a54; --warn: #a6431f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #161512; --surface: #1c1b17; --sunk: #201f1a;
+      --ink: #e8e6dd; --ink-2: #c1beb0; --ink-mut: #918e7e;
+      --rule: #322f26; --rule-2: #423e30;
+      --accent: #6fa8d2; --accent-2: #8fbde0; --warn: #d98a63;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #161512; --surface: #1c1b17; --sunk: #201f1a;
+    --ink: #e8e6dd; --ink-2: #c1beb0; --ink-mut: #918e7e;
+    --rule: #322f26; --rule-2: #423e30;
+    --accent: #6fa8d2; --accent-2: #8fbde0; --warn: #d98a63;
+  }
+  * { box-sizing: border-box; }
+  html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Source Serif 4", Georgia, serif; font-size: 17.5px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .sans { font-family: "IBM Plex Sans", sans-serif; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 48px 22px 100px; }
+  a { color: var(--accent-2); }
+
+  header.masthead { margin-bottom: 6px; border-bottom: 2px solid var(--ink); padding-bottom: 20px; }
+  .doctype { font-family: "IBM Plex Sans", sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mut); margin-bottom: 12px; }
+  h1.headline { font-weight: 600; font-size: 30px; line-height: 1.25; letter-spacing: -.005em; margin: 0 0 12px; }
+  .authorline { font-family: "IBM Plex Sans", sans-serif; font-size: 14px; color: var(--ink-2); margin: 0 0 3px; }
+  .authorline b { color: var(--ink); font-weight: 600; }
+  .datestamp { font-family: "IBM Plex Sans", sans-serif; font-size: 12.5px; color: var(--ink-mut); }
+
+  .summarybox { margin: 26px 0 36px; padding: 18px 22px; background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--accent); border-radius: 2px; }
+  .summarybox h2 { font-family: "IBM Plex Sans", sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-mut); margin: 0 0 10px; border: none; padding: 0; }
+  .summarybox p { margin: 0 0 10px; font-size: 15.5px; color: var(--ink-2); }
+  .summarybox p:last-child { margin-bottom: 0; }
+
+  article h2 { font-size: 21px; font-weight: 600; margin: 38px 0 14px; line-height: 1.3; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+  article h3 { font-size: 16px; font-weight: 600; margin: 24px 0 10px; color: var(--ink-2); }
+  article p { margin: 0 0 15px; }
+  article ul, article ol { margin: 0 0 15px; padding-left: 1.3em; }
+  article li { margin-bottom: 6px; }
+  .note { background: var(--sunk); border-left: 3px solid var(--warn); padding: 10px 16px; margin: 18px 0; font-size: 15px; }
+  .note b { color: var(--warn); }
+
+  figure { margin: 24px 0; }
+  .fig-body { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 16px 18px 8px; }
+  figcaption { font-size: 13.5px; line-height: 1.55; margin-top: 9px; color: var(--ink-2); }
+  figcaption b { color: var(--ink); }
+  .axl { font-family: "IBM Plex Sans", sans-serif; font-size: 11px; fill: var(--ink-2); }
+  .axv { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; fill: var(--ink); font-weight: 500; }
+  .axn { font-family: "IBM Plex Sans", sans-serif; font-size: 10px; fill: var(--ink-mut); }
+  svg { width: 100%; height: auto; display: block; }
+
+  table.datatable { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 14px; }
+  table.datatable caption { text-align: left; font-size: 13.5px; margin-bottom: 8px; color: var(--ink-2); caption-side: top; }
+  table.datatable th, table.datatable td { text-align: left; padding: 8px 9px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  table.datatable thead th { font-family: "IBM Plex Sans", sans-serif; font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-mut); border-bottom: 1.5px solid var(--ink-mut); }
+  table.datatable td.num, table.datatable th.num { font-family: "IBM Plex Mono", monospace; white-space: nowrap; }
+  table.datatable tr.highlight td { background: var(--sunk); }
+  .tablewrap { overflow-x: auto; margin: 10px 0 22px; }
+
+  ol.refs { list-style: none; padding-left: 0; counter-reset: refnum; }
+  ol.refs li { counter-increment: refnum; padding-left: 2.1em; text-indent: -2.1em; margin-bottom: 9px; font-size: 14px; color: var(--ink-2); }
+  ol.refs li::before { content: "[" counter(refnum) "]"; color: var(--ink-mut); font-family: "IBM Plex Mono", monospace; font-size: 12.5px; margin-right: 6px; }
+
+  details.assumptions { margin: 30px 0 10px; border: 1px solid var(--rule-2); border-radius: 4px; background: var(--surface); }
+  details.assumptions > summary { cursor: pointer; list-style: none; padding: 13px 18px; font-family: "IBM Plex Sans", sans-serif; font-weight: 600; font-size: 13.5px; display: flex; justify-content: space-between; align-items: center; background: var(--sunk); }
+  details.assumptions[open] > summary { border-bottom: 1px solid var(--rule); }
+  details.assumptions > summary::-webkit-details-marker { display: none; }
+  details.assumptions > summary::after { content: "show \25be"; font-weight: 400; color: var(--ink-mut); font-size: 12px; }
+  details.assumptions[open] > summary::after { content: "hide \25b4"; }
+  .assump-body { padding: 4px 20px 18px; font-size: 14px; }
+  .assump-body h4 { font-family: "IBM Plex Sans", sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-mut); margin: 18px 0 8px; }
+  .assump-body h4:first-child { margin-top: 4px; }
+  .assump-body p { font-size: 13.5px; color: var(--ink-2); margin: 0 0 10px; }
+
+  footer.endnote { margin-top: 36px; border-top: 1px solid var(--rule); padding-top: 15px; font-family: "IBM Plex Sans", sans-serif; font-size: 12.5px; line-height: 1.6; color: var(--ink-mut); }
+  footer.endnote a { color: var(--accent-2); }
+
+  @media (max-width: 480px) {
+    body { font-size: 16.5px; }
+    h1.headline { font-size: 23px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="doctype">Report &middot; Somalia flood risk and anticipatory action</div>
+    <h1 class="headline">Somalia's 2026 Deyr Flood Risk: A Historical-Analogue Assessment</h1>
+    <p class="authorline"><b>Hassan Mumin</b></p>
+    <p class="datestamp">17 September 2026</p>
+  </header>
+
+  <div class="summarybox">
+    <h2>Summary</h2>
+    <p>Somalia's five most severe Deyr-season floods since 1997 show that flood severity tracks
+      the <i>combined</i> state of the Pacific (El Niño / ONI) and the Indian Ocean Dipole (IOD)
+      &mdash; not El Niño strength on its own. The clearest evidence is 2015-16: the strongest
+      El Niño on record at the time (ONI +2.6) produced a comparatively contained Somalia flood
+      season, because that year's positive IOD was weak and ended before the Deyr peak. By
+      contrast, 2019 had only a weak, borderline El Niño (ONI +0.5) but one of the most extreme
+      positive IOD events on record, and produced severe flooding (3.4 million people affected).</p>
+    <p>As of 17 September 2026, the Pacific is on a near-record or record trajectory (weekly
+      Niño&#8201;3.4 already at +2.9&#8201;°C). The Indian Ocean Dipole, however, is so far only
+      weakly positive and merely forecast &mdash; not yet confirmed &mdash; to strengthen. That is
+      the genuine open question this report cannot resolve in advance, and it is reported as a
+      question rather than papered over with a single number. Section&#8201;5 gives two
+      historically grounded ranges, one for each way the IOD could resolve, instead of one point
+      estimate.</p>
+  </div>
+
+  <article>
+    <h2>1. The current forecast</h2>
+    <p>For the week of 9 September 2026, the Niño&#8201;3.4 sea-surface temperature anomaly reached
+      +2.9&#8201;°C &mdash; the highest reading of this event to date and the warmest September week
+      in this index since 1981.<sup>[1]</sup> The World Meteorological Organization's multi-model
+      forecast places the median October&ndash;December 2026 peak at +2.67&#8201;°C, with a
+      75&#8201;percent probability of exceeding the previous record set in 1982&ndash;83 and a
+      98&#8201;percent probability of this event reaching "Super El Niño" status.<sup>[1]</sup> The
+      WMO Secretary-General has described the event's trajectory as potentially "off the
+      charts."<sup>[1]</sup></p>
+    <p>The Indian Ocean Dipole, as of 13 September 2026, stood at +0.65&#8201;°C &mdash; positive,
+      but well short of the "extreme" classification carried by every one of the four most severe
+      Deyr floods in the historical record below. Forecasters expect it to strengthen to a
+      "moderate-to-strong" phase by October&ndash;December.<sup>[2,3]</sup> Whether it in fact
+      reaches an extreme-positive state, as it did in 1997, 2006, 2019 and 2023, or instead stays
+      moderate, closer to 2015-16, is not yet resolved by the available forecasts.</p>
+
+    <h2>2. Exposure geography</h2>
+    <p>Somalia's flood exposure is not uniform. Riverine flooding along the Shabelle (Belet Weyne,
+      Bulo Burti, Jalalaqsi, Jowhar, Balcad, Afgooye) and the Juba (Doolow, Luuq, Baardheere,
+      Bu'aale, Jamaame) is the largest and most predictable exposure, and it is independently
+      corroborated by Google Flood Hub's satellite-derived inundation-history layer, which colours
+      each 15&#8201;m pixel by how often it was under water in the historical satellite record
+      (Sentinel-1, cross-checked against Sentinel-2) &mdash; the same river reaches recur as
+      repeatedly inundated, not only in exceptional years.<sup>[4]</sup> A second exposure is
+      agropastoral: FEWS NET identifies Bay, Bakool, Gedo and Hiiraan as carrying a credible Famine
+      (IPC Phase&#8201;5) risk under extreme, widespread flooding, since these areas combine
+      rain-fed cropping with a depleted asset base after four failed prior seasons.<sup>[5]</sup> A
+      third exposure is northern flash flooding (Togdheer, Sool, Sanaag, Awdal, Woqooyi Galbeed,
+      Bari), driven by short, intense local rainfall with no river-gauge network and no equivalent
+      lead time; it falls outside both the existing gauge-based trigger and Google Flood Hub's
+      gauge-anchored forecasts, and needs a separately calibrated rainfall-threshold trigger.</p>
+
+    <h3>2.1 Case study: rainfall intensity and drainage capacity in Mogadishu</h3>
+    <p>Mogadishu is a fourth, distinct exposure: urban pluvial flooding, driven not by river levels
+      but by local rainfall intensity relative to an already-degraded stormwater network.
+      Published long-run climate normals for Mogadishu range from approximately 400 to
+      540&#8201;mm of rain annually, depending on dataset and period.<sup>[6]</sup> On 16 September
+      2026, the city received approximately 5&#8201;mm of rain &mdash; not an unusual daily total
+      &mdash; and major arterial roads, including the KM4 junction and the corridor to Aden Adde
+      International Airport, flooded regardless, consistent with independent reporting identifying
+      these same locations as recurring failure points since 2023.<sup>[7]</sup> On 9 May 2025, a
+      single storm delivered 95&ndash;120&#8201;mm of rain over two to ten hours (SoDMA's own field
+      report; a commonly cited figure attributes ~115&#8201;mm to roughly eight hours) and killed
+      at least seven people, with some reports citing up to nine or ten as figures were
+      updated.<sup>[8,9]</sup> That single event was on the order of twenty times 16 September's
+      total. Read together, these two events indicate that Mogadishu's binding constraint is
+      drainage capacity relative to short-duration rainfall intensity, not the seasonal rainfall
+      total &mdash; a distinct risk channel from the riverine and agropastoral exposures above, and
+      one with no equivalent early-warning lead time.</p>
+
+    <figure>
+      <div class="fig-body">
+        <svg viewBox="0 0 620 210" role="img" aria-label="Bar chart comparing rainfall totals: an average rainy-season day at approximately 3 millimetres, 16 September 2026 at approximately 5 millimetres which still flooded major roads, and the 9 May 2025 flash flood at approximately 115 millimetres which killed at least seven people.">
+          <line x1="70" y1="165" x2="600" y2="165" style="stroke:var(--rule-2)" stroke-width="1"/>
+          <rect x="110" y="161" width="90" height="4" style="fill:var(--ink-mut)" opacity="0.55"/>
+          <text x="155" y="151" text-anchor="middle" class="axv">~3mm</text>
+          <text x="155" y="183" text-anchor="middle" class="axl">Average rainy-</text>
+          <text x="155" y="196" text-anchor="middle" class="axl">season day</text>
+          <rect x="270" y="158" width="90" height="7" style="fill:var(--ink-mut)" opacity="0.8"/>
+          <text x="315" y="148" text-anchor="middle" class="axv">~5mm</text>
+          <text x="315" y="183" text-anchor="middle" class="axl">16 Sep 2026</text>
+          <text x="315" y="196" text-anchor="middle" class="axl">(roads flooded)</text>
+          <rect x="430" y="13" width="90" height="152" style="fill:var(--accent)" opacity="1"/>
+          <text x="475" y="3" text-anchor="middle" class="axv" dy="8">~115mm</text>
+          <text x="475" y="183" text-anchor="middle" class="axl">9 May 2025</text>
+          <text x="475" y="196" text-anchor="middle" class="axl">(&ge;7 deaths, ~8 hrs)</text>
+        </svg>
+      </div>
+      <figcaption><b>Figure 1.</b> Approximate Mogadishu rainfall totals, not on a uniform time
+        base &mdash; the 9 May 2025 figure fell within roughly eight hours, closer to how the
+        city's flash floods actually arrive than a 24-hour total. Illustrative bounds on recently
+        observed intensity, not a forecast. Sources: <sup>[6,8,9]</sup>.</figcaption>
+    </figure>
+
+    <h2>3. Five documented Deyr floods, 1997&ndash;2023</h2>
+    <p>Rather than anchor on a single reference event, this assessment draws on every Deyr flood
+      since 1997 for which mortality, displacement or economic-loss figures could be verified.
+      Fields left blank below were not established in available sources and are not guessed at;
+      full sourcing and data-quality notes for every cell are in the appendix.</p>
+
+    <div class="tablewrap">
+      <table class="datatable">
+        <caption><b>Table 1.</b> Documented Deyr-season floods, ocean state and impact.</caption>
+        <thead>
+          <tr><th>Event</th><th class="num">Peak ONI</th><th>IOD state</th><th class="num">Deaths</th><th class="num">Displaced</th><th class="num">Damage + losses</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1997-98 Deyr</td><td class="num">2.3</td><td>Extreme positive</td><td class="num">~1,500</td><td class="num">230,000</td><td class="num">&mdash;</td></tr>
+          <tr><td>2006 Deyr</td><td class="num">~0.7</td><td>Extreme positive</td><td class="num">&mdash;</td><td class="num">60,000*</td><td class="num">&mdash;</td></tr>
+          <tr class="highlight"><td>2015-16 Deyr</td><td class="num">2.6</td><td>Weak / short-lived</td><td class="num">&mdash;</td><td class="num">42,000</td><td class="num">&mdash;</td></tr>
+          <tr><td>2019 Deyr</td><td class="num">~0.5</td><td>Extreme positive</td><td class="num">29</td><td class="num">409,508</td><td class="num">&mdash;</td></tr>
+          <tr><td>2023 Deyr</td><td class="num">2.0</td><td>Extreme positive</td><td class="num">188</td><td class="num">417,791</td><td class="num">$176.0M</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink-mut);margin-top:-10px">* 2006 figure covers
+      Beledweyne specifically following a two-day storm and likely understates the full-season,
+      all-Somalia total; see appendix.</p>
+
+    <figure>
+      <div class="fig-body">
+        <svg viewBox="0 0 620 225" role="img" aria-label="Bar chart of peak Nino 3.4 anomaly for six periods: 1997-98 at 2.3, 2006 at approximately 0.7, 2015-16 at 2.6, 2019 at approximately 0.5, 2023-24 at 2.0, and the 2026 forecast at 2.67. Bars are colored by IOD state: extreme positive, weak, or forecast-uncertain.">
+          <line x1="55" y1="180" x2="605" y2="180" style="stroke:var(--rule-2)" stroke-width="1"/>
+          <!-- plot area y:20 (max, 2.7 headroom above the 2.67 forecast) to y:180 (baseline) -->
+          <rect x="65" y="43.7" width="70" height="136.3" style="fill:var(--accent)" opacity="0.55"/>
+          <text x="100" y="33.7" text-anchor="middle" class="axv">2.3</text>
+          <text x="100" y="196" text-anchor="middle" class="axl">1997-98</text>
+          <text x="100" y="208" text-anchor="middle" class="axn">extreme IOD</text>
+          <rect x="150" y="138.5" width="70" height="41.5" style="fill:var(--accent)" opacity="0.55"/>
+          <text x="185" y="128.5" text-anchor="middle" class="axv">0.7</text>
+          <text x="185" y="196" text-anchor="middle" class="axl">2006</text>
+          <text x="185" y="208" text-anchor="middle" class="axn">extreme IOD</text>
+          <rect x="235" y="25.9" width="70" height="154.1" style="fill:var(--ink-mut)" opacity="0.65"/>
+          <text x="270" y="15.9" text-anchor="middle" class="axv">2.6</text>
+          <text x="270" y="196" text-anchor="middle" class="axl">2015-16</text>
+          <text x="270" y="208" text-anchor="middle" class="axn">weak IOD</text>
+          <rect x="320" y="150.4" width="70" height="29.6" style="fill:var(--accent)" opacity="0.55"/>
+          <text x="355" y="140.4" text-anchor="middle" class="axv">0.5</text>
+          <text x="355" y="196" text-anchor="middle" class="axl">2019</text>
+          <text x="355" y="208" text-anchor="middle" class="axn">extreme IOD</text>
+          <rect x="405" y="61.5" width="70" height="118.5" style="fill:var(--accent)" opacity="0.55"/>
+          <text x="440" y="51.5" text-anchor="middle" class="axv">2.0</text>
+          <text x="440" y="196" text-anchor="middle" class="axl">2023</text>
+          <text x="440" y="208" text-anchor="middle" class="axn">extreme IOD</text>
+          <rect x="490" y="21.8" width="70" height="158.2" style="fill:var(--warn)" opacity="0.75"/>
+          <text x="525" y="11.8" text-anchor="middle" class="axv">2.67</text>
+          <text x="525" y="196" text-anchor="middle" class="axl">2026 forecast</text>
+          <text x="525" y="208" text-anchor="middle" class="axn">IOD uncertain</text>
+        </svg>
+      </div>
+      <figcaption><b>Figure 2.</b> Peak Niño&#8201;3.4 anomaly, °C, by event. Bar height is
+        ocean-index strength; the label under each bar is IOD state, which this report argues
+        matters more than bar height for Somalia's flood outcome. Note that the tallest bar
+        (2015-16) coincided with a weak IOD and comparatively contained impact, while several
+        shorter bars (2006, 2019) coincided with an extreme IOD and produced severe flooding.
+        2026's IOD state is not yet resolved. Sources: <sup>[1,2,10]</sup>.</figcaption>
+    </figure>
+
+    <h2>4. Why El Niño strength alone is not the right predictor</h2>
+    <p>The 2015-16 and 2019 Deyr seasons are, together, a natural experiment. In 2015-16, the
+      Pacific carried the strongest El Niño on record at the time (ONI +2.6) into the Deyr season,
+      but the accompanying positive Indian Ocean Dipole was weak and terminated in November, before
+      the Deyr's climatological peak &mdash; a documented contrast with 1997-98, when an extreme
+      IOD coincided with the El Niño peak instead.<sup>[10]</sup> The result was Somalia's most
+      contained Deyr flood season of the five examined here. In 2019, the reverse held: ONI was only
+      weakly positive, not a conventional El Niño by most thresholds, but the IOD reached one of its
+      most extreme positive states on record (peak DMI reported as 2.4&ndash;2.7&#8201;°C depending
+      on dataset).<sup>[11,12]</sup> The result was 3.4 million people affected and 409,508 people
+      displaced by flooding &mdash; comparable in scale to 2023, despite the absence of a strong
+      El Niño.</p>
+    <p>Scaling a single reference event by an ENSO-strength ratio, as earlier drafts of this
+      analysis did, therefore rests on the wrong variable in isolation: it would have implied 2015-16
+      should have been Somalia's worst Deyr flood in the 1997&ndash;2023 record, when it was in fact
+      one of the most contained. The historical record instead groups by <i>IOD</i> state far more
+      cleanly than by ONI: every event with an extreme-positive IOD produced severe displacement
+      (60,000&ndash;418,000+); the one event with a weak/short-lived IOD did not, regardless of
+      record-breaking ENSO.</p>
+
+    <h2>5. Assessment for the 2026 Deyr</h2>
+    <p>As of 17 September 2026, this report cannot say with confidence which side of that grouping
+      2026 will fall on, because the IOD has not yet resolved. Two branches are given below, read
+      directly off the historical record in Table&#8201;1 rather than derived from a formula.</p>
+
+    <div class="tablewrap">
+      <table class="datatable">
+        <caption><b>Table 2.</b> Two branches for the 2026 Deyr, by historical analogue group.</caption>
+        <thead>
+          <tr><th>If the IOD reaches&hellip;</th><th>Historical analogues</th><th class="num">Deaths</th><th class="num">Displaced</th><th class="num">Damage + losses</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Extreme positive</b> (matching 1997, 2006, 2019, 2023)</td>
+            <td>1997-98, 2006, 2019, 2023</td>
+            <td class="num">29&ndash;1,500</td>
+            <td class="num">60,000&ndash;417,791</td>
+            <td class="num">$176.0M*</td>
+          </tr>
+          <tr>
+            <td><b>Weak / moderate</b> (matching 2015-16)</td>
+            <td>2015-16 only (n=1)</td>
+            <td class="num">not established</td>
+            <td class="num">~42,000</td>
+            <td class="num">not established</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink-mut);margin-top:-10px">* Only 2023 has a verified
+      aggregate USD figure among the extreme-IOD analogues; this is a single data point, not a
+      bracket.</p>
+
+    <p>Two limitations of this table should be stated plainly rather than left for a reader to
+      discover. First, the weak/moderate branch rests on a single historical event: one data point
+      is a thin basis for any inference, and the "~42,000" figure should be read as "the one time
+      this happened, it looked like this," not as a robust estimate of what a repeat would produce.
+      Second, the death-toll bracket in the extreme-IOD branch spans nearly two orders of magnitude
+      (29 to 1,500), driven almost entirely by the 1997-98 outlier. 1997-98 predates the gauge
+      network, satellite-based flood forecasting and the PRMN displacement-tracking system that
+      exist today; 2019 and 2023, both post-dating meaningful early-warning investment, cluster far
+      lower (29 and 188). That is a reason to weight the lower end of the bracket more heavily under
+      current preparedness capacity &mdash; but it is an analytical judgement made explicit here,
+      not a narrowing the historical record itself supports on its own.</p>
+    <p>Forecaster language as of mid-September ("moderate-to-strong" by October&ndash;December)
+      does not correspond exactly to either historical bucket: it is offered as stronger than
+      2015-16's weak/short-lived phase, but no source yet classifies it as "extreme," the term
+      every severe historical analogue shares. The single most decision-relevant thing to monitor
+      between now and October is therefore the weekly Dipole Mode Index, not the already
+      near-certain ONI trajectory.</p>
+
+    <h2>6. Preparedness recommendations</h2>
+    <p>The following follow from Sections 2 and 5 directly and are not ranked by importance, since
+      they address different actors on different time horizons.</p>
+    <div class="tablewrap">
+      <table class="datatable">
+        <caption><b>Table 3.</b> Recommendations, responsible actors and rationale.</caption>
+        <thead>
+          <tr><th style="width:26%">Recommendation</th><th style="width:22%">Responsible actor(s)</th><th>Rationale</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Monitor the weekly Dipole Mode Index through October and treat an extreme-positive
+              reading as the trigger to escalate from readiness to response posture.</td>
+            <td>SoDMA; FAO SWALIM; ICPAC</td>
+            <td>Per Section&#8201;5, the IOD trajectory &mdash; not the already near-certain ENSO
+              trajectory &mdash; is what actually distinguishes a 2015-16-scale outcome from a
+              1997/2019/2023-scale one.</td>
+          </tr>
+          <tr>
+            <td>Clear drainage infrastructure at documented, recurring failure points in Mogadishu
+              &mdash; the KM4 junction and the Airport Road corridor &mdash; before the rains
+              intensify in October.</td>
+            <td>Benadir Regional Administration; Mogadishu Municipality</td>
+            <td>These locations flood on rainfall as low as 5mm (Section&#8201;2.1); this is
+              maintenance on known infrastructure, available on a short timeline, independent of
+              how the IOD resolves.</td>
+          </tr>
+          <tr>
+            <td>Maintain the operational riverine early-warning chain and ensure it reaches the
+              household level in Belet Weyne, Baardheere and other high-exposure towns.</td>
+            <td>SoDMA; FAO SWALIM; regional hydrological coordination with Ethiopia</td>
+            <td>The four-to-six-day routing lag between highland rainfall and riverine flooding is
+              genuine, usable lead time regardless of which branch in Table&#8201;2 materialises.</td>
+          </tr>
+          <tr>
+            <td>Pre-position seed, canal- and embankment-repair materials, and recovery cash in the
+              Shabelle and Juba corridors ahead of the rains.</td>
+            <td>FAO; Ministry of Agriculture; humanitarian partners</td>
+            <td>Agriculture and livestock was the largest documented loss category in the
+              best-verified analogue (2023); unrepaired infrastructure converts one flood into a
+              multi-season loss.</td>
+          </tr>
+          <tr>
+            <td>Size and ring-fence the anticipatory financing envelope against the range in
+              Table&#8201;2, not a single figure, and revisit the allocation once the IOD trajectory
+              clarifies.</td>
+            <td>Ministry of Finance; Humanitarian Country Team</td>
+            <td>A single point estimate would misrepresent the genuine, currently unresolved
+              uncertainty documented in this report.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>7. Data, methods and limitations</h2>
+    <p>This assessment uses a historical-analogue method: rather than fit a predictive model from
+      first principles, it assembles every Deyr-season flood since 1997 with verifiable impact
+      figures, classifies each by its joint ENSO/IOD state, and reads a range for 2026 directly off
+      the analogues that share the current forecast's ocean state. The full dataset, including the
+      exact wording of every data-quality caveat, is implemented as an open, tested module
+      (<span class="mono">analogues.py</span>) rather than existing only as prose in this
+      document &mdash; every figure in Tables&#8201;1 and 2 can be reproduced by running that module
+      directly.</p>
+    <p>This method has real limits, stated here rather than left implicit. With five events, this
+      is a small sample from which to generalise, and the weak-IOD branch in particular rests on a
+      single event. Displacement figures mix sources of different precision: 2019 and 2023 use a
+      PRMN-derived, flood-attributed figure; 2006 uses a partial, single-town figure that likely
+      understates the full season; none of this is a like-for-like panel dataset. No economic-loss
+      figure exists for any event except 2023, so Table&#8201;2's damage estimate for the
+      extreme-IOD branch is a single data point presented as such, not a bracket. Finally, this
+      report gives national, aggregate ranges only: it cannot say what share of 2026's impact, under
+      either branch, would fall on Mogadishu specifically versus riverine towns, because no such
+      breakdown exists in the public record for any of the five historical events either.</p>
+
+    <h2>References</h2>
+    <ol class="refs">
+      <li>World Meteorological Organization. <i>El Niño/La Niña Update</i>, September 2026.</li>
+      <li>NOAA Physical Sciences Laboratory. Dipole Mode Index (DMI) time series.</li>
+      <li>IGAD Climate Prediction and Applications Centre (ICPAC). <i>Greater Horn of Africa
+        Seasonal Climate Outlook</i>, 2026 Deyr season.</li>
+      <li>Google Flood Hub, inundation-history layer, sites.research.google/floods.</li>
+      <li>FEWS NET, Somalia Food Security Outlook, 2026.</li>
+      <li>Aggregated published long-run climate normals for Mogadishu, multiple datasets.</li>
+      <li>Local and press reporting on the 16 September 2026 Mogadishu rainfall event.</li>
+      <li>Somali Disaster Management Agency (SoDMA). Brief report: <i>The May 9, 2025 Flash Flood
+        Incident in Mogadishu</i>, 2025.</li>
+      <li>Press reporting on the 9 May 2025 Mogadishu flash flood, cross-checked across multiple
+        independent outlets.</li>
+      <li>Hong, C.-C. et al. Why Was the Indian Ocean Dipole Weak in the Context of the Extreme El
+        Niño in 2015? <i>Journal of Climate</i>, 30(12), 2017.</li>
+      <li>Lu, B. &amp; Ren, H.-L. What Caused the Extreme Indian Ocean Dipole Event in 2019?
+        <i>Geophysical Research Letters</i>, 2020.</li>
+      <li>Ratna, S. B. et al. The Extreme Positive Indian Ocean Dipole of 2019.
+        <i>Geophysical Research Letters</i>, 2021.</li>
+      <li>NOAA Climate Prediction Center. Oceanic Niño Index (ONI) historical record.</li>
+      <li>Government of Somalia, UN, World Bank and EU. <i>Somalia 2023 Deyr Floods: Rapid
+        Post-Disaster Needs Assessment</i>, 2024; SoDMA press release, 2024; OCHA Somalia Situation
+        Reports No.&#8201;1&ndash;5, 2023.</li>
+      <li>FAO/GIEWS, CARE International, ACAPS, and OCHA situation reporting on the 1997-98, 2006,
+        2015-16 and 2019 Deyr floods respectively (full citations in the appendix).</li>
+    </ol>
+
+    <details class="assumptions">
+      <summary>Appendix &middot; Full historical event data and sourcing</summary>
+      <div class="assump-body">
+        <h4>1997-98 Deyr</h4>
+        <p>Deaths reported as 1,500 (FAO/GIEWS) to ~2,000 (regional estimate, most in Somalia)
+          depending on source; treat as order-of-magnitude, not a precise count. ONI reported as
+          2.3&ndash;2.4&#8201;°C depending on dataset version. No reliable aggregate USD damage
+          figure was found &mdash; only sectoral physical damage (~50,000 ha farmland destroyed,
+          35,500 livestock lost), not converted to a USD total here. Sources: FAO/GIEWS Special
+          Report, Eastern Africa, 5 February 1998; CARE International, El Niño 1997-98 Impacts and
+          Response.</p>
+        <h4>2006 Deyr</h4>
+        <p>ONI reported only qualitatively as a "weak" El Niño (0.5&ndash;0.9&#8201;°C bracket);
+          0.7 used as the bracket midpoint, not a verified point figure. Displacement (60,000)
+          covers Beledweyne specifically following the 10&ndash;11 November storms and likely
+          understates the full-season, all-Somalia total; a separate "affected" figure of 440,000
+          was also reported for 2006-07 but is a different metric, not used here. No death toll
+          found. Sources: OCHA, Somalia Floods Situation Report, 7 December 2006; FloodList.</p>
+        <h4>2015-16 Deyr</h4>
+        <p>The positive IOD in 2015 was weak and short-lived, peaking around September and
+          terminating in November &mdash; before the Deyr climatological peak &mdash; unlike
+          1997-98. Displacement reported as 42,000 (OCHA) to 72,000 depending on source; the
+          lower, OCHA-attributed figure is used. No direct flood-death toll was found; 84 deaths
+          were separately reported from a cholera outbreak in flood-affected areas, a distinct
+          causal category not counted here. Sources: OCHA flooding update, November 2015; Hong et
+          al., <i>J. Climate</i>, 2017.</p>
+        <h4>2019 Deyr</h4>
+        <p>ONI was only weakly positive/neutral (~0.5&#8201;°C); IOD was one of the most extreme
+          positive events on record. Peak DMI reported as 2.4&#8201;°C in some analyses and up to
+          2.74&#8201;°C in others depending on dataset and smoothing, with lower monthly means
+          (~1.0&#8201;°C, Sep&ndash;Nov). Displacement (409,508) is the flood-attributed PRMN
+          total, the same dataset used for the 2023 figure below, not a press estimate. No
+          aggregate USD figure found; sectoral reporting cites 1,200 farms inundated and 250
+          livestock drowned in Gedo/Juba specifically. Sources: ACAPS Briefing Note, 4 November
+          2019; Lu &amp; Ren, <i>GRL</i>, 2020; Ratna et al., <i>GRL</i>, 2021.</p>
+        <h4>2023 Deyr</h4>
+        <p>Deaths, damage and losses are the confirmed PDNA figures, cross-checked against a SoDMA
+          press release ($176.0M = $126.6M direct damage + $49.5M losses; $230M recovery needs).
+          Displacement (417,791) is the flood-attributed PRMN total; the PDNA separately reports
+          "over 2 million displaced" using a broader, cumulative, multi-hazard definition across
+          the full 2023 season &mdash; a different metric, not a competing estimate of the same
+          quantity, and not used here. Sources: Government of Somalia/UN/World Bank/EU Rapid PDNA,
+          2024; SoDMA press release, 2024; OCHA Situation Reports No.&#8201;1&ndash;5.</p>
+        <h4>Reproducing every number in this report</h4>
+        <p>The dataset above, the extreme/weak-IOD groupings, and the bracket calculations in
+          Table&#8201;2 are implemented in <span class="mono">src/saat/analogues.py</span>
+          (<span class="mono">DEYR_HISTORICAL_EVENTS</span>,
+          <span class="mono">bracket_estimate()</span>,
+          <span class="mono">classify_iod_scenario()</span>) and covered by
+          <span class="mono">tests/test_analogues.py</span>. Nothing in this report was computed
+          only in prose.</p>
+      </div>
+    </details>
+  </article>
+
+  <footer class="endnote">
+    <p>Hassan Mumin writes on climate risk and anticipatory planning in the Horn of Africa.
+      Figures reflect public sources as of 17 September 2026; forecast-derived figures are
+      identified explicitly and should not be read as observations.</p>
+  </footer>
+
+</div>
+</body>
+</html>

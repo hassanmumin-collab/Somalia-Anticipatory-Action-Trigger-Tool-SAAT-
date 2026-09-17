@@ -14,6 +14,14 @@ Public API: import the pieces you need directly from the package root, e.g.
 __version__ = "0.1.0"
 __author__ = "SAAT Team"
 
+from saat.analogues import (
+    DEYR_HISTORICAL_EVENTS,
+    EXTREME_IOD_ANALOGUES,
+    WEAK_IOD_ANALOGUES,
+    HistoricalDeyrEvent,
+    bracket_estimate,
+    classify_iod_scenario,
+)
 from saat.casualties import (
     CasualtySummary,
     DrowningExposure,
@@ -63,6 +71,13 @@ from saat.urban_flood import (
 
 __all__ = [
     "__version__",
+    # analogues (multi-event historical Deyr record)
+    "DEYR_HISTORICAL_EVENTS",
+    "EXTREME_IOD_ANALOGUES",
+    "WEAK_IOD_ANALOGUES",
+    "HistoricalDeyrEvent",
+    "bracket_estimate",
+    "classify_iod_scenario",
     # casualties
     "CasualtySummary",
     "DrowningExposure",

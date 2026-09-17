@@ -322,6 +322,40 @@ def _demo_urban_flood() -> list:
     return lines
 
 
+def _demo_analogues() -> list:
+    """Historical Deyr record: joint ENSO+IOD state, not ONI alone, predicts severity."""
+    from saat.analogues import (
+        DEYR_HISTORICAL_EVENTS, EXTREME_IOD_ANALOGUES, WEAK_IOD_ANALOGUES,
+        bracket_estimate, classify_iod_scenario,
+    )
+
+    lines = [f"{len(DEYR_HISTORICAL_EVENTS)} documented Deyr events loaded, each with cited sources."]
+
+    weak_iod_highest_oni = max(e.oni_peak for e in WEAK_IOD_ANALOGUES)
+    all_time_highest_oni = max(e.oni_peak for e in DEYR_HISTORICAL_EVENTS)
+    if weak_iod_highest_oni != all_time_highest_oni:
+        raise _DemoCheckError(
+            "expected the weak-IOD group to contain the record-ONI event (2015-16), "
+            f"got weak-IOD max ONI {weak_iod_highest_oni} vs overall max {all_time_highest_oni}"
+        )
+    lines.append(
+        f"record ONI ({all_time_highest_oni}) occurred in a weak-IOD event, not an extreme-IOD "
+        f"one -- strong ENSO alone did not produce the worst outcome"
+    )
+
+    low, high, years = bracket_estimate(EXTREME_IOD_ANALOGUES, "deaths")
+    lines.append(
+        f"death-toll bracket across extreme-IOD analogues ({', '.join(years)}): {low}-{high} "
+        f"[read directly off the historical record, not a synthetic +/- band]"
+    )
+
+    note, matching, bracketing = classify_iod_scenario("moderate_to_strong")
+    if matching:
+        raise _DemoCheckError("'moderate_to_strong' unexpectedly matched a historical bucket exactly")
+    lines.append(f"2026 IOD forecast ('moderate_to_strong'): {note}")
+    return lines
+
+
 def _demo_panel() -> list:
     """Panel assembly is balanced; PRMN column resolution fails loudly."""
     import pandas as pd
@@ -365,31 +399,35 @@ def _demo_panel() -> list:
 
 def cmd_demo(args) -> int:
     """
-    Run every module's offline self-test with synthetic data.
+    Run every module's offline self-test.
 
-    No network and no credentials are used. All inputs are synthetic and are
-    labelled as such in the output.
+    No network and no credentials are used. Most modules use synthetic,
+    illustrative inputs and are labelled SYNTHETIC in the output -- those
+    numbers are not estimates for Somalia. The analogues module is the
+    exception: it self-tests a real, cited historical dataset, and is
+    labelled REAL DATA accordingly rather than lumped in with the rest.
 
     Returns:
         0 if all self-tests pass, 1 otherwise.
     """
     print("SAAT Demo - Offline Module Self-Tests")
     print("=" * 60)
-    print("All data below is SYNTHETIC and illustrative. No network, no credentials.")
-    print("Numbers here are not estimates for Somalia.")
+    print("No network, no credentials. Each suite below is labelled SYNTHETIC")
+    print("(illustrative inputs, not a Somalia estimate) or REAL DATA (cited).")
 
     suites = [
-        ("hazard        (routing + AMC runoff)", _demo_hazard),
-        ("displacement  (generation + gravity allocation)", _demo_displacement),
-        ("casualties    (urban drowning/electrocution + riverine drowning)", _demo_casualties),
-        ("economic      (riverine crop + irrigation loss)", _demo_economic),
-        ("urban_flood   (Mogadishu road + market productivity loss)", _demo_urban_flood),
-        ("panel         (balanced district-month assembly)", _demo_panel),
+        ("hazard        (routing + AMC runoff)", _demo_hazard, "SYNTHETIC"),
+        ("displacement  (generation + gravity allocation)", _demo_displacement, "SYNTHETIC"),
+        ("casualties    (urban drowning/electrocution + riverine drowning)", _demo_casualties, "SYNTHETIC"),
+        ("economic      (riverine crop + irrigation loss)", _demo_economic, "SYNTHETIC"),
+        ("urban_flood   (Mogadishu road + market productivity loss)", _demo_urban_flood, "SYNTHETIC"),
+        ("analogues     (historical Deyr record: joint ENSO+IOD state)", _demo_analogues, "REAL DATA"),
+        ("panel         (balanced district-month assembly)", _demo_panel, "SYNTHETIC"),
     ]
 
     failures = 0
-    for title, suite in suites:
-        print(f"\n[SYNTHETIC] {title}")
+    for title, suite, tag in suites:
+        print(f"\n[{tag}] {title}")
         try:
             for line in suite():
                 print(f"  - {line}")
@@ -404,9 +442,9 @@ def cmd_demo(args) -> int:
 
     print("\n" + "=" * 60)
     if failures:
-        print(f"Demo FAILED: {failures} module self-test(s) did not pass (synthetic data).")
+        print(f"Demo FAILED: {failures} module self-test(s) did not pass.")
         return 1
-    print("Demo complete. All module self-tests passed (synthetic data).")
+    print("Demo complete. All module self-tests passed.")
     return 0
 
 
