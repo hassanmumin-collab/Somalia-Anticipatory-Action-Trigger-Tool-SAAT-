@@ -325,8 +325,9 @@ def _demo_urban_flood() -> list:
 def _demo_analogues() -> list:
     """Historical Deyr record: joint ENSO+IOD state, not ONI alone, predicts severity."""
     from saat.analogues import (
-        DEYR_HISTORICAL_EVENTS, EXTREME_IOD_ANALOGUES, WEAK_IOD_ANALOGUES,
-        bracket_estimate, classify_iod_scenario,
+        DEYR_HISTORICAL_EVENTS, EXPECTED_VALUE_SENSITIVITY, EXTREME_IOD_ANALOGUES,
+        HISTORICAL_BASE_RATE_EXTREME_IOD, WEAK_IOD_ANALOGUES, InsufficientDataError,
+        bracket_estimate, classify_iod_scenario, weighted_expected_value,
     )
 
     lines = [f"{len(DEYR_HISTORICAL_EVENTS)} documented Deyr events loaded, each with cited sources."]
@@ -353,6 +354,29 @@ def _demo_analogues() -> list:
     if matching:
         raise _DemoCheckError("'moderate_to_strong' unexpectedly matched a historical bucket exactly")
     lines.append(f"2026 IOD forecast ('moderate_to_strong'): {note}")
+
+    lo0, hi0 = weighted_expected_value("displaced", 0.0)
+    lo1, hi1 = weighted_expected_value("displaced", 1.0)
+    if not (lo1 >= lo0 and hi1 >= hi0):
+        raise _DemoCheckError("expected value did not move monotonically with p_extreme")
+    lines.append(
+        f"displacement expected-value sensitivity (no single P(extreme IOD) is published, "
+        f"so this is shown as a range of weights, base rate={HISTORICAL_BASE_RATE_EXTREME_IOD:.2f}): "
+        + ", ".join(
+            f"p={p:.2f} -> {round(weighted_expected_value('displaced', p)[0]):,}-"
+            f"{round(weighted_expected_value('displaced', p)[1]):,}"
+            for p in EXPECTED_VALUE_SENSITIVITY
+        )
+    )
+
+    try:
+        weighted_expected_value("deaths", 0.5)
+        raise _DemoCheckError("expected InsufficientDataError blending deaths across branches")
+    except InsufficientDataError:
+        lines.append(
+            "deaths: expected value correctly refuses to blend branches -- the weak-IOD "
+            "analogue (2015-16) has no verified death toll"
+        )
     return lines
 
 

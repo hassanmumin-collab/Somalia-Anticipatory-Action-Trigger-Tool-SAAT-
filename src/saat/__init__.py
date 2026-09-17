@@ -16,11 +16,15 @@ __author__ = "SAAT Team"
 
 from saat.analogues import (
     DEYR_HISTORICAL_EVENTS,
+    EXPECTED_VALUE_SENSITIVITY,
     EXTREME_IOD_ANALOGUES,
+    HISTORICAL_BASE_RATE_EXTREME_IOD,
     WEAK_IOD_ANALOGUES,
     HistoricalDeyrEvent,
+    InsufficientDataError,
     bracket_estimate,
     classify_iod_scenario,
+    weighted_expected_value,
 )
 from saat.casualties import (
     CasualtySummary,
@@ -73,11 +77,15 @@ __all__ = [
     "__version__",
     # analogues (multi-event historical Deyr record)
     "DEYR_HISTORICAL_EVENTS",
+    "EXPECTED_VALUE_SENSITIVITY",
     "EXTREME_IOD_ANALOGUES",
+    "HISTORICAL_BASE_RATE_EXTREME_IOD",
     "WEAK_IOD_ANALOGUES",
     "HistoricalDeyrEvent",
+    "InsufficientDataError",
     "bracket_estimate",
     "classify_iod_scenario",
+    "weighted_expected_value",
     # casualties
     "CasualtySummary",
     "DrowningExposure",

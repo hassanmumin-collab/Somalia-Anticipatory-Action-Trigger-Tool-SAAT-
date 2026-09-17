@@ -33,6 +33,16 @@ Every field below is sourced; where a figure could not be verified to a
 specific, defensible value, the field is left ``None`` rather than
 back-filled -- the same "no hidden default" discipline as
 ``casualties.DrowningRiskCurve`` and ``economic.SubmergenceDamageCurve``.
+
+``bracket_estimate()`` and ``classify_iod_scenario()`` are lookups: they
+match a forecast against the historical record and report what happened in
+similar cases. ``weighted_expected_value()`` is the actual model on top of
+that evidence: a function of the historical brackets and an explicit
+probability weight that produces a genuine probability-weighted expected
+value, not a category match. No forecasting centre publishes a numeric
+probability that the IOD will reach "extreme positive" specifically for a
+given season, so that weight is never asserted as a single authoritative
+number here -- see ``EXPECTED_VALUE_SENSITIVITY``.
 """
 
 from dataclasses import dataclass
@@ -224,6 +234,75 @@ def bracket_estimate(
     if not values:
         return None, None, []
     return min(values), max(values), years
+
+
+class InsufficientDataError(Exception):
+    """Raised when an expected value is requested for a field with no data in one branch."""
+
+
+# Historical base rate of an extreme-positive IOD among the five documented Deyr
+# events, given a concurrent weak-to-strong El Nino: 4 of 5 (1997-98, 2006, 2019,
+# 2023) were extreme; 1 of 5 (2015-16) was weak. No forecasting centre publishes a
+# numeric probability that the IOD will reach "extreme positive" specifically for
+# OND 2026 -- ICPAC/WMO give high confidence (~90%) that the IOD will be *positive*
+# and rainfall *above normal*, which is a much weaker threshold than "extreme," and
+# is not reused here as if it answered a different question. This constant is an
+# explicit, disclosed prior, not a forecast product; see EXPECTED_VALUE_SENSITIVITY.
+HISTORICAL_BASE_RATE_EXTREME_IOD: float = len(EXTREME_IOD_ANALOGUES) / len(DEYR_HISTORICAL_EVENTS)
+
+# Because no authoritative P(extreme IOD) exists for the current forecast, the
+# expected value is reported as a sensitivity across these three illustrative
+# weights rather than a single number: the historical base rate, an agnostic
+# 50/50 prior, and a skeptical weight reflecting that the DMI was still only
+# weakly positive as of mid-September.
+EXPECTED_VALUE_SENSITIVITY: Tuple[float, ...] = (0.3, 0.5, HISTORICAL_BASE_RATE_EXTREME_IOD)
+
+
+def weighted_expected_value(
+    field: str, p_extreme: float
+) -> Tuple[Optional[float], Optional[float]]:
+    """
+    Probability-weighted expected value across the two IOD-scenario brackets.
+
+    This is the actual model: a function of the historical brackets and an
+    explicit probability weight, not a category lookup. It computes
+    E[low] = p_extreme * low_extreme + (1 - p_extreme) * low_weak, and the
+    same for the high end, so the result is still a range, not a single
+    false-precise number.
+
+    Args:
+        field: one of "deaths", "displaced", "econ_loss_usd"
+        p_extreme: probability weight on the extreme-positive-IOD branch, in
+            [0, 1]. Callers should not treat any single value of this as an
+            authoritative forecast probability -- see
+            HISTORICAL_BASE_RATE_EXTREME_IOD and EXPECTED_VALUE_SENSITIVITY.
+
+    Returns:
+        (expected_low, expected_high)
+
+    Raises:
+        InsufficientDataError: if either branch has no verified value for
+            `field` -- an expected value cannot be honestly computed from a
+            branch with zero data points, and this is not silently treated
+            as zero.
+    """
+    if not 0.0 <= p_extreme <= 1.0:
+        raise ValueError(f"p_extreme must be in [0, 1], got {p_extreme!r}")
+
+    low_e, high_e, _ = bracket_estimate(EXTREME_IOD_ANALOGUES, field)
+    low_w, high_w, _ = bracket_estimate(WEAK_IOD_ANALOGUES, field)
+    if low_e is None or low_w is None:
+        raise InsufficientDataError(
+            f"cannot compute an expected value for {field!r}: the extreme-IOD branch "
+            f"has {'no' if low_e is None else 'a'} verified value and the weak-IOD "
+            f"branch has {'no' if low_w is None else 'a'} verified value. Blending a "
+            f"populated branch with an empty one would silently treat the missing "
+            f"branch as zero, which is not a defensible assumption."
+        )
+
+    expected_low = p_extreme * low_e + (1 - p_extreme) * low_w
+    expected_high = p_extreme * high_e + (1 - p_extreme) * high_w
+    return expected_low, expected_high
 
 
 def classify_iod_scenario(

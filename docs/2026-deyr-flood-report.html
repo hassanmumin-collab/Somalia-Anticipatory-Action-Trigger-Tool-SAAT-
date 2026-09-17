@@ -126,8 +126,10 @@
       weakly positive and merely forecast &mdash; not yet confirmed &mdash; to strengthen. That is
       the genuine open question this report cannot resolve in advance, and it is reported as a
       question rather than papered over with a single number. Section&#8201;5 gives two
-      historically grounded ranges, one for each way the IOD could resolve, instead of one point
-      estimate.</p>
+      historically grounded ranges, one for each way the IOD could resolve, plus a
+      probability-weighted expected value for displacement across a range of illustrative
+      probability weights, since no forecasting centre publishes a precise probability that the
+      IOD will reach an extreme-positive state specifically.</p>
   </div>
 
   <article>
@@ -340,12 +342,48 @@
       between now and October is therefore the weekly Dipole Mode Index, not the already
       near-certain ONI trajectory.</p>
 
+    <h3>5.1 A probability-weighted expected value</h3>
+    <p>Table&#8201;2 is evidence, not yet a model: it matches the forecast to a category and reads
+      off that category's range. An expected value requires one more ingredient &mdash; a
+      probability that the IOD resolves toward the extreme-positive branch rather than the
+      weak/moderate one &mdash; and no forecasting centre publishes that specific number. ICPAC and
+      the WMO give high confidence (~90&#8201;percent) that the IOD will be <i>positive</i> and that
+      rainfall will be <i>above normal</i> across central-southern Somalia;<sup>[3,5]</sup> that is a
+      materially weaker threshold than "extreme," and is not reused here as if it answered a
+      different question. Rather than assert a single invented probability, Table&#8201;3 below
+      reports the expected displacement range at three illustrative weights: a skeptical 30&#8201;
+      percent, an agnostic 50&#8201;percent, and 80&#8201;percent &mdash; the historical base rate,
+      since 4 of the 5 documented events in Table&#8201;1 resolved to an extreme-positive IOD.</p>
+
+    <div class="tablewrap">
+      <table class="datatable">
+        <caption><b>Table 3.</b> Expected displacement, by assumed probability of an extreme-positive IOD.</caption>
+        <thead>
+          <tr><th>P(extreme-positive IOD)</th><th>Basis</th><th class="num">Expected displacement range</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>30%</td><td>Skeptical &mdash; DMI was still only weakly positive as of 13 September</td><td class="num">47,400&ndash;154,737</td></tr>
+          <tr class="highlight"><td>50%</td><td>Agnostic prior</td><td class="num">51,000&ndash;229,896</td></tr>
+          <tr><td>80%</td><td>Historical base rate (4 of 5 documented events)</td><td class="num">56,400&ndash;342,633</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>This is computed as <span class="mono">p&#8201;&times;&#8201;(extreme-branch bracket)&#8201;+&#8201;(1&#8201;&minus;&#8201;p)&#8201;&times;&#8201;(weak-branch bracket)</span>
+      for each end of the range &mdash; a genuine function of the historical brackets and an
+      explicit weight, not a second category lookup. The same calculation cannot be honestly
+      extended to deaths or economic loss: the weak-IOD branch (2015-16) has no verified figure for
+      either field, and blending a populated branch with an empty one would silently treat the
+      missing branch as zero, which this report's own tooling
+      (<span class="mono">analogues.weighted_expected_value()</span>) refuses to do. For those two
+      fields, Table&#8201;2's extreme-branch bracket remains the most defensible figure available,
+      explicitly conditional on the IOD reaching an extreme-positive state.</p>
+
     <h2>6. Preparedness recommendations</h2>
     <p>The following follow from Sections 2 and 5 directly and are not ranked by importance, since
       they address different actors on different time horizons.</p>
     <div class="tablewrap">
       <table class="datatable">
-        <caption><b>Table 3.</b> Recommendations, responsible actors and rationale.</caption>
+        <caption><b>Table 4.</b> Recommendations, responsible actors and rationale.</caption>
         <thead>
           <tr><th style="width:26%">Recommendation</th><th style="width:22%">Responsible actor(s)</th><th>Rationale</th></tr>
         </thead>
@@ -383,9 +421,9 @@
               multi-season loss.</td>
           </tr>
           <tr>
-            <td>Size and ring-fence the anticipatory financing envelope against the range in
-              Table&#8201;2, not a single figure, and revisit the allocation once the IOD trajectory
-              clarifies.</td>
+            <td>Size and ring-fence the anticipatory financing envelope against the ranges in
+              Tables&#8201;2 and&#8201;3, not a single figure, and revisit the allocation once the
+              IOD trajectory clarifies.</td>
             <td>Ministry of Finance; Humanitarian Country Team</td>
             <td>A single point estimate would misrepresent the genuine, currently unresolved
               uncertainty documented in this report.</td>
@@ -486,11 +524,14 @@
           quantity, and not used here. Sources: Government of Somalia/UN/World Bank/EU Rapid PDNA,
           2024; SoDMA press release, 2024; OCHA Situation Reports No.&#8201;1&ndash;5.</p>
         <h4>Reproducing every number in this report</h4>
-        <p>The dataset above, the extreme/weak-IOD groupings, and the bracket calculations in
-          Table&#8201;2 are implemented in <span class="mono">src/saat/analogues.py</span>
+        <p>The dataset above, the extreme/weak-IOD groupings, the bracket calculations in
+          Table&#8201;2, and the expected-value calculations in Table&#8201;3 are implemented in
+          <span class="mono">src/saat/analogues.py</span>
           (<span class="mono">DEYR_HISTORICAL_EVENTS</span>,
           <span class="mono">bracket_estimate()</span>,
-          <span class="mono">classify_iod_scenario()</span>) and covered by
+          <span class="mono">classify_iod_scenario()</span>,
+          <span class="mono">weighted_expected_value()</span>,
+          <span class="mono">HISTORICAL_BASE_RATE_EXTREME_IOD</span>) and covered by
           <span class="mono">tests/test_analogues.py</span>. Nothing in this report was computed
           only in prose.</p>
       </div>
