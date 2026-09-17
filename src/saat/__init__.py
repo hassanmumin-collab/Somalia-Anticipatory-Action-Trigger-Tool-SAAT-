@@ -15,7 +15,9 @@ __version__ = "0.1.0"
 __author__ = "SAAT Team"
 
 from saat.analogues import (
+    BASELINE_2023,
     DEYR_HISTORICAL_EVENTS,
+    ENSO_STRENGTH_RATIO_2026_VS_2023,
     EXPECTED_VALUE_SENSITIVITY,
     EXTREME_IOD_ANALOGUES,
     HISTORICAL_BASE_RATE_EXTREME_IOD,
@@ -24,6 +26,7 @@ from saat.analogues import (
     InsufficientDataError,
     bracket_estimate,
     classify_iod_scenario,
+    scaled_2023_projection,
     weighted_expected_value,
 )
 from saat.casualties import (
@@ -76,7 +79,9 @@ from saat.urban_flood import (
 __all__ = [
     "__version__",
     # analogues (multi-event historical Deyr record)
+    "BASELINE_2023",
     "DEYR_HISTORICAL_EVENTS",
+    "ENSO_STRENGTH_RATIO_2026_VS_2023",
     "EXPECTED_VALUE_SENSITIVITY",
     "EXTREME_IOD_ANALOGUES",
     "HISTORICAL_BASE_RATE_EXTREME_IOD",
@@ -85,6 +90,7 @@ __all__ = [
     "InsufficientDataError",
     "bracket_estimate",
     "classify_iod_scenario",
+    "scaled_2023_projection",
     "weighted_expected_value",
     # casualties
     "CasualtySummary",

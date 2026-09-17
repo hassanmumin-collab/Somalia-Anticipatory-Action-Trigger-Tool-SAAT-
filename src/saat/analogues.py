@@ -199,6 +199,61 @@ WEAK_IOD_ANALOGUES: Tuple[HistoricalDeyrEvent, ...] = tuple(
     e for e in DEYR_HISTORICAL_EVENTS if e.iod_classification == "weak_positive"
 )
 
+BASELINE_2023: HistoricalDeyrEvent = next(e for e in DEYR_HISTORICAL_EVENTS if e.year == "2023 Deyr")
+
+# WMO's median forecast peak Nino 3.4 anomaly for October-December 2026 (+2.67 degC)
+# divided by 2023-24's confirmed peak (+2.0 degC) is 1.335; rounded to 1.3 for the
+# planning figure, matching how this ratio has been presented throughout this
+# project. This is an ENSO-only ratio -- see the module docstring for why ENSO
+# strength alone is not the best evidence-based predictor of Deyr severity. It is
+# kept as a named, documented constant (not a recomputed magic number) because
+# scaled_2023_projection() below uses it as a deliberate, single-analogue planning
+# floor, not as the model's headline estimate.
+ENSO_STRENGTH_RATIO_2026_VS_2023: float = 1.3
+
+
+def scaled_2023_projection(multiplier: float = ENSO_STRENGTH_RATIO_2026_VS_2023) -> dict:
+    """
+    Preparedness planning floor: the 2023 Deyr baseline scaled by the ENSO ratio alone.
+
+    This is deliberately a single-analogue projection, not the multi-event
+    model elsewhere in this module -- it exists alongside, not instead of,
+    ``bracket_estimate()`` and ``weighted_expected_value()``. The
+    justification for using it as a planning floor rather than a discarded
+    first draft: 2023 already occurred under an extreme-positive IOD, the
+    same category every severe historical event shares, and this event's
+    ENSO signal already exceeds 2023's regardless of how the IOD resolves.
+    Scaling 2023 upward by that ENSO ratio therefore gives "prepare for at
+    least this much assuming a repeat of 2023's ocean state" -- a
+    defensible, conservative sizing target for anticipatory-action
+    planning, distinct from the evidence-based ranges above, which it
+    generally exceeds (e.g. the scaled displacement figure is higher than
+    the top of the four-event extreme-IOD bracket). It is not presented as
+    a more rigorous estimate than the multi-event evidence; it is a
+    different, complementary question ("what if 2026 repeats 2023 but
+    with today's stronger ENSO reading") from the one the historical
+    brackets answer ("what has actually happened across five ocean
+    states").
+
+    Args:
+        multiplier: defaults to the current ENSO strength ratio; callers
+            may pass a different value to explore sensitivity.
+
+    Returns:
+        dict with deaths/displaced/econ_loss_usd scaled from the 2023
+        baseline, plus the multiplier and a plain-text basis string.
+    """
+    return {
+        "multiplier": multiplier,
+        "basis": (
+            "2023 Deyr baseline (188 deaths / 417,791 displaced / $176.0M) x this "
+            "event's forecast ENSO strength relative to 2023's"
+        ),
+        "deaths": round(BASELINE_2023.deaths * multiplier),
+        "displaced": round(BASELINE_2023.displaced * multiplier),
+        "econ_loss_usd": BASELINE_2023.econ_loss_usd * multiplier,
+    }
+
 
 def bracket_estimate(
     events: Sequence[HistoricalDeyrEvent], field: str

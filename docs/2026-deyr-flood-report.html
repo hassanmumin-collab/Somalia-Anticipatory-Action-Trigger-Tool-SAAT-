@@ -129,7 +129,11 @@
       historically grounded ranges, one for each way the IOD could resolve, plus a
       probability-weighted expected value for displacement across a range of illustrative
       probability weights, since no forecasting centre publishes a precise probability that the
-      IOD will reach an extreme-positive state specifically.</p>
+      IOD will reach an extreme-positive state specifically. For anticipatory-action sizing, this
+      report recommends a single conservative planning floor instead: the 2023 baseline scaled by
+      this event's ENSO strength ratio alone (1.3&times;) &mdash; 244 deaths, 543,128 displaced,
+      $228.8M in damage and losses &mdash; a figure that deliberately exceeds every historical
+      extreme-IOD event and every expected-value scenario in this report (Section&#8201;5.2).</p>
   </div>
 
   <article>
@@ -164,6 +168,63 @@
       Bari), driven by short, intense local rainfall with no river-gauge network and no equivalent
       lead time; it falls outside both the existing gauge-based trigger and Google Flood Hub's
       gauge-anchored forecasts, and needs a separately calibrated rainfall-threshold trigger.</p>
+
+    <figure>
+      <div class="fig-body">
+        <svg viewBox="0 0 620 380" role="img" aria-label="Schematic diagram of Somalia's four flood-exposure types: the riverine corridor with gauge towns, the agropastoral Famine-risk zone, the northern flash-flood zone with no gauge network, and Mogadishu's urban pluvial flooding.">
+          <!-- Cell A: Riverine corridor -->
+          <rect x="10" y="10" width="290" height="170" rx="8" style="fill:var(--sunk);stroke:var(--rule)"/>
+          <path d="M 26 34 q 7 -10 14 0 q 7 10 14 0 q 7 -10 14 0" style="fill:none;stroke:var(--accent)" stroke-width="2.5"/>
+          <text x="66" y="34" class="axl" style="font-weight:700;font-size:13px">Riverine corridor</text>
+          <text x="66" y="50" class="axn">Shabelle &amp; Juba, gauge-monitored</text>
+          <text x="26" y="82" class="axl">Belet Weyne &middot; Jowhar &middot; Baardheere &middot;</text>
+          <text x="26" y="98" class="axl">Doolow &middot; Bulo Burti &middot; Jamaame&hellip;</text>
+          <text x="26" y="128" class="axn">4&ndash;6 day warning lead time from the</text>
+          <text x="26" y="144" class="axn">upstream gauge network</text>
+          <text x="26" y="164" class="axn" style="fill:var(--accent)">Largest, most predictable exposure</text>
+
+          <!-- Cell B: Agropastoral Famine-risk -->
+          <rect x="320" y="10" width="290" height="170" rx="8" style="fill:var(--sunk);stroke:var(--rule)"/>
+          <path d="M 336 44 L 350 20 L 364 44 Z" style="fill:none;stroke:var(--warn)" stroke-width="2.5"/>
+          <line x1="343" y1="38" x2="343" y2="44" style="stroke:var(--warn)" stroke-width="2"/>
+          <line x1="357" y1="38" x2="357" y2="44" style="stroke:var(--warn)" stroke-width="2"/>
+          <text x="376" y="34" class="axl" style="font-weight:700;font-size:13px">Agropastoral</text>
+          <text x="376" y="50" class="axn">Rain-fed cropping, depleted assets</text>
+          <text x="336" y="82" class="axl">Bay &middot; Bakool &middot; Gedo &middot; Hiiraan</text>
+          <text x="336" y="128" class="axn">Credible Famine (IPC Phase 5) risk</text>
+          <text x="336" y="144" class="axn">under extreme, widespread flooding</text>
+          <text x="336" y="164" class="axn" style="fill:var(--warn)">Four failed prior seasons, no buffer left</text>
+
+          <!-- Cell C: Northern flash-flood -->
+          <rect x="10" y="200" width="290" height="170" rx="8" style="fill:var(--sunk);stroke:var(--rule)"/>
+          <path d="M 40 214 L 28 234 L 38 234 L 26 254" style="fill:none;stroke:var(--ink-mut)" stroke-width="2.5"/>
+          <text x="66" y="224" class="axl" style="font-weight:700;font-size:13px">Northern flash-flood</text>
+          <text x="66" y="240" class="axn">Short, intense local rainfall</text>
+          <text x="26" y="272" class="axl">Togdheer &middot; Sool &middot; Sanaag &middot;</text>
+          <text x="26" y="288" class="axl">Awdal &middot; Woqooyi Galbeed &middot; Bari</text>
+          <text x="26" y="318" class="axn">No river-gauge network and no</text>
+          <text x="26" y="334" class="axn">equivalent early-warning lead time</text>
+          <text x="26" y="354" class="axn" style="fill:var(--ink-mut)">Outside the gauge trigger and Flood Hub</text>
+
+          <!-- Cell D: Mogadishu urban pluvial -->
+          <rect x="320" y="200" width="290" height="170" rx="8" style="fill:var(--sunk);stroke:var(--rule)"/>
+          <rect x="332" y="222" width="10" height="20" style="fill:none;stroke:var(--warn)" stroke-width="2"/>
+          <rect x="344" y="214" width="10" height="28" style="fill:none;stroke:var(--warn)" stroke-width="2"/>
+          <rect x="356" y="226" width="10" height="16" style="fill:none;stroke:var(--warn)" stroke-width="2"/>
+          <text x="376" y="224" class="axl" style="font-weight:700;font-size:13px">Mogadishu (urban)</text>
+          <text x="376" y="240" class="axn">Drainage-limited, no river driver</text>
+          <text x="336" y="272" class="axl">KM4 junction &middot; Airport Road</text>
+          <text x="336" y="288" class="axl">corridor &middot; Bakaara Market</text>
+          <text x="336" y="318" class="axn">Floods at ~5mm of rain (Fig. 2);</text>
+          <text x="336" y="334" class="axn">no early-warning equivalent</text>
+          <text x="336" y="354" class="axn" style="fill:var(--warn)">See Section 2.1 case study, below</text>
+        </svg>
+      </div>
+      <figcaption><b>Figure 1.</b> Somalia's four flood-exposure types, schematically &mdash; this
+        is a category diagram, not a geographic map or an inundation model. Town and region lists
+        are illustrative, not exhaustive; see the text above for the full list. Sources:
+        <sup>[4,5]</sup>.</figcaption>
+    </figure>
 
     <h3>2.1 Case study: rainfall intensity and drainage capacity in Mogadishu</h3>
     <p>Mogadishu is a fourth, distinct exposure: urban pluvial flooding, driven not by river levels
@@ -201,7 +262,7 @@
           <text x="475" y="196" text-anchor="middle" class="axl">(&ge;7 deaths, ~8 hrs)</text>
         </svg>
       </div>
-      <figcaption><b>Figure 1.</b> Approximate Mogadishu rainfall totals, not on a uniform time
+      <figcaption><b>Figure 2.</b> Approximate Mogadishu rainfall totals, not on a uniform time
         base &mdash; the 9 May 2025 figure fell within roughly eight hours, closer to how the
         city's flash floods actually arrive than a 24-hour total. Illustrative bounds on recently
         observed intensity, not a forecast. Sources: <sup>[6,8,9]</sup>.</figcaption>
@@ -263,7 +324,7 @@
           <text x="525" y="208" text-anchor="middle" class="axn">IOD uncertain</text>
         </svg>
       </div>
-      <figcaption><b>Figure 2.</b> Peak Niño&#8201;3.4 anomaly, °C, by event. Bar height is
+      <figcaption><b>Figure 3.</b> Peak Niño&#8201;3.4 anomaly, °C, by event. Bar height is
         ocean-index strength; the label under each bar is IOD state, which this report argues
         matters more than bar height for Somalia's flood outcome. Note that the tallest bar
         (2015-16) coincided with a weak IOD and comparatively contained impact, while several
@@ -342,6 +403,38 @@
       between now and October is therefore the weekly Dipole Mode Index, not the already
       near-certain ONI trajectory.</p>
 
+    <figure>
+      <div class="fig-body">
+        <svg viewBox="0 0 620 210" role="img" aria-label="Bar chart comparing displacement figures: the 2015-16 weak-IOD analogue at 42,000; the extreme-IOD historical range from 60,000 to 417,791; and the recommended preparedness planning floor (2023 baseline times 1.3) at 543,128, which exceeds the historical extreme-IOD range.">
+          <line x1="160" y1="27" x2="160" y2="183" style="stroke:var(--rule-2)" stroke-width="1"/>
+          <!-- row 1: weak/moderate analogue, bar from zero -->
+          <text x="16" y="34" class="axl">2015-16 only</text>
+          <text x="16" y="48" class="axn">(n=1)</text>
+          <rect x="160" y="27" width="33" height="26" style="fill:var(--ink-mut)" opacity="0.6"/>
+          <text x="199" y="44" class="axv">~42,000</text>
+          <!-- row 2: extreme-IOD historical range, floating bracket -->
+          <text x="16" y="99" class="axl">1997&ndash;2023,</text>
+          <text x="16" y="113" class="axn">extreme IOD (n=4)</text>
+          <rect x="207" y="92" width="281" height="26" style="fill:var(--accent)" opacity="0.55"/>
+          <text x="207" y="86" class="axv">60,000</text>
+          <text x="488" y="86" text-anchor="end" class="axv">417,791</text>
+          <!-- row 3: preparedness planning floor, bar from zero -->
+          <text x="16" y="164" class="axl">Planning floor</text>
+          <text x="16" y="178" class="axn">(2023 &times; 1.3)</text>
+          <rect x="160" y="157" width="427" height="26" style="fill:var(--warn)" opacity="0.85"/>
+          <text x="593" y="174" class="axv">543,128</text>
+          <!-- reference line at the planning floor, through all rows -->
+          <line x1="587" y1="20" x2="587" y2="190" style="stroke:var(--warn)" stroke-width="1" stroke-dasharray="3 3"/>
+        </svg>
+      </div>
+      <figcaption><b>Figure 4.</b> Displacement: the single weak-IOD analogue, the four-event
+        extreme-IOD range, and the recommended preparedness planning floor (Section&#8201;5.2). The
+        dashed reference line shows that the planning floor sits above every documented historical
+        event in this record, including the top of the extreme-IOD range &mdash; it is a
+        deliberately conservative sizing target, not this report's best single guess at the most
+        likely outcome. Sources: <sup>[1,14,15]</sup>.</figcaption>
+    </figure>
+
     <h3>5.1 A probability-weighted expected value</h3>
     <p>Table&#8201;2 is evidence, not yet a model: it matches the forecast to a category and reads
       off that category's range. An expected value requires one more ingredient &mdash; a
@@ -378,12 +471,120 @@
       fields, Table&#8201;2's extreme-branch bracket remains the most defensible figure available,
       explicitly conditional on the IOD reaching an extreme-positive state.</p>
 
+    <figure>
+      <div class="fig-body">
+        <svg viewBox="0 0 620 210" role="img" aria-label="Vertical floating bar chart of expected displacement range at three probability weights: 30 percent gives 47,400 to 154,737; 50 percent gives 51,000 to 229,896; 80 percent gives 56,400 to 342,633. A dashed reference line marks the preparedness planning floor at 543,128, above all three expected-value ranges.">
+          <line x1="40" y1="180" x2="600" y2="180" style="stroke:var(--rule-2)" stroke-width="1"/>
+          <line x1="40" y1="24.8" x2="600" y2="24.8" style="stroke:var(--warn)" stroke-width="1" stroke-dasharray="4 3"/>
+          <text x="596" y="18" text-anchor="end" class="axn" style="fill:var(--warn)">planning floor: 543,128</text>
+
+          <rect x="150" y="135.8" width="80" height="30.7" style="fill:var(--accent)" opacity="0.55"/>
+          <text x="190" y="128" text-anchor="middle" class="axv">47,400&ndash;154,737</text>
+          <text x="190" y="196" text-anchor="middle" class="axl">p = 0.30</text>
+          <text x="190" y="209" text-anchor="middle" class="axn">skeptical</text>
+
+          <rect x="310" y="114.3" width="80" height="51.1" style="fill:var(--accent)" opacity="0.7"/>
+          <text x="350" y="106" text-anchor="middle" class="axv">51,000&ndash;229,896</text>
+          <text x="350" y="196" text-anchor="middle" class="axl">p = 0.50</text>
+          <text x="350" y="209" text-anchor="middle" class="axn">agnostic</text>
+
+          <rect x="470" y="82.1" width="80" height="81.8" style="fill:var(--accent)" opacity="0.85"/>
+          <text x="510" y="74" text-anchor="middle" class="axv">56,400&ndash;342,633</text>
+          <text x="510" y="196" text-anchor="middle" class="axl">p = 0.80</text>
+          <text x="510" y="209" text-anchor="middle" class="axn">historical base rate</text>
+        </svg>
+      </div>
+      <figcaption><b>Figure 5.</b> Expected displacement range (Table&#8201;3) at three illustrative
+        probability weights, against the preparedness planning floor from Figure&#8201;4/Section&#8201;5.2.
+        Even at the historical base rate (80&#8201;percent), the expected-value range stays well
+        below the planning floor, which is by design: the floor is a deliberate margin above the
+        model's central estimate, not a restatement of it.</figcaption>
+    </figure>
+
+    <h3>5.2 Preparedness planning floor</h3>
+    <p>Sections 5 and 5.1 give the best-supported evidence and the most defensible model this
+      report can produce. For anticipatory-action sizing specifically, however, a single,
+      conservative planning number is often more useful than a range or a probability table &mdash;
+      provided it is clearly labelled as a sizing target rather than a forecast. This report
+      recommends the 2023 Deyr baseline scaled by this event's ENSO strength ratio alone
+      (1.3&times;, Section&#8201;2.3) as that number: it assumes, deliberately conservatively, that
+      2026 repeats 2023's already-extreme ocean state, with the additional margin that today's ENSO
+      signal already exceeds 2023's regardless of how the IOD resolves.</p>
+
+    <div class="tablewrap">
+      <table class="datatable">
+        <caption><b>Table 4.</b> Preparedness planning floor: the 2023 baseline &times; 1.3.</caption>
+        <thead>
+          <tr><th>Basis</th><th class="num">Deaths</th><th class="num">Displaced</th><th class="num">Damage + losses</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td>2023 Deyr baseline &times; 1.3 (this event's forecast ENSO strength &divide; 2023's)</td>
+            <td class="num">244</td>
+            <td class="num">543,128</td>
+            <td class="num">$228.8M</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>This figure is not offered as more rigorous than Tables&#8201;2 and 3 &mdash; it is a
+      single-analogue, ENSO-only projection, the same method this report otherwise argues against
+      as a general-purpose estimator (Section&#8201;4). It is retained specifically because it
+      produces a conservative, easy-to-communicate sizing target that already exceeds every
+      historical extreme-IOD event on record (Figure&#8201;4) and every expected-value scenario in
+      Table&#8201;3 (Figure&#8201;5): planning against it means the anticipatory response is sized
+      for at least a repeat of 2023's severity even before accounting for how much further the IOD
+      might push impact upward. If the IOD instead resolves toward the weak/moderate branch, this
+      planning floor will prove to have been an overestimate &mdash; which, for a preparedness
+      budget, is the safer direction to be wrong in.</p>
+
     <h2>6. Preparedness recommendations</h2>
     <p>The following follow from Sections 2 and 5 directly and are not ranked by importance, since
       they address different actors on different time horizons.</p>
+
+    <figure>
+      <div class="fig-body">
+        <svg viewBox="0 0 620 110" role="img" aria-label="Four recommendation icons at a glance: monitor the Dipole Mode Index, clear Mogadishu drainage, maintain riverine early warning, and pre-position agricultural inputs.">
+          <!-- 1: monitor DMI (sparkline) -->
+          <circle cx="85" cy="35" r="28" style="fill:var(--sunk);stroke:var(--rule)"/>
+          <polyline points="70,44 78,30 86,38 94,22 100,28" style="fill:none;stroke:var(--accent)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle cx="100" cy="28" r="2.6" style="fill:var(--accent)"/>
+          <text x="85" y="80" text-anchor="middle" class="axl">Monitor the</text>
+          <text x="85" y="95" text-anchor="middle" class="axl">weekly DMI</text>
+
+          <!-- 2: clear Mogadishu drains -->
+          <circle cx="240" cy="35" r="28" style="fill:var(--sunk);stroke:var(--rule)"/>
+          <path d="M 240 20 L 240 38" style="stroke:var(--warn)" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M 232 32 L 240 42 L 248 32" style="fill:none;stroke:var(--warn)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+          <line x1="225" y1="48" x2="255" y2="48" style="stroke:var(--warn)" stroke-width="2.2" stroke-linecap="round"/>
+          <line x1="229" y1="53" x2="251" y2="53" style="stroke:var(--warn)" stroke-width="1.6" opacity="0.6" stroke-linecap="round"/>
+          <text x="240" y="80" text-anchor="middle" class="axl">Clear Mogadishu</text>
+          <text x="240" y="95" text-anchor="middle" class="axl">drainage</text>
+
+          <!-- 3: riverine early warning (broadcast) -->
+          <circle cx="395" cy="35" r="28" style="fill:var(--sunk);stroke:var(--rule)"/>
+          <circle cx="395" cy="42" r="3" style="fill:var(--accent)"/>
+          <path d="M 386 33 A 13 13 0 0 1 404 33" style="fill:none;stroke:var(--accent)" stroke-width="2" opacity="0.8"/>
+          <path d="M 380 27 A 21 21 0 0 1 410 27" style="fill:none;stroke:var(--accent)" stroke-width="2" opacity="0.45"/>
+          <text x="395" y="80" text-anchor="middle" class="axl">Maintain riverine</text>
+          <text x="395" y="95" text-anchor="middle" class="axl">early warning</text>
+
+          <!-- 4: pre-position agricultural inputs -->
+          <circle cx="550" cy="35" r="28" style="fill:var(--sunk);stroke:var(--rule)"/>
+          <path d="M 550 46 L 550 26" style="stroke:var(--accent)" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M 550 32 Q 538 28 538 18" style="fill:none;stroke:var(--accent)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M 550 36 Q 562 32 562 22" style="fill:none;stroke:var(--accent)" stroke-width="2" stroke-linecap="round"/>
+          <text x="550" y="80" text-anchor="middle" class="axl">Pre-position</text>
+          <text x="550" y="95" text-anchor="middle" class="axl">ag. inputs</text>
+        </svg>
+      </div>
+      <figcaption><b>Figure 6.</b> The four recommendations at a glance; see Table&#8201;5 below for
+        responsible actors and rationale.</figcaption>
+    </figure>
+
     <div class="tablewrap">
       <table class="datatable">
-        <caption><b>Table 4.</b> Recommendations, responsible actors and rationale.</caption>
+        <caption><b>Table 5.</b> Recommendations, responsible actors and rationale.</caption>
         <thead>
           <tr><th style="width:26%">Recommendation</th><th style="width:22%">Responsible actor(s)</th><th>Rationale</th></tr>
         </thead>
@@ -421,12 +622,14 @@
               multi-season loss.</td>
           </tr>
           <tr>
-            <td>Size and ring-fence the anticipatory financing envelope against the ranges in
-              Tables&#8201;2 and&#8201;3, not a single figure, and revisit the allocation once the
-              IOD trajectory clarifies.</td>
+            <td>Size and ring-fence the anticipatory financing envelope against the Table&#8201;4
+              planning floor, and revisit downward if the IOD trajectory resolves toward the weaker
+              branch in Table&#8201;2.</td>
             <td>Ministry of Finance; Humanitarian Country Team</td>
-            <td>A single point estimate would misrepresent the genuine, currently unresolved
-              uncertainty documented in this report.</td>
+            <td>The planning floor is a deliberately conservative sizing target that already
+              exceeds the historical extreme-IOD range (Figure&#8201;4) and every expected-value
+              scenario (Figure&#8201;5); sizing to it errs toward over-preparedness rather than
+              under-preparedness.</td>
           </tr>
         </tbody>
       </table>
@@ -439,8 +642,8 @@
       the analogues that share the current forecast's ocean state. The full dataset, including the
       exact wording of every data-quality caveat, is implemented as an open, tested module
       (<span class="mono">analogues.py</span>) rather than existing only as prose in this
-      document &mdash; every figure in Tables&#8201;1 and 2 can be reproduced by running that module
-      directly.</p>
+      document &mdash; every figure in Tables&#8201;1 through 4 can be reproduced by running that
+      module directly.</p>
     <p>This method has real limits, stated here rather than left implicit. With five events, this
       is a small sample from which to generalise, and the weak-IOD branch in particular rests on a
       single event. Displacement figures mix sources of different precision: 2019 and 2023 use a
@@ -525,13 +728,16 @@
           2024; SoDMA press release, 2024; OCHA Situation Reports No.&#8201;1&ndash;5.</p>
         <h4>Reproducing every number in this report</h4>
         <p>The dataset above, the extreme/weak-IOD groupings, the bracket calculations in
-          Table&#8201;2, and the expected-value calculations in Table&#8201;3 are implemented in
+          Table&#8201;2, the expected-value calculations in Table&#8201;3, and the planning-floor
+          projection in Table&#8201;4 are implemented in
           <span class="mono">src/saat/analogues.py</span>
           (<span class="mono">DEYR_HISTORICAL_EVENTS</span>,
           <span class="mono">bracket_estimate()</span>,
           <span class="mono">classify_iod_scenario()</span>,
           <span class="mono">weighted_expected_value()</span>,
-          <span class="mono">HISTORICAL_BASE_RATE_EXTREME_IOD</span>) and covered by
+          <span class="mono">HISTORICAL_BASE_RATE_EXTREME_IOD</span>,
+          <span class="mono">scaled_2023_projection()</span>,
+          <span class="mono">ENSO_STRENGTH_RATIO_2026_VS_2023</span>) and covered by
           <span class="mono">tests/test_analogues.py</span>. Nothing in this report was computed
           only in prose.</p>
       </div>

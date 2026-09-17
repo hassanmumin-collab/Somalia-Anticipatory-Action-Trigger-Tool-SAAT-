@@ -3,7 +3,9 @@
 import pytest
 
 from saat.analogues import (
+    BASELINE_2023,
     DEYR_HISTORICAL_EVENTS,
+    ENSO_STRENGTH_RATIO_2026_VS_2023,
     EXPECTED_VALUE_SENSITIVITY,
     EXTREME_IOD_ANALOGUES,
     HISTORICAL_BASE_RATE_EXTREME_IOD,
@@ -12,6 +14,7 @@ from saat.analogues import (
     InsufficientDataError,
     bracket_estimate,
     classify_iod_scenario,
+    scaled_2023_projection,
     weighted_expected_value,
 )
 
@@ -124,3 +127,27 @@ def test_weighted_expected_value_refuses_to_blend_a_field_missing_from_one_branc
     for field in ("deaths", "econ_loss_usd"):
         with pytest.raises(InsufficientDataError):
             weighted_expected_value(field, 0.5)
+
+
+def test_scaled_2023_projection_matches_the_documented_planning_figures():
+    assert ENSO_STRENGTH_RATIO_2026_VS_2023 == pytest.approx(1.3)
+    projection = scaled_2023_projection()
+    assert projection["deaths"] == 244
+    assert projection["displaced"] == 543128
+    assert projection["econ_loss_usd"] == pytest.approx(228_800_000.0)
+    assert projection["multiplier"] == pytest.approx(1.3)
+
+
+def test_scaled_2023_projection_uses_baseline_2023_and_accepts_a_custom_multiplier():
+    assert BASELINE_2023.year == "2023 Deyr"
+    doubled = scaled_2023_projection(multiplier=2.0)
+    assert doubled["deaths"] == 2 * BASELINE_2023.deaths
+    assert doubled["displaced"] == 2 * BASELINE_2023.displaced
+    assert doubled["econ_loss_usd"] == pytest.approx(2 * BASELINE_2023.econ_loss_usd)
+
+
+def test_scaled_2023_projection_exceeds_the_extreme_iod_bracket_ceiling():
+    # The planning floor should read as at-least-as-bad-as any documented extreme-IOD
+    # event, which is the point of using it as a conservative preparedness target.
+    _, high_displaced, _ = bracket_estimate(EXTREME_IOD_ANALOGUES, "displaced")
+    assert scaled_2023_projection()["displaced"] > high_displaced

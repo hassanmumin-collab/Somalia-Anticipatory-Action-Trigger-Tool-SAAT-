@@ -115,7 +115,7 @@ uses to discount riverine drowning mortality.
 
 ## Core Modules
 
-- **analogues.py** — Five documented Deyr floods (1997-98 to 2023) classified by joint ENSO/IOD state, with `bracket_estimate()`/`classify_iod_scenario()` reading a low/high range straight off the matching historical events instead of scaling one reference event by a ratio
+- **analogues.py** — Five documented Deyr floods (1997-98 to 2023) classified by joint ENSO/IOD state, with `bracket_estimate()`/`classify_iod_scenario()` reading a low/high range straight off the matching historical events, `weighted_expected_value()` for a probability-weighted expected value across the two IOD scenarios, and `scaled_2023_projection()` for a separate, explicitly-labelled preparedness planning floor (2023 baseline x 1.3, ENSO ratio only)
 - **casualties.py** — Expected deaths: urban (Mogadishu drowning + electrocution) and riverine (drowning, lead-time discounted)
 - **hazard.py** — Catchment routing (lag-and-accumulate), SCS curve number runoff, AMC classification
 - **displacement.py** — Two-stage generation model (classifier + regressor), gravity allocation

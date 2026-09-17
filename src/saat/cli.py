@@ -327,7 +327,8 @@ def _demo_analogues() -> list:
     from saat.analogues import (
         DEYR_HISTORICAL_EVENTS, EXPECTED_VALUE_SENSITIVITY, EXTREME_IOD_ANALOGUES,
         HISTORICAL_BASE_RATE_EXTREME_IOD, WEAK_IOD_ANALOGUES, InsufficientDataError,
-        bracket_estimate, classify_iod_scenario, weighted_expected_value,
+        bracket_estimate, classify_iod_scenario, scaled_2023_projection,
+        weighted_expected_value,
     )
 
     lines = [f"{len(DEYR_HISTORICAL_EVENTS)} documented Deyr events loaded, each with cited sources."]
@@ -377,6 +378,19 @@ def _demo_analogues() -> list:
             "deaths: expected value correctly refuses to blend branches -- the weak-IOD "
             "analogue (2015-16) has no verified death toll"
         )
+
+    floor = scaled_2023_projection()
+    _, high_displaced, _ = bracket_estimate(EXTREME_IOD_ANALOGUES, "displaced")
+    if not floor["displaced"] > high_displaced:
+        raise _DemoCheckError(
+            f"planning floor ({floor['displaced']}) should exceed the extreme-IOD bracket "
+            f"ceiling ({high_displaced}) to be a conservative sizing target"
+        )
+    lines.append(
+        f"preparedness planning floor (2023 baseline x {floor['multiplier']}, ENSO-only, "
+        f"single-analogue -- not the model above): {floor['deaths']} deaths, "
+        f"{floor['displaced']:,} displaced, ${floor['econ_loss_usd']:,.0f}"
+    )
     return lines
 
 
