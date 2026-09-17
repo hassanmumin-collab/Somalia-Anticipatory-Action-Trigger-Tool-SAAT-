@@ -11,8 +11,6 @@ The Horn of Africa teleconnection runs opposite to southern and eastern Africa. 
 - Somalia's 2020–2023 near-famine was a **La Niña** sequence, five failed seasons.
 - The catastrophic late-2023 Belet Weyne, Luuq and Jowhar floods were an **El Niño plus positive IOD** sequence.
 
-**El Niño strength alone does not predict Deyr flood severity — the Indian Ocean Dipole state does at least as much.** The 2015-16 Deyr developed under the strongest El Niño on record at the time (ONI +2.6) but a weak, short-lived positive IOD, and produced a comparatively contained flood season. The 2019 Deyr developed under a barely-positive El Niño (ONI +0.5) but one of the most extreme positive IOD events on record, and produced severe flooding (3.4M people affected). See `analogues.py` below and `docs/2026-deyr-flood-report.html` for the full five-event historical record this finding is drawn from.
-
 ## What This Models
 
 A risk map answers "where is exposure high." This tool goes one step further and
@@ -37,10 +35,10 @@ Four impact channels, each in its own module:
    arterial roads such as Airport Road / Aden Adde corridor) and business
    interruption from flooded market premises.
 
-A fifth module, `analogues.py`, is not an impact channel but the historical-evidence
-base the other four are compared against: five documented Deyr-season floods
-(1997-98, 2006, 2015-16, 2019, 2023) classified by joint ENSO/IOD state, with
-every field either verified and sourced or left `None` rather than guessed at.
+A fifth module, `analogues.py`, is not an impact channel but the scaling logic the other
+four are projected forward with: the confirmed 2023 Deyr floods baseline (188 deaths;
+417,791 displaced; $176.0M in damage and losses), scaled by the ratio of a forecast
+event's peak ocean strength to 2023's confirmed peak.
 
 None of the four impact channels is calibrated for Somalia yet; every module says so
 explicitly in its docstrings and flags each placeholder assumption.
@@ -48,19 +46,13 @@ explicitly in its docstrings and flags each placeholder assumption.
 ### Companion document (`docs/`)
 
 - [`docs/2026-deyr-flood-report.html`](docs/2026-deyr-flood-report.html) — "Somalia's
-  2026 Deyr Flood Risk: A Historical-Analogue Assessment", a report by Hassan Mumin. Replaces
-  an earlier single-analogue approach (scale the 2023 Deyr floods by an ENSO strength ratio)
-  after that method produced a false-precision point estimate that ignored the Indian Ocean
-  Dipole's independent, and arguably larger, role. The report instead presents the full
-  five-event historical record from `analogues.py`, the ENSO+IOD joint-dependence finding
-  (Section 4), two historically grounded ranges for 2026 depending on how the IOD resolves
-  (Section 5, computed via `bracket_estimate()` — not an arbitrary ± band), a Mogadishu
+  2026 Deyr Flood Risk: Projected From the 2023 Baseline", a report by Hassan Mumin. Scales
+  the confirmed 2023 Deyr floods toll by this event's forecast ENSO strength relative to
+  2023's (1.3&times;, per `analogues.scaled_2023_projection()`) to project 244 deaths,
+  543,128 displaced and $228.8M in damage and losses for the 2026 Deyr, alongside a Mogadishu
   urban-drainage case study (the 16 September 2026 rain event and the 9 May 2025 flash flood,
-  cross-checked across multiple sources), and preparedness recommendations. Every figure in
-  the report's tables is reproducible by running `analogues.py` directly; the collapsible
-  appendix maps each one to its source and discloses known conflicts between sources (e.g.
-  differing death-toll reports, differing rainfall-duration figures) rather than silently
-  picking one.
+  cross-checked across multiple sources) and preparedness recommendations. Every figure in
+  the report's tables is reproducible by running `analogues.py` directly.
 
 ## Quick Start
 
@@ -115,7 +107,7 @@ uses to discount riverine drowning mortality.
 
 ## Core Modules
 
-- **analogues.py** — Five documented Deyr floods (1997-98 to 2023) classified by joint ENSO/IOD state, with `bracket_estimate()`/`classify_iod_scenario()` reading a low/high range straight off the matching historical events, `weighted_expected_value()` for a probability-weighted expected value across the two IOD scenarios, and `scaled_2023_projection()` for a separate, explicitly-labelled preparedness planning floor (2023 baseline x 1.3, ENSO ratio only)
+- **analogues.py** — The confirmed 2023 Deyr baseline (188 deaths / 417,791 displaced / $176.0M) and `scaled_2023_projection()`, which scales it by a documented ENSO strength ratio (`ENSO_STRENGTH_RATIO_2026_VS_2023`, currently 1.3x)
 - **casualties.py** — Expected deaths: urban (Mogadishu drowning + electrocution) and riverine (drowning, lead-time discounted)
 - **hazard.py** — Catchment routing (lag-and-accumulate), SCS curve number runoff, AMC classification
 - **displacement.py** — Two-stage generation model (classifier + regressor), gravity allocation
@@ -182,7 +174,7 @@ Create `.env` from `.env.example` and fill in API keys.
 | Casualties module (urban + riverine) | **Working**, mortality curves `null` | `saat demo` |
 | Economic module (riverine agriculture) | **Working**, calibration params `null` | `saat demo` |
 | Urban flood module (Mogadishu productivity) | **Working**, traffic/business values `null` | `saat demo` |
-| Analogues module (5-event historical Deyr record) | **Working**, every field sourced or `null` | `saat demo`, `docs/2026-deyr-flood-report.html` |
+| Analogues module (2023 baseline x ENSO ratio) | **Working**, sourced baseline | `saat demo`, `docs/2026-deyr-flood-report.html` |
 
 **Stage 1 blocked forward-chaining CV** (4 folds, 3-month embargo, 5,621 held-out
 district-months). Features: local & upstream monthly rainfall + 1-3 month lags

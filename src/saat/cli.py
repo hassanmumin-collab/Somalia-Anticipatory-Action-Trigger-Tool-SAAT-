@@ -323,73 +323,27 @@ def _demo_urban_flood() -> list:
 
 
 def _demo_analogues() -> list:
-    """Historical Deyr record: joint ENSO+IOD state, not ONI alone, predicts severity."""
-    from saat.analogues import (
-        DEYR_HISTORICAL_EVENTS, EXPECTED_VALUE_SENSITIVITY, EXTREME_IOD_ANALOGUES,
-        HISTORICAL_BASE_RATE_EXTREME_IOD, WEAK_IOD_ANALOGUES, InsufficientDataError,
-        bracket_estimate, classify_iod_scenario, scaled_2023_projection,
-        weighted_expected_value,
-    )
+    """2023 Deyr baseline scaled by this event's ENSO strength ratio."""
+    from saat.analogues import BASELINE_2023, ENSO_STRENGTH_RATIO_2026_VS_2023, scaled_2023_projection
 
-    lines = [f"{len(DEYR_HISTORICAL_EVENTS)} documented Deyr events loaded, each with cited sources."]
+    lines = [
+        f"2023 Deyr baseline: {BASELINE_2023.deaths} deaths, {BASELINE_2023.displaced:,} "
+        f"displaced, ${BASELINE_2023.econ_loss_usd:,.0f} in damage and losses "
+        f"[PDNA/OCHA/SoDMA, cross-checked]"
+    ]
 
-    weak_iod_highest_oni = max(e.oni_peak for e in WEAK_IOD_ANALOGUES)
-    all_time_highest_oni = max(e.oni_peak for e in DEYR_HISTORICAL_EVENTS)
-    if weak_iod_highest_oni != all_time_highest_oni:
+    projection = scaled_2023_projection()
+    if projection["multiplier"] != ENSO_STRENGTH_RATIO_2026_VS_2023:
         raise _DemoCheckError(
-            "expected the weak-IOD group to contain the record-ONI event (2015-16), "
-            f"got weak-IOD max ONI {weak_iod_highest_oni} vs overall max {all_time_highest_oni}"
+            f"default multiplier drifted: {projection['multiplier']} != "
+            f"{ENSO_STRENGTH_RATIO_2026_VS_2023}"
         )
+    if not (projection["deaths"] > BASELINE_2023.deaths and projection["displaced"] > BASELINE_2023.displaced):
+        raise _DemoCheckError("scaled projection did not increase over the 2023 baseline")
     lines.append(
-        f"record ONI ({all_time_highest_oni}) occurred in a weak-IOD event, not an extreme-IOD "
-        f"one -- strong ENSO alone did not produce the worst outcome"
-    )
-
-    low, high, years = bracket_estimate(EXTREME_IOD_ANALOGUES, "deaths")
-    lines.append(
-        f"death-toll bracket across extreme-IOD analogues ({', '.join(years)}): {low}-{high} "
-        f"[read directly off the historical record, not a synthetic +/- band]"
-    )
-
-    note, matching, bracketing = classify_iod_scenario("moderate_to_strong")
-    if matching:
-        raise _DemoCheckError("'moderate_to_strong' unexpectedly matched a historical bucket exactly")
-    lines.append(f"2026 IOD forecast ('moderate_to_strong'): {note}")
-
-    lo0, hi0 = weighted_expected_value("displaced", 0.0)
-    lo1, hi1 = weighted_expected_value("displaced", 1.0)
-    if not (lo1 >= lo0 and hi1 >= hi0):
-        raise _DemoCheckError("expected value did not move monotonically with p_extreme")
-    lines.append(
-        f"displacement expected-value sensitivity (no single P(extreme IOD) is published, "
-        f"so this is shown as a range of weights, base rate={HISTORICAL_BASE_RATE_EXTREME_IOD:.2f}): "
-        + ", ".join(
-            f"p={p:.2f} -> {round(weighted_expected_value('displaced', p)[0]):,}-"
-            f"{round(weighted_expected_value('displaced', p)[1]):,}"
-            for p in EXPECTED_VALUE_SENSITIVITY
-        )
-    )
-
-    try:
-        weighted_expected_value("deaths", 0.5)
-        raise _DemoCheckError("expected InsufficientDataError blending deaths across branches")
-    except InsufficientDataError:
-        lines.append(
-            "deaths: expected value correctly refuses to blend branches -- the weak-IOD "
-            "analogue (2015-16) has no verified death toll"
-        )
-
-    floor = scaled_2023_projection()
-    _, high_displaced, _ = bracket_estimate(EXTREME_IOD_ANALOGUES, "displaced")
-    if not floor["displaced"] > high_displaced:
-        raise _DemoCheckError(
-            f"planning floor ({floor['displaced']}) should exceed the extreme-IOD bracket "
-            f"ceiling ({high_displaced}) to be a conservative sizing target"
-        )
-    lines.append(
-        f"preparedness planning floor (2023 baseline x {floor['multiplier']}, ENSO-only, "
-        f"single-analogue -- not the model above): {floor['deaths']} deaths, "
-        f"{floor['displaced']:,} displaced, ${floor['econ_loss_usd']:,.0f}"
+        f"2026 projection (baseline x {projection['multiplier']}): {projection['deaths']} deaths, "
+        f"{projection['displaced']:,} displaced, ${projection['econ_loss_usd']:,.0f} "
+        f"[single-analogue, ENSO-only scaling]"
     )
     return lines
 
@@ -459,7 +413,7 @@ def cmd_demo(args) -> int:
         ("casualties    (urban drowning/electrocution + riverine drowning)", _demo_casualties, "SYNTHETIC"),
         ("economic      (riverine crop + irrigation loss)", _demo_economic, "SYNTHETIC"),
         ("urban_flood   (Mogadishu road + market productivity loss)", _demo_urban_flood, "SYNTHETIC"),
-        ("analogues     (historical Deyr record: joint ENSO+IOD state)", _demo_analogues, "REAL DATA"),
+        ("analogues     (2023 baseline scaled by ENSO strength ratio)", _demo_analogues, "REAL DATA"),
         ("panel         (balanced district-month assembly)", _demo_panel, "SYNTHETIC"),
     ]
 
