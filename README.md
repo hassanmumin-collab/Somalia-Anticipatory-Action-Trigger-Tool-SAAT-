@@ -45,14 +45,12 @@ in its docstrings and flags each placeholder assumption.
   the flood premise with a world teleconnection map, an exposure map of the river
   corridor cross-checked against Google Flood Hub's satellite inundation-history layer,
   an **interactive 2026 Deyr displacement scenario** anchored on the 2023 Gu-Deyr floods
-  (El Niño/IOD strength multiplier vs. 2023; live district/timing/map panels), the
-  readiness ladder, and a decisions-and-owners table.
-  Real ONI/DMI, PRMN, geoBoundaries and Natural Earth data; displacement figures are
-  scenario or analogue outputs from stated, uncalibrated assumptions.
-  **Not yet updated for the casualties/urban-productivity revamp** — the old
-  economic-loss-channel section (crop/livestock/irrigation/recovery) and the
-  cost-loss "Trigger Economics" widget have been removed from the brief, but it
-  does not yet describe the new casualties.py / urban_flood.py channels either.
+  (El Niño/IOD strength multiplier vs. 2023; live district/timing/map panels), **expected
+  casualties** (Mogadishu drowning/electrocution and riverine drowning), **economic loss**
+  (riverine agriculture and Mogadishu productivity), the readiness ladder, and a
+  decisions-and-owners table. Real ONI/DMI, PRMN, geoBoundaries and Natural Earth data;
+  displacement, casualty and economic figures are scenario, analogue or `saat demo`
+  synthetic outputs from stated, uncalibrated assumptions.
   Hosted: <https://claude.ai/code/artifact/f79d37b4-ec0c-4f0e-b60a-c6a61c955a20>
 
 ## Quick Start

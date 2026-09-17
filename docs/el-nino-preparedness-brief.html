@@ -1,5 +1,5 @@
 <title>The Somalia El Niño Anticipatory Action</title>
-<meta name="description" content="Flood exposure, an interactive displacement scenario, the readiness ladder, and the decisions each Somali ministry owns for the 2026-27 El Niño.">
+<meta name="description" content="Flood exposure, an interactive displacement scenario, expected casualties, economic loss, the readiness ladder, and the decisions each Somali ministry owns for the 2026-27 El Niño.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -117,6 +117,14 @@
   .maplbl { fill: var(--ink); font-family: "IBM Plex Sans", sans-serif; font-size: 9.5px; font-weight: 600; paint-order: stroke; stroke: var(--surface); stroke-width: 2.6px; }
   .maplbl.s { fill: var(--ink-mut); font-weight: 400; font-size: 9px; }
 
+  .imp-h { font-family: "IBM Plex Sans", sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-mut); }
+  .implist { display: flex; flex-direction: column; gap: 9px; margin: 8px 0; }
+  .improw { display: grid; grid-template-columns: 160px 1fr 64px; align-items: center; gap: 10px; font-size: 13px; }
+  .improw .lb { text-align: right; color: var(--ink-2); }
+  .improw .track { position: relative; height: 22px; background: var(--sunk); border-radius: 4px; }
+  .improw .fill { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--flood); opacity: .7; }
+  .improw .val { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink); }
+
   .owners { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 14px; }
   .owners caption { text-align: left; font-size: 11.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mut); padding-bottom: 8px; }
   .owners th { text-align: left; font-family: "IBM Plex Sans", sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-mut); border-bottom: 1px solid var(--rule-2); padding: 6px 10px 6px 0; }
@@ -157,8 +165,9 @@
   <header class="masthead">
     <div class="kicker">Somalia · Anticipatory Action · October–December 2026</div>
     <h1>The Somalia El Niño Anticipatory Action</h1>
-    <p class="standfirst">Flood exposure, an interactive displacement scenario, the readiness
-      ladder, and the decisions each ministry now owns for the 2026–27 season.</p>
+    <p class="standfirst">Flood exposure, an interactive displacement scenario, expected
+      casualties, economic loss, the readiness ladder, and the decisions each ministry now owns
+      for the 2026–27 season.</p>
     <div class="authorblock">
       <div class="initials" aria-hidden="true">HM</div>
       <div class="authorline">
@@ -199,7 +208,7 @@
       439,000 to 564,000.</p>
     <p>Most of the actions that reduce a flood caseload have lead times of weeks to months and
       cannot be recovered once their window closes. The Tier&#8201;0 window covering vaccination,
-      pre-positioning and canal repair is closing now. The decisions listed in Section&#8201;6 should
+      pre-positioning and canal repair is closing now. The decisions listed in Section&#8201;8 should
       be settled before the Deyr rains begin in October.</p>
   </div>
 
@@ -395,7 +404,90 @@
 
   <!-- 5 -->
   <section>
-    <div class="eyebrow"><span class="n">05</span><span>The preparedness ladder</span></div>
+    <div class="eyebrow"><span class="n">05</span><span>Expected casualties</span></div>
+    <h2>Two different ways to die in a flood, modelled separately</h2>
+    <p>Urban and riverine flooding kill people through different mechanisms, so this tool models
+      them separately rather than applying one generic flood-mortality rate. In Mogadishu, poor
+      drainage lets rainfall pond and flow through streets and compounds; the dominant causes of
+      death are drowning and <b>electrocution from naked, exposed low-voltage wiring</b> that
+      floodwater brings into contact with pedestrians and waders &mdash; a hazard specific to
+      unplanned electrification with no riverine equivalent. In the Shabelle and Juba gauge towns,
+      drowning dominates, and mortality is governed by depth and by warning lead time: the routing
+      lag that gives Belet Weyne roughly four days of notice is not just logistical lead time, it
+      measurably reduces expected deaths.</p>
+
+    <figure>
+      <div class="fig-tag"><b>Figure 5</b> · Illustrative expected deaths, by pathway</div>
+      <div class="fig-body">
+        <div class="imp-h">Mogadishu, urban pluvial</div>
+        <div class="implist">
+          <div class="improw"><span class="lb">Drowning</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="val">120.0</span></div>
+          <div class="improw"><span class="lb">Electrocution</span><span class="track"><span class="fill" style="width:9.6%"></span></span><span class="val">11.5</span></div>
+        </div>
+        <div class="imp-h" style="margin-top:16px">Belet Weyne, riverine</div>
+        <div class="implist">
+          <div class="improw"><span class="lb">No warning</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="val">960.0</span></div>
+          <div class="improw"><span class="lb">4-day routing-lag warning</span><span class="track"><span class="fill" style="width:20%"></span></span><span class="val">192.0</span></div>
+        </div>
+      </div>
+      <figcaption>Synthetic output from <span class="mono">saat demo</span>
+        (<span class="mono">casualties.py</span>), not a Somalia estimate: illustrative population,
+        depth and mortality-curve inputs with no local calibration. The routing-lag comparison is
+        the point &mdash; the same event, with and without four days of warning, differs five-fold
+        in this illustration.</figcaption>
+    </figure>
+
+    <p>Neither pathway has a Somalia-specific mortality curve. <span class="mono">casualties.py</span>
+      requires an explicit depth-mortality curve at every call site rather than defaulting to one,
+      so a missing calibration cannot silently produce a false sense of precision. The
+      electrocution contact-fatality rate is similarly unconfirmed and needs a Mogadishu
+      electrical-infrastructure survey, ideally with the Benadir Regional Administration and the
+      electricity providers, before any of these figures are used beyond illustration.</p>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <div class="eyebrow"><span class="n">06</span><span>Economic loss</span></div>
+    <h2>Riverine agriculture is modelled; Mogadishu's productivity loss is the hard part</h2>
+    <p>Two channels, deliberately kept separate because the mechanism differs. Riverine
+      agricultural loss (Shabelle/Juba) is the more conventional of the two: direct crop loss is
+      duration-driven &mdash; inundated area times yield times price times a submergence loss
+      fraction &mdash; and second-order irrigation damage, silted canals and breached embankments,
+      determines whether one flood produces one bad season or two. Mogadishu's productivity loss is
+      the hardest of the four impact channels to model credibly: urban pluvial flooding does not
+      destroy a crop, it <b>interrupts movement and trade</b> by ponding stagnant water on arterial
+      roads such as the Airport Road (Aden Adde corridor) and flooding market premises such as
+      Bakaara Market.</p>
+
+    <figure>
+      <div class="fig-tag"><b>Figure 6</b> · Illustrative loss by channel</div>
+      <div class="fig-body">
+        <div class="implist">
+          <div class="improw"><span class="lb">Direct crop loss</span><span class="track"><span class="fill" style="width:9.7%"></span></span><span class="val">$478k</span></div>
+          <div class="improw"><span class="lb">Second-order irrigation</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="val">$4.9M</span></div>
+          <div class="improw"><span class="lb">Airport Road, 3 days</span><span class="track"><span class="fill" style="width:6.4%"></span></span><span class="val">$315k</span></div>
+          <div class="improw"><span class="lb">Bakaara Market, 2 days</span><span class="track"><span class="fill" style="width:7.1%"></span></span><span class="val">$350k</span></div>
+        </div>
+      </div>
+      <figcaption>Synthetic output from <span class="mono">saat demo</span>
+        (<span class="mono">economic.py</span>, <span class="mono">urban_flood.py</span>), not a
+        Somalia estimate. The Airport Road figure assumes 60&#8201;% of blocked traffic reroutes at
+        1.5&times; detour cost; fully blocked with no rerouting, the same closure costs $450k. None
+        of these curves, traffic values or trade values is Somalia-calibrated.</figcaption>
+    </figure>
+
+    <p>The riverine figures inherit the same caveat as the casualty curves: run them as a range
+      across plausible submergence and irrigation-penalty assumptions, not a point estimate. The
+      Mogadishu figures are weaker still &mdash; <span class="mono">RoadSegment.daily_traffic_value_usd</span>
+      and <span class="mono">BusinessInterruptionLoss.daily_business_value_usd</span> are
+      placeholders pending a transport and market survey with the Benadir Regional Administration,
+      the Mogadishu Port/Airport authorities and market associations. Reporting a headline
+      productivity-loss number before that survey exists would manufacture false precision.</p>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <div class="eyebrow"><span class="n">07</span><span>The preparedness ladder</span></div>
     <h2>Four tiers, each with its own lead time, envelope and actions</h2>
     <p>Preparedness is a sequence of decisions taken at decreasing lead times. Each tier fires on a
       distinct indicator, releases a fixed share of the anticipatory envelope, and triggers actions
@@ -404,7 +496,7 @@
       that sizes the money to the event rather than to last year's actuals.</p>
 
     <figure>
-      <div class="fig-tag"><b>Figure 5</b> · The anticipatory action ladder</div>
+      <div class="fig-tag"><b>Figure 7</b> · The anticipatory action ladder</div>
       <div class="fig-body"><svg id="figLadder" viewBox="0 0 700 410" role="img" aria-label="The four-tier anticipatory action ladder."></svg></div>
       <figcaption>Envelope shares are indicative. Livestock vaccination in Rift Valley Fever zones
         has a three to four week lead and must be initiated at Tier&#8201;0. The northern flash-flood
@@ -412,9 +504,9 @@
     </figure>
   </section>
 
-  <!-- 6 -->
+  <!-- 8 -->
   <section>
-    <div class="eyebrow"><span class="n">06</span><span>Decisions, owners and the calendar</span></div>
+    <div class="eyebrow"><span class="n">08</span><span>Decisions, owners and the calendar</span></div>
     <h2>What must be settled, by whom, and by when</h2>
     <p>Every judgemental parameter in this brief is a decision rather than a fact. The anticipatory
       framework cannot release funds until the items below are agreed with the named counterparts.
@@ -436,7 +528,7 @@
     </table>
 
     <figure>
-      <div class="fig-tag"><b>Figure 6</b> · The preparedness calendar</div>
+      <div class="fig-tag"><b>Figure 8</b> · The preparedness calendar</div>
       <div class="fig-body"><svg id="figCal" viewBox="0 0 700 240" role="img" aria-label="Calendar band across the Somali seasons showing which anticipatory tier window is open in September 2026."></svg></div>
       <figcaption>The Tier&#8201;0 window covering the 60 to 120 day lead time is closing now. A decision
         taken after its window closes cannot recover the lead time it needed.</figcaption>
@@ -455,9 +547,12 @@
       real data. The Section&#8201;4 scenario is analogue-based and is not a model point forecast;
       the generation model does not yet beat a persistence baseline on event discrimination. The
       El Niño/IOD strength multiplier in that scenario is a judgemental scenario parameter, not a
-      calibrated relationship between ONI/DMI and displacement. The maps are exposure schematics,
-      not inundation models. Figure&#8201;1 is a schematic of the typical El Niño response and not
-      a forecast for this event.</p>
+      calibrated relationship between ONI/DMI and displacement. The Section&#8201;5 casualty
+      figures and Section&#8201;6 economic-loss figures are synthetic output from <span class="mono">saat
+      demo</span> (<span class="mono">casualties.py</span>, <span class="mono">economic.py</span>,
+      <span class="mono">urban_flood.py</span>): illustrative inputs run through real code, not
+      Somalia estimates. The maps are exposure schematics, not inundation models. Figure&#8201;1
+      is a schematic of the typical El Niño response and not a forecast for this event.</p>
     <h3>Status</h3>
     <p>This brief is decision support and not an operational instruction. The gauge thresholds and
       the loss magnitudes are all pending agreement by the working group. The underlying analysis
@@ -682,7 +777,7 @@
     somaliaMap("scMap", { mode: "case", points: pts, rmax: 26, nlab: 5 });
   }
 
-  /* ============ Figure 5 : ladder ============ */
+  /* ============ Figure 7 : ladder ============ */
   function figLadder() {
     var s = document.getElementById("figLadder"); clr(s);
     var tiers = [
@@ -708,7 +803,7 @@
     add(s, "text", { x: 18, y: 404, class: "schem-lbl", fill: COL.inkmut }, "longer lead, lower skill  ·  shorter lead, higher confidence");
   }
 
-  /* ============ Figure 6 : calendar ============ */
+  /* ============ Figure 8 : calendar ============ */
   function figCal() {
     var s = document.getElementById("figCal"); clr(s);
     var m = { l: 20, r: 20 }, W = 700, iw = W - m.l - m.r, cw = iw / 12;
