@@ -44,19 +44,26 @@ in its docstrings and flags each placeholder assumption.
   "The Somalia El Niño Anticipatory Action", a ministerial brief authored by Hassan Mumin:
   the flood premise with a world teleconnection map, an exposure map of the river
   corridor cross-checked against Google Flood Hub's satellite inundation-history layer,
-  an **interactive 2026 Deyr displacement scenario** anchored on the 2023 Gu-Deyr floods
-  (El Niño/IOD strength multiplier vs. 2023; live district/timing/map panels), **expected
-  casualties** and **economic loss**, both anchored on the confirmed 2023 Deyr floods toll
-  (188 deaths; $176M in damage and losses, per the SoDMA/UN/World Bank/EU Rapid
-  Post-Disaster Needs Assessment and OCHA situation reports) and scaled live by the same
-  El Niño/IOD multiplier as the displacement scenario, the readiness ladder, and a
-  decisions-and-owners table. Real ONI/DMI, PRMN, geoBoundaries, Natural Earth and PDNA/OCHA
-  data; the displacement, casualty and economic figures are analogue scenarios (a real 2023
-  baseline scaled by a stated multiplier), not point forecasts — `casualties.py` and
+  a **2026 Deyr displacement scenario** anchored on the 2023 Gu-Deyr floods and scaled by a
+  fixed 1.3&times; El Niño/IOD strength multiplier (this event's forecast peak vs. 2023's
+  confirmed peak), **expected casualties** and **economic loss**, both anchored on the
+  confirmed 2023 Deyr floods toll (188 deaths; $176M in damage and losses, per the
+  SoDMA/UN/World Bank/EU Rapid Post-Disaster Needs Assessment and OCHA situation reports) and
+  scaled by that same fixed multiplier, the readiness ladder, and a decisions-and-owners
+  table. Real ONI/DMI, PRMN, geoBoundaries, Natural Earth and PDNA/OCHA data; the
+  displacement, casualty and economic figures are analogue scenarios (a real 2023 baseline
+  scaled by a stated, fixed multiplier), not point forecasts — `casualties.py` and
   `urban_flood.py`'s per-mechanism decomposition (Mogadishu vs. riverine, drowning vs.
   electrocution) remains `saat demo` synthetic output pending local calibration and is not
   used in the brief's headline figures.
   Hosted: <https://claude.ai/code/artifact/f79d37b4-ec0c-4f0e-b60a-c6a61c955a20>
+
+- [`docs/mogadishu-el-nino-oped.html`](docs/mogadishu-el-nino-oped.html) — "Five
+  Millimetres, and Mogadishu Went Under", a general-audience op-ed authored by Hassan Mumin
+  drawing on the same 2023 PDNA/OCHA baseline and 1.3&times; multiplier as the brief, plus
+  Mogadishu-specific rainfall context (the 16 September 2026 flooding and the 9 May 2025
+  flash flood) and recommendations for the municipality, households and riverine towns
+  ahead of the 2026 Deyr. Includes a collapsible assumptions-and-sources section.
 
 ## Quick Start
 
