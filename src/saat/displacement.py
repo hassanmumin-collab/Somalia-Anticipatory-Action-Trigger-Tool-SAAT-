@@ -38,7 +38,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 
-from saat.verification import ContingencyMetrics
+from saat.metrics import ContingencyMetrics
 
 EXCLUDED_FEATURE_TERMS = ("ipc", "fews", "food_security_phase")
 

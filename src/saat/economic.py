@@ -1,47 +1,31 @@
 """
-Economic module: monetised loss estimation through four channels.
+Economic module: monetised agricultural loss in riverine flood zones.
 
-**Four channels of economic impact:**
+Scope is deliberately narrow: the direct and second-order cost of flooding to
+riverine crop agriculture (Shabelle/Juba). Urban productivity loss is modelled
+separately in `saat.urban_flood`; casualties in `saat.casualties`.
+
+**Two channels of economic impact:**
 
 1. **Direct crop loss:** Inundated area × yield × price.
    Duration-driven, not depth-driven. Maize/sesame: ~3-5 days submergence at
    vegetative stage = near-total loss. Sorghum more tolerant. Apply growth-stage
    multiplier; near-harvest crop partially salvageable.
 
-2. **Livestock via RVF and export ban:** Flood mortality modest vs. drought.
-   Dominant channel: disease → Gulf import suspension. Livestock exports (Saudi,
-   UAE, Oman) are Somalia's largest export earner + primary FX source for Berbera/
-   Bosaso. Model as contingent loss: P(outbreak|flood) × P(ban|outbreak) × export
-   value × ban duration. **Report conditional loss alongside expected loss.**
-   Note: El Niño–RVF association rests on small sample (1997-98, 2006-07).
-
-3. **Second-order irrigation damage:** Canal siltation, embankment breach, barrage
+2. **Second-order irrigation damage:** Canal siltation, embankment breach, barrage
    damage cause NEXT season to underperform. One Deyr flood = two bad harvests.
    Model repair cost + next-season foregone production. **Headline sensitivity:**
    decides whether one-season or two-season shock.
-
-4. **Recovery upside:** Pasture regeneration, improved conception, herd rebuilding
-   over 12-18 months. After four failed seasons, this is substantial. **Report on
-   separate time axis, do NOT net against immediate caseload** in headline reporting.
-   Tool showing only downside will be dismissed by anyone working in pastoral
-   livelihoods, and rightly.
-
-Plus: **Food security.** Do NOT predict IPC phase directly from rainfall.
-Model transmission channels: production loss, market access disruption, cereal
-price response, terms of trade collapse, AWD/cholera burden (leading mortality
-channel in flood years independent of food access).
 
 Reference: Section 9 of the build prompt.
 
 PLACEHOLDER ASSUMPTIONS (all null pending Somalia-specific calibration):
 - Submergence damage curves
 - Second-order yield penalty
-- Mitigation effectiveness
-- RVF conditional probabilities
 """
 
 from dataclasses import dataclass, field
-from typing import Optional, Dict, Tuple
+from typing import Optional, Dict
 from enum import Enum
 import numpy as np
 
@@ -146,62 +130,6 @@ class CropLoss:
 
 
 @dataclass
-class LivestockRVFLoss:
-    """RVF and export ban contingent loss."""
-
-    livestock_type: str  # "cattle", "goats", "sheep"
-    monthly_export_value_usd: float
-    p_outbreak_given_flood: float  # P(RVF outbreak | flood)
-    p_ban_given_outbreak: float  # P(export ban | RVF outbreak)
-    expected_ban_duration_months: float
-    survival_rate_if_outbreak: float = 0.95  # Direct mortality
-
-    # PLACEHOLDER: Rest on small sample (1997-98, 2006-07)
-    # No Somalia-specific calibration confirmed
-    description: str = "Conditional probabilities poorly constrained."
-
-    def __post_init__(self) -> None:
-        """Validate probabilities and non-negative monetary inputs."""
-        if not 0 <= self.p_outbreak_given_flood <= 1:
-            raise ValueError("p_outbreak_given_flood must be in [0, 1]")
-        if not 0 <= self.p_ban_given_outbreak <= 1:
-            raise ValueError("p_ban_given_outbreak must be in [0, 1]")
-        if not 0 <= self.survival_rate_if_outbreak <= 1:
-            raise ValueError("survival_rate_if_outbreak must be in [0, 1]")
-        if self.monthly_export_value_usd < 0 or self.expected_ban_duration_months < 0:
-            raise ValueError("Export value and ban duration must be non-negative")
-
-    def calculate_expected_loss(self) -> float:
-        """
-        Calculate expected loss from RVF/export ban.
-
-        E[loss] = P(outbreak|flood) × P(ban|outbreak) × monthly_export × ban_months
-
-        Returns:
-            Expected economic loss in USD
-        """
-        return (
-            self.p_outbreak_given_flood
-            * self.p_ban_given_outbreak
-            * self.monthly_export_value_usd
-            * self.expected_ban_duration_months
-        )
-
-    def calculate_conditional_loss(self) -> float:
-        """
-        Calculate conditional loss given outbreak occurs.
-
-        Returns:
-            Loss conditional on RVF outbreak (used for decision analysis)
-        """
-        return (
-            self.p_ban_given_outbreak
-            * self.monthly_export_value_usd
-            * self.expected_ban_duration_months
-        )
-
-
-@dataclass
 class SecondOrderIrrigationDamage:
     """Damage to irrigation infrastructure affecting next season."""
 
@@ -260,175 +188,35 @@ class SecondOrderIrrigationDamage:
 
 
 @dataclass
-class RecoveryUpside:
-    """Recovery and rebuilding upside after flood."""
-
-    # Required scenario inputs
-    pasture_recovery_gain_fraction: float  # Improvement vs. pre-flood baseline
-    breeding_rate_improvement_percent: float  # % improvement in conception rates
-    post_flood_herd_size: int
-    next_season_yield_improvement_fraction: float  # If rains normal
-    # Optional timing and context
-    recovery_months: int = 12
-    grazing_area_hectares: Optional[float] = None  # For context
-    recovery_timeline_months: int = 18
-
-    # PLACEHOLDER: Judgemental. Not netted against immediate caseload.
-    description: str = (
-        "Substantial after four failed seasons. Report on separate time axis. "
-        "Do NOT net against immediate caseload in headline reporting."
-    )
-
-    def __post_init__(self) -> None:
-        """Validate recovery parameters."""
-        if not 0 <= self.pasture_recovery_gain_fraction:
-            raise ValueError("pasture_recovery_gain_fraction must be non-negative")
-        if self.breeding_rate_improvement_percent < 0:
-            raise ValueError("breeding_rate_improvement_percent must be non-negative")
-        if self.post_flood_herd_size < 0 or self.next_season_yield_improvement_fraction < 0:
-            raise ValueError("Recovery quantities must be non-negative")
-
-    def calculate_recovery_benefit(self, baseline_herd_productivity: float) -> float:
-        """
-        Calculate herd recovery benefit.
-
-        Args:
-            baseline_herd_productivity: Baseline kg per animal per year
-
-        Returns:
-            Recovery gain in kg (or USD equivalent)
-        """
-        # Simplified: improved conception rates lead to larger herd after 12-18 months
-        herd_size_gain = self.post_flood_herd_size * (self.breeding_rate_improvement_percent / 100)
-        gain_kg = herd_size_gain * baseline_herd_productivity * (self.recovery_timeline_months / 12)
-        return gain_kg
-
-
-@dataclass
-class FoodSecurityTransmission:
-    """Food security impact through market and livelihood channels."""
-
-    # Production loss (direct)
-    production_loss_fraction: float
-
-    # Market access disruption
-    # When roads cut and Baidoa/Belet Weyne isolate
-    market_access_loss_fraction: float
-
-    # Cereal price response
-    baseline_cereal_price_usd_per_kg: float
-    price_elasticity_supply: float  # How much price rises per % production loss
-    expected_price_spike_fraction: float
-
-    # Terms of trade collapse
-    baseline_tot: float  # Goat-to-cereal exchange rate
-    tot_elasticity: float
-    expected_tot_decline_fraction: float
-
-    # AWD/cholera burden (independent of food access)
-    awd_mortality_rate: float  # Deaths per 1000
-    at_risk_population: int
-    treatment_cost_per_case_usd: float
-
-    def calculate_food_insecurity_progression(self) -> Dict[str, float]:
-        """
-        Model transmission channels to IPC phase.
-
-        Do NOT predict IPC directly. Model channels:
-        - Production loss
-        - Market disruption
-        - Cereal price response
-        - Terms of trade collapse
-        - AWD/cholera burden
-
-        Returns:
-            Estimates of impact on each transmission channel
-        """
-        fractions = (
-            self.production_loss_fraction,
-            self.market_access_loss_fraction,
-            self.expected_price_spike_fraction,
-            self.expected_tot_decline_fraction,
-        )
-        if not all(0 <= value <= 1 for value in fractions):
-            raise ValueError("Food-security loss and response fractions must be in [0, 1]")
-        if self.at_risk_population < 0 or self.treatment_cost_per_case_usd < 0:
-            raise ValueError("Population and treatment cost must be non-negative")
-        return {
-            "production_loss_fraction": self.production_loss_fraction,
-            "market_access_disruption_fraction": self.market_access_loss_fraction,
-            "cereal_price_spike_fraction": self.expected_price_spike_fraction,
-            "cereal_price_usd_per_kg": self.baseline_cereal_price_usd_per_kg
-            * (1 + self.expected_price_spike_fraction),
-            "terms_of_trade_decline_fraction": self.expected_tot_decline_fraction,
-            "terms_of_trade": self.baseline_tot * (1 - self.expected_tot_decline_fraction),
-            "awd_expected_deaths": self.at_risk_population * self.awd_mortality_rate / 1000,
-            "awd_treatment_cost_usd": self.at_risk_population
-            * self.awd_mortality_rate
-            / 1000
-            * self.treatment_cost_per_case_usd,
-        }
-
-
-@dataclass
 class EconomicLossSummary:
-    """Complete economic loss summary."""
+    """Riverine agricultural loss summary: direct crop loss + second-order damage."""
 
     event_date: str
     direct_crop_loss_usd: float
-    livestock_rvf_expected_loss_usd: float
-    livestock_rvf_conditional_loss_usd: Optional[float]
     second_order_damage_usd: float
-    recovery_upside_usd: Optional[float]
-    food_security_impact: Dict[str, float]
 
-    def total_expected_loss(self, include_recovery: bool = False) -> float:
+    def total_expected_loss(self) -> float:
         """
-        Calculate total expected loss.
-
-        Args:
-            include_recovery: If False, net recovery upside. If True, report separately.
+        Calculate total expected agricultural loss.
 
         Returns:
             Total economic loss (USD)
         """
-        total = (
-            self.direct_crop_loss_usd
-            + self.livestock_rvf_expected_loss_usd
-            + self.second_order_damage_usd
-        )
-
-        # Recovery is an upside on a separate time axis and is never netted into
-        # the immediate loss headline.
-
-        return total
+        return self.direct_crop_loss_usd + self.second_order_damage_usd
 
     def headline_report(self) -> str:
         """
         Generate headline loss report.
 
-        Report conditional RVF loss separately (low prob, high consequence).
-        Report recovery on separate time axis.
-        Report food security channels separately from direct losses.
-
         Returns:
             Formatted report string
         """
-        immediate = self.total_expected_loss(include_recovery=False)
-        lines = [
-            f"Economic loss summary for {self.event_date}",
-            f"Immediate expected loss (USD): {immediate:,.2f}",
-            f"  Direct crop loss (USD): {self.direct_crop_loss_usd:,.2f}",
-            f"  RVF/export-ban expected loss (USD): {self.livestock_rvf_expected_loss_usd:,.2f}",
-            f"  Second-order irrigation damage (USD): {self.second_order_damage_usd:,.2f}",
-        ]
-        if self.livestock_rvf_conditional_loss_usd is not None:
-            lines.append(
-                f"  RVF/export-ban conditional loss (USD): "
-                f"{self.livestock_rvf_conditional_loss_usd:,.2f}"
-            )
-        if self.recovery_upside_usd is not None:
-            lines.append(f"Recovery upside, reported separately (USD): {self.recovery_upside_usd:,.2f}")
-        for channel, value in self.food_security_impact.items():
-            lines.append(f"Food-security {channel}: {value:,.2f}")
-        return "\n".join(lines)
+        total = self.total_expected_loss()
+        return "\n".join(
+            [
+                f"Agricultural loss summary for {self.event_date}",
+                f"Total expected loss (USD): {total:,.2f}",
+                f"  Direct crop loss (USD): {self.direct_crop_loss_usd:,.2f}",
+                f"  Second-order irrigation damage (USD): {self.second_order_damage_usd:,.2f}",
+            ]
+        )

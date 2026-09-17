@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "saat"
 version = "0.1.0"
-description = "Somalia Anticipatory Action Trigger tool: flood forecasts to pre-agreed financing triggers with displacement caseload forecasting and monetised economic loss"
+description = "Somalia Anticipatory Action Trigger tool: flood forecasts to expected casualties, displacement caseload, and monetised economic loss"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [

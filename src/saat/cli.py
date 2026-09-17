@@ -5,15 +5,12 @@ Commands:
   saat doctor       - Check Python version, config, packages, credentials, network
   saat preflight    - Check which sources are alive and how fresh
   saat build-panel  - Assemble the district-month panel
-  saat verify       - Optimize a threshold against a record
-  saat evaluate     - Run the engine over current readings
   saat demo         - Run all module self-tests offline, no credentials
 """
 
 import argparse
 import sys
 import logging
-import json
 from pathlib import Path
 
 from saat.config import get_config, Config
@@ -102,111 +99,6 @@ def cmd_doctor(args) -> int:
 
 class _DemoCheckError(Exception):
     """Raised by a demo self-test when an operational property does not hold."""
-
-
-def _demo_verification() -> list:
-    """Cost-loss engine: infeasibility guard, cheap-action/high-FAR value, metrics."""
-    import numpy as np
-    from saat.verification import CostLossModel, CostLossParameters, ContingencyMetrics
-
-    lines = []
-
-    # Feasibility guard: C/L >= f must raise, not return a threshold.
-    try:
-        CostLossModel(
-            CostLossParameters(
-                cost_action=10.0, loss_event=10.0,
-                mitigation_effectiveness=0.5, climatological_base_rate=0.1,
-            )
-        )
-        raise _DemoCheckError("infeasible C/L >= f did not raise")
-    except ValueError as error:
-        if "INFEASIBLE" not in str(error):
-            raise _DemoCheckError(f"unexpected feasibility error: {error}")
-        lines.append(f"infeasible params rejected: {str(error).split('.')[0]}.")
-
-    # Cheap action, forecast that cannot separate events cleanly: the optimum
-    # keeps POD = 1, tolerates FAR > 0.5, and still beats both trivial strategies.
-    params = CostLossParameters(
-        cost_action=1.0, loss_event=100.0,
-        mitigation_effectiveness=0.9, climatological_base_rate=0.2,
-    )
-    model = CostLossModel(params)
-    forecasts = np.array(
-        [0.60, 0.58, 0.56, 0.54]
-        + [0.62, 0.61, 0.59, 0.57, 0.55]
-        + [0.30, 0.25, 0.22, 0.20, 0.18, 0.15, 0.12, 0.10, 0.08, 0.05, 0.03]
-    )
-    observations = np.array([1] * 4 + [0] * 16)
-    outcome = model.optimize_threshold(observations, forecasts)
-    if not (outcome.pod == 1.0 and outcome.far > 0.5 and outcome.relative_economic_value > 0.5):
-        raise _DemoCheckError(
-            f"cheap-action operating point wrong: POD={outcome.pod}, "
-            f"FAR={outcome.far}, V={outcome.relative_economic_value}"
-        )
-    lines.append(
-        f"cheap action: threshold={outcome.threshold:.2f}, POD={outcome.pod:.2f}, "
-        f"FAR={outcome.far:.2f} (>0.5), V={outcome.relative_economic_value:.2f} (>0.5)"
-    )
-
-    # An unsatisfiable POD/FAR constraint must raise, not silently relax.
-    try:
-        model.optimize_threshold(
-            np.array([0, 0, 0, 0, 0]), np.array([0.1, 0.2, 0.3, 0.4, 0.5]), min_pod=0.5
-        )
-        raise _DemoCheckError("unsatisfiable POD constraint did not raise")
-    except ValueError as error:
-        lines.append(f"unsatisfiable constraint rejected: {str(error).split('.')[0]}.")
-
-    metrics = ContingencyMetrics(hits=8, false_alarms=2, misses=2, correct_negatives=88)
-    lines.append(
-        f"contingency metrics: POD={metrics.pod:.2f}, FAR={metrics.far:.2f}, "
-        f"PSS={metrics.pss:.2f}, bias={metrics.frequency_bias:.2f}"
-    )
-    return lines
-
-
-def _demo_trigger() -> list:
-    """Fail-loud engine: missing data escalates, an absent tier is never silent."""
-    from datetime import datetime
-    from saat.trigger import (
-        DataStatus, IndicatorReading, SystemEvaluator, TierEvaluator, TierStatus,
-    )
-
-    now = datetime(2026, 10, 1)
-    lines = []
-
-    def reading(value, status):
-        return IndicatorReading(
-            indicator_name="frrims_stage", value=value, threshold=6.0, operator=">=",
-            data_status=status, source="FRRIMS", timestamp=now, last_update=now,
-            update_age_hours=1.0,
-        )
-
-    evaluator = TierEvaluator("Immediate Action", 3, "or")
-
-    # A value that WOULD clear the threshold, but the feed is MISSING: the tier
-    # must escalate for human review, not report calm.
-    escalated = evaluator.evaluate([reading(7.5, DataStatus.MISSING)])
-    if escalated.status != TierStatus.ESCALATION:
-        raise _DemoCheckError(f"missing data gave {escalated.status}, expected ESCALATION")
-    lines.append("missing feed that could have activated -> ESCALATION (not INACTIVE)")
-
-    healthy = evaluator.evaluate([reading(7.5, DataStatus.OK)])
-    if healthy.status != TierStatus.ACTIVE:
-        raise _DemoCheckError(f"healthy over-threshold reading gave {healthy.status}")
-    lines.append("healthy reading over threshold -> ACTIVE")
-
-    system = SystemEvaluator()
-    for tier in range(3):
-        system.add_tier(tier, TierEvaluator(f"Tier {tier}", tier, "or"))
-    system.add_tier(3, evaluator)
-    # Tier 2 omitted from the readings entirely.
-    result = system.evaluate({0: [], 1: [], 3: [reading(2.0, DataStatus.OK)]})
-    if not any("Tier 2" in item for item in result.escalations):
-        raise _DemoCheckError("absent tier did not produce an escalation")
-    lines.append("tier absent from input -> escalation, not silence")
-    return lines
 
 
 def _demo_hazard() -> list:
@@ -302,10 +194,9 @@ def _demo_displacement() -> list:
 
 
 def _demo_economic() -> list:
-    """Four loss channels: conditional vs expected RVF, recovery kept separate."""
+    """Riverine agricultural loss: direct crop loss + second-order irrigation damage."""
     from saat.economic import (
-        CropLoss, CropType, GrowthStage, LivestockRVFLoss, RecoveryUpside,
-        SecondOrderIrrigationDamage, SubmergenceDamageCurve,
+        CropLoss, CropType, GrowthStage, SecondOrderIrrigationDamage, SubmergenceDamageCurve,
     )
 
     lines = []
@@ -326,17 +217,6 @@ def _demo_economic() -> list:
         f"[curve shape not Somalia-calibrated]"
     )
 
-    rvf = LivestockRVFLoss(
-        livestock_type="goats", monthly_export_value_usd=40_000_000.0,
-        p_outbreak_given_flood=0.3, p_ban_given_outbreak=0.6,
-        expected_ban_duration_months=6.0,
-    )
-    lines.append(
-        f"RVF/export ban: expected ${rvf.calculate_expected_loss():,.0f}  |  "
-        f"conditional-on-outbreak ${rvf.calculate_conditional_loss():,.0f} "
-        f"[probabilities poorly constrained: 1997-98, 2006-07 only]"
-    )
-
     second_order = SecondOrderIrrigationDamage(
         canal_length_km=80.0, canal_desilting_cost_per_km_usd=12000.0,
         embankment_repair_cost_usd=2_500_000.0, barrage_damage_fraction=0.4,
@@ -348,15 +228,96 @@ def _demo_economic() -> list:
         f"${second_order.calculate_total_second_order_cost():,.0f} -- decides one- vs "
         f"two-season shock [placeholder penalty]"
     )
+    return lines
 
-    recovery = RecoveryUpside(
-        pasture_recovery_gain_fraction=0.5, breeding_rate_improvement_percent=15.0,
-        post_flood_herd_size=200000, next_season_yield_improvement_fraction=0.3,
+
+def _demo_casualties() -> list:
+    """Urban (Mogadishu: drowning + electrocution) and riverine (drowning) casualties."""
+    from saat.casualties import (
+        DrowningExposure, DrowningRiskCurve, ElectrocutionExposure, FloodSetting,
+        RiverineFloodCasualties, UrbanFloodCasualties,
+    )
+
+    lines = []
+
+    urban_curve = DrowningRiskCurve(
+        FloodSetting.URBAN_PLUVIAL,
+        mortality_fraction_at_depth_m={0.3: 0.001, 1.0: 0.01, 2.0: 0.05},
+    )
+    urban = UrbanFloodCasualties(
+        location="Mogadishu (Hodan/Wadajir)",
+        drowning=DrowningExposure(FloodSetting.URBAN_PLUVIAL, population_exposed=12000.0, water_depth_m=1.0),
+        electrocution=ElectrocutionExposure(
+            population_in_contact=12000.0, exposed_wiring_prevalence=0.12, contact_fatality_rate=0.008
+        ),
     )
     lines.append(
-        f"recovery upside reported on a SEPARATE 12-18 month axis "
-        f"(+{recovery.calculate_recovery_benefit(45.0):,.0f} kg herd productivity); "
-        f"never netted against the immediate caseload"
+        f"urban pluvial (Mogadishu): {urban.total_expected_deaths(urban_curve):.1f} expected deaths "
+        f"[drowning {urban.drowning.expected_deaths:.1f} + electrocution "
+        f"{urban.electrocution.expected_deaths:.1f}; no Somalia-specific calibration]"
+    )
+
+    riverine_curve = DrowningRiskCurve(
+        FloodSetting.RIVERINE,
+        mortality_fraction_at_depth_m={0.5: 0.005, 1.5: 0.03, 3.0: 0.12},
+    )
+    no_lead_time = RiverineFloodCasualties(
+        "Belet Weyne",
+        DrowningExposure(FloodSetting.RIVERINE, population_exposed=20000.0, water_depth_m=1.8, warning_lead_time_hours=0.0),
+    )
+    with_lead_time = RiverineFloodCasualties(
+        "Belet Weyne",
+        DrowningExposure(
+            FloodSetting.RIVERINE, population_exposed=20000.0, water_depth_m=1.8,
+            warning_lead_time_hours=96.0,  # ~4-day routing lag from hazard.py
+        ),
+    )
+    no_warning_deaths = no_lead_time.calculate_expected_deaths(riverine_curve)
+    warned_deaths = with_lead_time.calculate_expected_deaths(riverine_curve)
+    if not warned_deaths < no_warning_deaths:
+        raise _DemoCheckError(
+            f"routing-lag lead time did not reduce riverine deaths: "
+            f"{warned_deaths} vs {no_warning_deaths}"
+        )
+    lines.append(
+        f"riverine (Belet Weyne): {no_warning_deaths:.1f} expected deaths with no lead time -> "
+        f"{warned_deaths:.1f} with the ~4-day Shabelle routing lag as warning "
+        f"[lead-time mitigation is judgemental, not calibrated]"
+    )
+    return lines
+
+
+def _demo_urban_flood() -> list:
+    """Mogadishu productivity loss: road-network disruption + business interruption."""
+    from saat.urban_flood import BusinessInterruptionLoss, RoadClosure, RoadSegment, UrbanPluvialFloodImpact
+
+    lines = []
+
+    airport_road = RoadSegment(
+        "Airport Road (Aden Adde corridor)", daily_traffic_value_usd=150_000.0, critical=True
+    )
+    fully_blocked = RoadClosure(airport_road, closure_duration_days=3.0, reroutable_fraction=0.0)
+    partially_reroutable = RoadClosure(
+        airport_road, closure_duration_days=3.0, reroutable_fraction=0.6, detour_cost_multiplier=1.5
+    )
+    if not partially_reroutable.calculate_loss() < fully_blocked.calculate_loss():
+        raise _DemoCheckError("reroutable traffic did not lose less than fully blocked traffic")
+    lines.append(
+        f"Airport Road, 3 days impassable: ${fully_blocked.calculate_loss():,.0f} lost if nothing "
+        f"reroutes vs ${partially_reroutable.calculate_loss():,.0f} if 60% reroutes at 1.5x detour cost "
+        f"[traffic values are placeholders pending a transport survey]"
+    )
+
+    market = BusinessInterruptionLoss(
+        area_name="Bakaara Market", daily_business_value_usd=250_000.0,
+        fraction_closed=0.35, duration_days=4.0,
+    )
+    impact = UrbanPluvialFloodImpact(
+        "2026-10-15", road_closures=[partially_reroutable], business_interruptions=[market],
+    )
+    lines.append(
+        f"total Mogadishu productivity loss: ${impact.total_expected_loss():,.0f} "
+        f"(road ${partially_reroutable.calculate_loss():,.0f} + market ${market.calculate_loss():,.0f})"
     )
     return lines
 
@@ -418,11 +379,11 @@ def cmd_demo(args) -> int:
     print("Numbers here are not estimates for Somalia.")
 
     suites = [
-        ("verification  (cost-loss decision engine)", _demo_verification),
-        ("trigger       (fail-loud tier evaluation)", _demo_trigger),
         ("hazard        (routing + AMC runoff)", _demo_hazard),
         ("displacement  (generation + gravity allocation)", _demo_displacement),
-        ("economic      (four monetised loss channels)", _demo_economic),
+        ("casualties    (urban drowning/electrocution + riverine drowning)", _demo_casualties),
+        ("economic      (riverine crop + irrigation loss)", _demo_economic),
+        ("urban_flood   (Mogadishu road + market productivity loss)", _demo_urban_flood),
         ("panel         (balanced district-month assembly)", _demo_panel),
     ]
 
@@ -495,90 +456,6 @@ def cmd_build_panel(args) -> int:
         return 1
 
 
-def cmd_verify(args) -> int:
-    """Optimize a threshold against a record."""
-    print("SAAT Verify")
-    print("=" * 60)
-    try:
-        import numpy as np
-        import pandas as pd
-        from saat.verification import CostLossModel, CostLossParameters
-
-        panel = pd.read_csv(args.panel)
-        if args.forecast not in panel or args.observation not in panel:
-            raise ValueError(
-                f"Panel must contain '{args.forecast}' and '{args.observation}' columns"
-            )
-        params = CostLossParameters(
-            cost_action=args.cost_action,
-            loss_event=args.loss_event,
-            mitigation_effectiveness=args.mitigation_effectiveness,
-            climatological_base_rate=args.base_rate,
-        )
-        model = CostLossModel(params)
-        outcome = model.optimize_threshold(
-            panel[args.observation].to_numpy(dtype=int),
-            panel[args.forecast].to_numpy(dtype=float),
-            min_pod=args.min_pod,
-            max_far=args.max_far,
-        )
-        print(json.dumps({
-            "threshold": outcome.threshold,
-            "expected_expense": outcome.expected_expense,
-            "relative_economic_value": outcome.relative_economic_value,
-            "pod": outcome.pod,
-            "far": outcome.far,
-            "pss": outcome.pss,
-        }, indent=2, default=lambda value: None if not np.isfinite(value) else float(value)))
-        return 0
-    except Exception as error:
-        print(f"Verification failed: {error}")
-        return 1
-
-
-def cmd_evaluate(args) -> int:
-    """Run the engine over current readings."""
-    print("SAAT Evaluate")
-    print("=" * 60)
-    try:
-        from datetime import datetime
-        import yaml
-        from saat.trigger import DataStatus, IndicatorReading, SystemEvaluator, TierEvaluator
-
-        with open(args.readings, encoding="utf-8") as file:
-            payload = json.load(file)
-        with open(args.config, encoding="utf-8") as file:
-            trigger_config = yaml.safe_load(file)
-        evaluator = SystemEvaluator()
-        tier_readings = {}
-        for tier_number in range(4):
-            tier = trigger_config[f"tier_{tier_number}"]
-            logic = tier.get("combination_logic", {}).get("type", "and")
-            evaluator.add_tier(tier_number, TierEvaluator(tier["name"], tier_number, logic))
-            readings = []
-            for item in payload.get(str(tier_number), payload.get(tier_number, [])):
-                readings.append(IndicatorReading(
-                    indicator_name=item["indicator_name"], value=item.get("value"),
-                    threshold=item["threshold"], operator=item.get("operator", ">="),
-                    data_status=DataStatus(item.get("data_status", "OK")),
-                    source=item["source"], timestamp=datetime.fromisoformat(item["timestamp"]),
-                    last_update=datetime.fromisoformat(item["last_update"]),
-                    update_age_hours=float(item.get("update_age_hours", 0)),
-                    fallback_used=bool(item.get("fallback_used", False)),
-                    fallback_source=item.get("fallback_source"), notes=item.get("notes"),
-                ))
-            tier_readings[tier_number] = readings
-        result = evaluator.evaluate(tier_readings)
-        Path(args.output).parent.mkdir(parents=True, exist_ok=True)
-        with open(args.output, "a", encoding="utf-8") as file:
-            file.write(result.to_jsonl() + "\n")
-        print(result.to_jsonl())
-        return 0 if result.system_status.value != "ESCALATION" else 2
-    except Exception as error:
-        print(f"Evaluation failed: {error}")
-        return 1
-
-
 def main() -> int:
     """Main entry point for the SAAT CLI."""
     parser = argparse.ArgumentParser(
@@ -588,7 +465,7 @@ def main() -> int:
 Examples:
   saat doctor      # Check system configuration
   saat demo        # Run offline self-tests
-  saat evaluate    # Run trigger engine
+  saat build-panel # Assemble the district-month panel
         """,
     )
 
@@ -619,24 +496,6 @@ Examples:
         "--material-threshold", type=int, default=5000, help="Material displacement threshold"
     )
 
-    # Verify command
-    verify_parser = subparsers.add_parser("verify", help="Optimize threshold")
-    verify_parser.add_argument("--panel", required=True, help="Panel CSV path")
-    verify_parser.add_argument("--forecast", required=True, help="Forecast-value column")
-    verify_parser.add_argument("--observation", required=True, help="Binary event column")
-    verify_parser.add_argument("--cost-action", type=float, required=True)
-    verify_parser.add_argument("--loss-event", type=float, required=True)
-    verify_parser.add_argument("--mitigation-effectiveness", type=float, required=True)
-    verify_parser.add_argument("--base-rate", type=float, required=True)
-    verify_parser.add_argument("--min-pod", type=float)
-    verify_parser.add_argument("--max-far", type=float)
-
-    # Evaluate command
-    evaluate_parser = subparsers.add_parser("evaluate", help="Run trigger engine")
-    evaluate_parser.add_argument("--readings", required=True, help="Current readings JSON")
-    evaluate_parser.add_argument("--config", default="config/triggers.yml")
-    evaluate_parser.add_argument("--output", default="logs/evaluations.jsonl")
-
     args = parser.parse_args()
 
     # Set up logging
@@ -651,10 +510,6 @@ Examples:
         return cmd_preflight(args)
     elif args.command == "build-panel":
         return cmd_build_panel(args)
-    elif args.command == "verify":
-        return cmd_verify(args)
-    elif args.command == "evaluate":
-        return cmd_evaluate(args)
     else:
         parser.print_help()
         return 0

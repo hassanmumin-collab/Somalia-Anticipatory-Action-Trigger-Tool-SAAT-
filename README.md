@@ -1,6 +1,6 @@
 # SAAT: Somalia Anticipatory Action Trigger Tool
 
-A Python package that turns El Niño flood forecasts into pre-agreed, verifiable financing triggers, with displacement caseload forecasting and monetised economic loss.
+A Python package that turns El Niño flood forecasts into a monetised, displacement-aware impact model for Somalia: expected casualties (urban Mogadishu and riverine), displacement caseload, riverine agricultural loss, and Mogadishu productivity loss from urban pluvial flooding.
 
 ## Critical Directional Premise
 
@@ -11,13 +11,32 @@ The Horn of Africa teleconnection runs opposite to southern and eastern Africa. 
 - Somalia's 2020–2023 near-famine was a **La Niña** sequence, five failed seasons.
 - The catastrophic late-2023 Belet Weyne, Luuq and Jowhar floods were an **El Niño plus positive IOD** sequence.
 
-## What Makes This a Trigger Tool
+## What This Models
 
-A risk map answers "where is exposure high." A trigger answers "at what forecast value do I release money, for which action, at what lead time, and what is my false alarm cost."
+A risk map answers "where is exposure high." This tool goes one step further and
+puts a number on the consequence: how many people are expected to die, how many
+are expected to be displaced, and how much money is expected to be lost, for a
+given flood forecast.
 
-This tool implements the **cost-loss decision model**: given the cost of action, loss if the event occurs unmitigated, mitigation effectiveness, and climatological base rate, it finds the operating point that minimises expected expense subject to operational constraints.
+Four impact channels, each in its own module:
 
-Key principle: **The optimal threshold is generally NOT the one maximising skill scores.** When action is cheap relative to avoided loss, the optimum tolerates a high false alarm ratio. A trigger with FAR 0.67 can have relative economic value 0.76.
+1. **Casualties** (`casualties.py`) — expected deaths in two distinct settings
+   modelled separately, because the causal pathway differs: **urban pluvial**
+   (Mogadishu, where poor drainage lets rainfall pond in streets and naked/exposed
+   low-voltage wiring adds an electrocution risk with no riverine equivalent) and
+   **riverine** (Shabelle/Juba gauge towns, where drowning risk is governed by
+   depth and by the routing-lag warning lead time from `hazard.py`).
+2. **Displacement** (`displacement.py`) — two-stage generation + gravity
+   allocation model forecasting who leaves and where they go.
+3. **Agricultural loss** (`economic.py`) — direct crop loss and second-order
+   irrigation damage in the riverine flood zone (Shabelle/Juba).
+4. **Urban productivity loss** (`urban_flood.py`) — the hardest of the four to
+   model credibly: Mogadishu's road-network disruption (stagnant water cutting
+   arterial roads such as Airport Road / Aden Adde corridor) and business
+   interruption from flooded market premises.
+
+None of the four is calibrated for Somalia yet; every module says so explicitly
+in its docstrings and flags each placeholder assumption.
 
 ### Companion documents (`docs/`)
 
@@ -26,18 +45,15 @@ Key principle: **The optimal threshold is generally NOT the one maximising skill
   the flood premise with a world teleconnection map, an exposure map of the river
   corridor, an **interactive 2026 Deyr displacement and cash-planning scenario**
   (reference event, asset-depletion multiplier, transfer value; live district/timing/
-  map panels), the four economic loss channels each with its own chart and an
-  interactive Rift Valley Fever probability chain, an embedded Trigger Economics
-  module, the readiness ladder, and a decisions-and-owners table. Real ONI/DMI, PRMN,
-  geoBoundaries and Natural Earth data; economic and displacement figures are scenario
-  or analogue outputs from stated, uncalibrated assumptions.
+  map panels), economic loss channels each with its own chart, the readiness ladder,
+  and a decisions-and-owners table. Real ONI/DMI, PRMN, geoBoundaries and Natural
+  Earth data; economic and displacement figures are scenario or analogue outputs
+  from stated, uncalibrated assumptions.
+  **Not yet updated for the casualties/urban-productivity revamp below** — it still
+  describes the pre-revamp economic channels (including RVF/livestock and an
+  embedded cost-loss "Trigger Economics" widget), which this codebase no longer
+  implements.
   Hosted: <https://claude.ai/code/artifact/f79d37b4-ec0c-4f0e-b60a-c6a61c955a20>
-- [`docs/trigger-economics.html`](docs/trigger-economics.html) — an interactive page
-  that runs this exact cost-loss model on synthetic data: move `C`, `L`, `f`, `s` and
-  watch the optimal release threshold, its contingency table, and its relative economic
-  value respond. Built for showing the working group *why* the threshold is a decision,
-  not a skill-score.
-  Hosted: <https://claude.ai/code/artifact/5e61bd40-489f-40e3-808b-1f0cffee0abf>
 
 ## Quick Start
 
@@ -77,22 +93,27 @@ saat doctor
 
 ## Architecture
 
-Four trigger tiers, each specifying indicator, source, threshold, lead time, combination logic, actions, envelope share, and deactivation condition:
+The impact pipeline runs hazard detection into four consequence modules:
 
-| Tier | Lead Time | Purpose | Key Indicators |
-|------|-----------|---------|-----------------|
-| 0 | 60–120 days | Seasonal readiness | ICPAC ≥0.45, C3S ≥+25%, ONI ≥+1.0 & DMI ≥+0.4 |
-| 1 | 10–30 days | Sub-seasonal readiness | ECMWF/GEFS ≥80th percentile, AMC-III or AMC-I |
-| 2 | 7–21 days | Displacement caseload | District outflow ≥90th percentile, arrivals ≥20% IDP site |
-| 3 | 1–7 days | Action | FRRIMS ≥ high-risk level, GloFAS fallback |
+```
+hazard.py (routing lag, AMC/runoff) ──┬─→ casualties.py   (urban + riverine deaths)
+                                       ├─→ displacement.py (caseload + allocation)
+                                       ├─→ economic.py     (riverine agricultural loss)
+                                       └─→ urban_flood.py  (Mogadishu productivity loss)
+```
+
+`hazard.py`'s routing lag (~4 days Shabelle, ~6 days Juba) is not just usable
+lead time for logistics — it is the warning lead time that `casualties.py`
+uses to discount riverine drowning mortality.
 
 ## Core Modules
 
-- **verification.py** — Cost-loss decision model, threshold optimization, contingency metrics
-- **trigger.py** — Tier evaluation, fail-loud data status mechanism
+- **casualties.py** — Expected deaths: urban (Mogadishu drowning + electrocution) and riverine (drowning, lead-time discounted)
 - **hazard.py** — Catchment routing (lag-and-accumulate), SCS curve number runoff, AMC classification
 - **displacement.py** — Two-stage generation model (classifier + regressor), gravity allocation
-- **economic.py** — Crop loss, RVF/export ban, irrigation damage, recovery upside, food security
+- **economic.py** — Riverine agricultural loss: direct crop loss, second-order irrigation damage
+- **urban_flood.py** — Mogadishu productivity loss: road-network disruption, business interruption
+- **metrics.py** — Contingency-table forecast verification metrics (POD/FAR/PSS/CSI)
 - **panel.py** — Data aggregation from CKAN/HAPI, PRMN loader, district-month assembly
 - **sources.py** — CHIRPS, GloFAS, C3S, FRRIMS, ACLED, ONI/DMI scrapers
 - **cli.py** — Command-line interface
@@ -104,28 +125,23 @@ saat doctor       # Check Python, config, packages, credentials, network
 saat preflight    # Which sources are alive and how fresh
 saat demo         # Run offline self-tests (no credentials needed)
 saat build-panel  # Assemble district-month panel
-saat verify       # Optimize threshold against historical record
-saat evaluate     # Run engine over current readings
 ```
 
 ## Configuration
 
-Trigger definitions are in `config/triggers.yml`, never in code. This ensures:
+Geography, gauges, and zone definitions are in `config/geography.yml`, never
+hardcoded in the model code. This ensures:
 
-1. **No discretion at activation time** — thresholds are pre-set in config with verification evidence attached
-2. **Visibility** — anyone can read the decision rules and argue with them
-3. **Auditability** — changes leave an auditable trail
+1. **Visibility** — anyone can read the gauge/catchment/zone definitions and argue with them
+2. **Auditability** — changes leave an auditable trail
 
-### Example Trigger Configuration
-
-See `config/triggers.yml` for the complete specification of:
-- Which indicators to evaluate
-- Source and ingest method
-- Threshold value and rationale
-- Combination logic (AND/OR/majority)
-- Actions triggered and envelope share
-- Deactivation condition
-- Cost-loss parameters for verification
+See `config/geography.yml` for the complete specification of:
+- River gauges and routing lags (Shabelle, Juba) that feed `hazard.py` and the
+  warning lead time used by `casualties.py`
+- Catchment bounding boxes for upstream rainfall accumulation (placeholders,
+  pending HydroSHEDS basin polygons)
+- IDP settlements and livelihood zones, including the `urban_informal`
+  Mogadishu/Baidoa/Kismayo zone flagged for "inadequate drainage"
 
 ## Data Sources
 
@@ -138,7 +154,7 @@ All sources are open or free-registration:
 | ICPAC | open | Seasonal outlook |
 | Copernicus CDS | free key | GloFAS discharge, C3S seasonal forecast |
 | Copernicus CDSE | free key | Sentinel-1 SAR flood extent |
-| FAO SWALIM FRRIMS | open, scraped | River stage (operational trigger source) |
+| FAO SWALIM FRRIMS | open, scraped | River stage (drives the routing lag / warning lead time) |
 | HDX CKAN | open | PRMN, IPC, CCCM IDP sites, boundaries, WorldPop |
 | HDX HAPI | free app identifier | Standardised IDP indicators, live tail |
 | ACLED | free key | Conflict events |
@@ -150,14 +166,14 @@ Create `.env` from `.env.example` and fill in API keys.
 
 | Component | State | Evidence |
 |---|---|---|
-| Cost-loss verification engine | **Working** | `pytest`; `saat demo` |
-| Trigger engine (fail-loud, 4 tiers) | **Working**, thresholds `null` | `config/triggers.yml` |
 | Hazard: routing + inverted-AMC runoff | **Working** on synthetic input | `saat demo` |
 | Displacement panel | **Built from real PRMN** | 7,084 rows = 77 districts x 92 months (2016-01..2023-08); 4.0% material base rate |
 | CHIRPS rainfall features | **Wired** — monthly Africa CHIRPS, local (district centroid) + upstream (Ethiopian-highland catchment bbox) rainfall & lags | `panel.build_catchment_rainfall_panel`; 76/77 districts, 31 riverine |
 | Displacement Stage 1 (generation) | **Fitted + blocked-CV validated on PRMN + CHIRPS; still does NOT beat persistence on event PSS** | see below |
 | Displacement Stage 2 (gravity) | **Fitter runs on 1,283 real OD pairs; needs real distances + WorldPop** | see below |
-| Economic module | **Working**, calibration params `null` | `saat demo` |
+| Casualties module (urban + riverine) | **Working**, mortality curves `null` | `saat demo` |
+| Economic module (riverine agriculture) | **Working**, calibration params `null` | `saat demo` |
+| Urban flood module (Mogadishu productivity) | **Working**, traffic/business values `null` | `saat demo` |
 
 **Stage 1 blocked forward-chaining CV** (4 folds, 3-month embargo, 5,621 held-out
 district-months). Features: local & upstream monthly rainfall + 1-3 month lags
@@ -200,23 +216,29 @@ trustworthy.
 ## Verification Required Before Operational Use
 
 This tool is a decision-support scaffold, not a calibrated operational system. Every
-box below must be checked, by the named counterpart, before any trigger in
-`config/triggers.yml` is used to release money.
+box below must be checked, by the named counterpart, before any output is used to
+brief decision-makers or size a response.
 
-- [ ] **Gauge high-risk levels.** All `high_risk_level` / `high_risk_level_m` in
-      `config/triggers.yml` and `config/geography.yml` are `null`. Populate each
-      from FRRIMS station metadata and confirm with the SoDMA–WFP working group
-      that it matches the existing SoDMA action trigger **exactly** (Tier 3 must
-      not diverge from the operational framework).
-- [ ] **Cost-loss parameters.** Every tier's `cost_action`, `loss_event`,
-      `mitigation_effectiveness` and `climatological_base_rate` is `null`. Set
-      `C`, `L` with OCHA/SoDMA; `f` from AA programme evaluation; `s` from the
-      1991–2020/2025 OND flood frequency. Then run `saat verify` and confirm
-      `C/L < f` (feasible) and relative economic value `> 0` at the chosen
-      operating point.
+- [ ] **Gauge high-risk levels.** All `high_risk_level_m` in `config/geography.yml`
+      are `null`. Populate each from FRRIMS station metadata; these drive both flood
+      detection in `hazard.py` and the warning lead time fed into
+      `casualties.RiverineFloodCasualties`.
+- [ ] **Drowning mortality curves.** `casualties.DrowningRiskCurve` ships with no
+      default: every call site must supply an explicit depth-mortality curve for
+      the urban and riverine settings. Run casualty estimates as a range across
+      plausible curves, not a point estimate, until MOH/WHO EWARS/DMS data exists.
+- [ ] **Electrocution contact-fatality rate.** No published Somalia-specific rate
+      for electrocution from contact with electrified urban floodwater exists.
+      `ElectrocutionExposure.exposed_wiring_prevalence` and `contact_fatality_rate`
+      need a Mogadishu electrical-infrastructure survey (e.g. with Benadir
+      Regional Administration / electricity providers).
+- [ ] **Mogadishu traffic and business values.** `RoadSegment.daily_traffic_value_usd`
+      and `BusinessInterruptionLoss.daily_business_value_usd` are placeholders.
+      Populate from a transport/trade survey (Benadir RA, Mogadishu Port/Airport
+      authorities, market associations) before reporting a headline productivity-loss figure.
 - [ ] **PRMN currency.** Run `saat preflight`. Confirm whether the HDX PRMN
       resource ends in August 2023. If so, wire HAPI or IOM DTM ETT for the
-      operational tail before Tier 2 is used live.
+      operational tail before the displacement forecast is used live.
 - [ ] **Catchment definitions.** Replace the placeholder bounding boxes with
       HydroSHEDS basin polygons before driving the routing model; a bbox over the
       Bale highlands includes terrain that does not drain to the Shabelle.
@@ -227,8 +249,6 @@ box below must be checked, by the named counterpart, before any trigger in
       curves, not a point estimate, until a Somalia calibration exists.
 - [ ] **Second-order irrigation penalty.** Placeholder. Treat as a headline
       sensitivity that decides whether the event is a one- or two-season shock.
-- [ ] **RVF conditional probabilities.** Rest on 1997–98 and 2006–07 only.
-      Always report conditional loss alongside expected loss.
 - [ ] **Displacement bias corrections.** Decide `coverage_weight` (PRMN is a
       monitoring network, not a census) and `vulnerability_multiplier` (2026
       asset depletion) explicitly. Running with the neutral defaults is itself a
@@ -245,15 +265,23 @@ box below must be checked, by the named counterpart, before any trigger in
 
 - **Inverted AMC-I runoff treatment.** Physically motivated by surface crusting on semi-arid soils, consistent with observed 2023 flash flood behaviour. **No Somalia-specific calibration confirmed.** The uplift factor is a modelling judgement.
 
+### Casualty Assumptions
+
+- **Drowning depth-mortality curves (urban and riverine).** Shapes from general flood-mortality literature. **No published Somalia calibration confirmed.** `casualties.DrowningRiskCurve` requires an explicit curve at every call site rather than a hidden default; run casualty estimates as a range.
+
+- **Electrocution contact-fatality rate.** Judgemental. **No published Somalia-specific rate confirmed** for electrocution from contact with electrified urban floodwater; needs a Mogadishu electrical-infrastructure survey.
+
+- **Warning-lead-time mortality mitigation.** Judgemental slope (`DrowningExposure.lead_time_mitigation_fraction_per_hour`, capped by `max_lead_time_mitigation_fraction`). No Somalia-specific evacuation-compliance data confirms how much a given lead time actually reduces riverine drowning risk.
+
 ### Economic Assumptions
 
 - **Submergence damage curves.** Shapes from general agronomic tolerance ranges. **No published Somalia calibration confirmed.** Run losses as a range across plausible curves, not a point estimate.
 
 - **Second-order yield penalty.** Placeholder. **No published Somalia estimate confirmed.** Headline sensitivity.
 
-- **Mitigation effectiveness.** Judgemental. Published AA cost-benefit studies vary widely and few are Somalia-specific.
+- **Mogadishu traffic and business values.** `RoadSegment.daily_traffic_value_usd` and `BusinessInterruptionLoss.daily_business_value_usd` are placeholders. **No published transport/trade survey confirmed.** The hardest of the four channels to model credibly: informal-sector activity along corridors like Airport Road is not well captured by any existing survey.
 
-- **RVF conditional probabilities.** Rest on a small number of reference events (1997-98, 2006-07). Report conditional loss alongside expected loss.
+- **Reroutable fraction and detour cost.** Judgemental (`RoadClosure.reroutable_fraction`, `detour_cost_multiplier`). No Somalia-specific rerouting behaviour survey.
 
 ### Data Assumptions
 
@@ -269,7 +297,7 @@ box below must be checked, by the named counterpart, before any trigger in
   free app identifier) or IOM DTM ETT. `src/saat/panel.py::IOMETTLoader` is the
   ingestion path for the latter.
 
-- **Gauge thresholds.** All null pending FRRIMS station metadata. Confirm the high-risk level matches the SoDMA action trigger exactly.
+- **Gauge thresholds.** All `high_risk_level_m` in `config/geography.yml` are null pending FRRIMS station metadata.
 
 - **Catchment bounding boxes.** Placeholders (`config/geography.yml`). The
   monthly-CHIRPS upstream-rainfall feature currently averages over these rectangles;
@@ -306,18 +334,17 @@ pytest
 pytest --cov=src/saat
 
 # Run specific test file
-pytest tests/test_verification.py
+pytest tests/test_casualties.py
 ```
 
 ### Test Philosophy
 
 Tests assert **operational properties**, not implementation detail:
 
-- A cheap action with FAR > 0.5 still returns relative economic value > 0.5
-- `C/L >= f` raises an error rather than returning a threshold
-- An unsatisfiable POD/FAR constraint raises rather than silently relaxing
-- Missing data yields `UNEVALUABLE`, not `INACTIVE`
-- An absent tier produces an escalation, not silence
+- A drowning curve requires an explicit setting match; a riverine curve against an urban exposure raises
+- Warning lead time reduces riverine drowning deaths, but mitigation is capped, not unbounded
+- A non-monotonic mortality curve raises rather than silently interpolating nonsense
+- Reroutable road traffic loses only its detour cost, not its full value
 - Desiccated soil yields a higher runoff coefficient than normal soil
 - Routing lag shifts the upstream signal forward by exactly the lag
 - The generation panel is balanced (all months × districts, including zero-displacement months)
@@ -349,17 +376,17 @@ saat/
 │   ├── tasks.json
 │   └── extensions.json
 ├── config/
-│   ├── geography.yml
-│   └── triggers.yml
+│   └── geography.yml
 ├── src/saat/
 │   ├── __init__.py
 │   ├── config.py
 │   ├── cli.py
-│   ├── verification.py
-│   ├── trigger.py
+│   ├── casualties.py
 │   ├── hazard.py
 │   ├── displacement.py
 │   ├── economic.py
+│   ├── urban_flood.py
+│   ├── metrics.py
 │   ├── panel.py
 │   └── sources.py
 ├── tests/
@@ -374,13 +401,15 @@ saat/
 
 ## Key References
 
-- **Cost-loss decision model:** Mason, I. (1982). A model for assessment of weather forecasts. Australian Meteorological Magazine, 30(4), 291-303.
-
-- **Trigger frameworks:** WFP, FEWS NET, and OCHA anticipatory action guidance.
+- **Anticipatory action frameworks:** WFP, FEWS NET, and OCHA anticipatory action guidance.
 
 - **Somalia flood forecasting:** ICPAC seasonal outlooks, FAO SWALIM rainfall monitoring.
 
 - **Displacement modelling:** PRMN documentation, gravity models in human migration literature.
+
+- **Flood mortality:** general depth-duration flood-mortality literature (no Somalia-specific
+  source yet identified); WHO EWARS and Somalia MOH mortality surveillance for eventual
+  calibration of `casualties.py`'s drowning and electrocution curves.
 
 ## License
 
