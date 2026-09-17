@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
   :root {
     --paper: #f7f6f2; --surface: #ffffff; --sunk: #efeee8;
@@ -63,12 +65,17 @@
 
   figure { margin: 24px 0; }
   .fig-body { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 16px 18px 8px; }
+  .fig-body.map-body { padding: 0; overflow: hidden; }
   figcaption { font-size: 13.5px; line-height: 1.55; margin-top: 9px; color: var(--ink-2); }
   figcaption b { color: var(--ink); }
   .axl { font-family: "IBM Plex Sans", sans-serif; font-size: 11px; fill: var(--ink-2); }
   .axv { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; fill: var(--ink); font-weight: 500; }
   .axn { font-family: "IBM Plex Sans", sans-serif; font-size: 10px; fill: var(--ink-mut); }
   svg { width: 100%; height: auto; display: block; }
+  #exposureMap { height: 440px; width: 100%; background: var(--sunk); font-family: "IBM Plex Sans", sans-serif; }
+  .flood-hub-cta { display: inline-block; margin-top: 10px; font-family: "IBM Plex Sans", sans-serif; font-size: 13px; font-weight: 600; }
+  .town-pin { font-family: "IBM Plex Sans", sans-serif; font-size: 12.5px; }
+  .town-pin b { display: block; margin-bottom: 2px; }
 
   table.datatable { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 14px; }
   table.datatable caption { text-align: left; font-size: 13.5px; margin-bottom: 8px; color: var(--ink-2); caption-side: top; }
@@ -122,9 +129,9 @@
       confirmed peak (+2.0&#8201;°C).</p>
     <p>Scaling the 2023 baseline by that 1.3&times; ratio gives this report's central projection
       for the 2026 Deyr: approximately <b>244 deaths</b>, <b>543,000 people displaced</b>, and
-      <b>$228.8M</b> in damage and losses. A separate case study of Mogadishu's urban drainage
-      capacity (Section&#8201;2.1) and a set of preparedness recommendations (Section&#8201;4)
-      follow.</p>
+      <b>$228.8M</b> in damage and losses. An exposure map covering the riverine corridor and
+      Mogadishu's urban drainage risk (Section&#8201;2) and a set of preparedness recommendations
+      (Section&#8201;4) follow.</p>
   </div>
 
   <article>
@@ -156,69 +163,27 @@
       third exposure is northern flash flooding (Togdheer, Sool, Sanaag, Awdal, Woqooyi Galbeed,
       Bari), driven by short, intense local rainfall with no river-gauge network and no equivalent
       lead time; it falls outside both the existing gauge-based trigger and Google Flood Hub's
-      gauge-anchored forecasts, and needs a separately calibrated rainfall-threshold trigger.</p>
+      gauge-anchored forecasts, and needs a separately calibrated rainfall-threshold trigger. A
+      fourth, distinct exposure is Mogadishu itself: urban pluvial flooding, driven not by river
+      levels but by local rainfall intensity relative to an already-degraded stormwater network,
+      with no equivalent early-warning lead time and no river driver in common with the corridor
+      above.</p>
 
     <figure>
-      <div class="fig-body">
-        <svg viewBox="0 0 620 380" role="img" aria-label="Schematic diagram of Somalia's four flood-exposure types: the riverine corridor with gauge towns, the agropastoral Famine-risk zone, the northern flash-flood zone with no gauge network, and Mogadishu's urban pluvial flooding.">
-          <!-- Cell A: Riverine corridor -->
-          <rect x="10" y="10" width="290" height="170" rx="8" style="fill:var(--sunk);stroke:var(--rule)"/>
-          <path d="M 26 34 q 7 -10 14 0 q 7 10 14 0 q 7 -10 14 0" style="fill:none;stroke:var(--accent)" stroke-width="2.5"/>
-          <text x="66" y="34" class="axl" style="font-weight:700;font-size:13px">Riverine corridor</text>
-          <text x="66" y="50" class="axn">Shabelle &amp; Juba, gauge-monitored</text>
-          <text x="26" y="82" class="axl">Belet Weyne &middot; Jowhar &middot; Baardheere &middot;</text>
-          <text x="26" y="98" class="axl">Doolow &middot; Bulo Burti &middot; Jamaame&hellip;</text>
-          <text x="26" y="128" class="axn">4&ndash;6 day warning lead time from the</text>
-          <text x="26" y="144" class="axn">upstream gauge network</text>
-          <text x="26" y="164" class="axn" style="fill:var(--accent)">Largest, most predictable exposure</text>
-
-          <!-- Cell B: Agropastoral Famine-risk -->
-          <rect x="320" y="10" width="290" height="170" rx="8" style="fill:var(--sunk);stroke:var(--rule)"/>
-          <path d="M 336 44 L 350 20 L 364 44 Z" style="fill:none;stroke:var(--warn)" stroke-width="2.5"/>
-          <line x1="343" y1="38" x2="343" y2="44" style="stroke:var(--warn)" stroke-width="2"/>
-          <line x1="357" y1="38" x2="357" y2="44" style="stroke:var(--warn)" stroke-width="2"/>
-          <text x="376" y="34" class="axl" style="font-weight:700;font-size:13px">Agropastoral</text>
-          <text x="376" y="50" class="axn">Rain-fed cropping, depleted assets</text>
-          <text x="336" y="82" class="axl">Bay &middot; Bakool &middot; Gedo &middot; Hiiraan</text>
-          <text x="336" y="128" class="axn">Credible Famine (IPC Phase 5) risk</text>
-          <text x="336" y="144" class="axn">under extreme, widespread flooding</text>
-          <text x="336" y="164" class="axn" style="fill:var(--warn)">Four failed prior seasons, no buffer left</text>
-
-          <!-- Cell C: Northern flash-flood -->
-          <rect x="10" y="200" width="290" height="170" rx="8" style="fill:var(--sunk);stroke:var(--rule)"/>
-          <path d="M 40 214 L 28 234 L 38 234 L 26 254" style="fill:none;stroke:var(--ink-mut)" stroke-width="2.5"/>
-          <text x="66" y="224" class="axl" style="font-weight:700;font-size:13px">Northern flash-flood</text>
-          <text x="66" y="240" class="axn">Short, intense local rainfall</text>
-          <text x="26" y="272" class="axl">Togdheer &middot; Sool &middot; Sanaag &middot;</text>
-          <text x="26" y="288" class="axl">Awdal &middot; Woqooyi Galbeed &middot; Bari</text>
-          <text x="26" y="318" class="axn">No river-gauge network and no</text>
-          <text x="26" y="334" class="axn">equivalent early-warning lead time</text>
-          <text x="26" y="354" class="axn" style="fill:var(--ink-mut)">Outside the gauge trigger and Flood Hub</text>
-
-          <!-- Cell D: Mogadishu urban pluvial -->
-          <rect x="320" y="200" width="290" height="170" rx="8" style="fill:var(--sunk);stroke:var(--rule)"/>
-          <rect x="332" y="222" width="10" height="20" style="fill:none;stroke:var(--warn)" stroke-width="2"/>
-          <rect x="344" y="214" width="10" height="28" style="fill:none;stroke:var(--warn)" stroke-width="2"/>
-          <rect x="356" y="226" width="10" height="16" style="fill:none;stroke:var(--warn)" stroke-width="2"/>
-          <text x="376" y="224" class="axl" style="font-weight:700;font-size:13px">Mogadishu (urban)</text>
-          <text x="376" y="240" class="axn">Drainage-limited, no river driver</text>
-          <text x="336" y="272" class="axl">KM4 junction &middot; Airport Road</text>
-          <text x="336" y="288" class="axl">corridor &middot; Bakaara Market</text>
-          <text x="336" y="318" class="axn">Floods at ~5mm of rain (Fig. 2);</text>
-          <text x="336" y="334" class="axn">no early-warning equivalent</text>
-          <text x="336" y="354" class="axn" style="fill:var(--warn)">See Section 2.1 case study, below</text>
-        </svg>
+      <div class="fig-body map-body">
+        <div id="exposureMap" role="img" aria-label="Real map of Somalia showing the Shabelle and Juba river towns and Mogadishu, on an OpenStreetMap base layer."></div>
       </div>
-      <figcaption><b>Figure 1.</b> Somalia's four flood-exposure types, schematically &mdash; this
-        is a category diagram, not a geographic map or an inundation model. Town and region lists
-        are illustrative, not exhaustive; see the text above for the full list. Sources:
-        <sup>[4,5]</sup>.</figcaption>
+      <figcaption><b>Figure 1.</b> The Shabelle and Juba river corridor and Mogadishu, real
+        locations on an OpenStreetMap base layer &mdash; not a schematic. Click a marker for the
+        gauge town's routing lag; Mogadishu is marked separately as the urban pluvial case study
+        below. This base map shows real place geography for orientation; it does not carry Google
+        Flood Hub's own satellite-derived inundation-history imagery, because Google's site blocks
+        embedding (<span class="mono">X-Frame-Options: DENY</span>). For that layer specifically,
+        open the live tool: <a class="flood-hub-cta" href="https://sites.research.google/floods/" target="_blank" rel="noopener">sites.research.google/floods &rarr;</a>
+        Map data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>. Sources: <sup>[4,5]</sup>.</figcaption>
     </figure>
 
-    <h3>2.1 Case study: rainfall intensity and drainage capacity in Mogadishu</h3>
-    <p>Mogadishu is a fourth, distinct exposure: urban pluvial flooding, driven not by river levels
-      but by local rainfall intensity relative to an already-degraded stormwater network.
-      Published long-run climate normals for Mogadishu range from approximately 400 to
+    <p>Published long-run climate normals for Mogadishu range from approximately 400 to
       540&#8201;mm of rain annually, depending on dataset and period.<sup>[6]</sup> On 16 September
       2026, the city received approximately 5&#8201;mm of rain &mdash; not an unusual daily total
       &mdash; and major arterial roads, including the KM4 junction and the corridor to Aden Adde
@@ -230,8 +195,7 @@
       updated.<sup>[8,9]</sup> That single event was on the order of twenty times 16 September's
       total. Read together, these two events indicate that Mogadishu's binding constraint is
       drainage capacity relative to short-duration rainfall intensity, not the seasonal rainfall
-      total &mdash; a distinct risk channel from the riverine and agropastoral exposures above, and
-      one with no equivalent early-warning lead time.</p>
+      total.</p>
 
     <figure>
       <div class="fig-body">
@@ -372,7 +336,7 @@
               &mdash; the KM4 junction and the Airport Road corridor &mdash; before the rains
               intensify in October.</td>
             <td>Benadir Regional Administration; Mogadishu Municipality</td>
-            <td>These locations flood on rainfall as low as 5mm (Section&#8201;2.1); this is
+            <td>These locations flood on rainfall as low as 5mm (Section&#8201;2); this is
               maintenance on known infrastructure, available on a short timeline.</td>
           </tr>
           <tr>
@@ -479,5 +443,60 @@
   </footer>
 
 </div>
+<script>
+(function () {
+  var mapEl = document.getElementById("exposureMap");
+  if (!mapEl || typeof L === "undefined") return;
+
+  var shabelleTowns = [
+    { name: "Belet Weyne", lat: 4.7358, lon: 45.2036 },
+    { name: "Bulo Burti", lat: 3.8500, lon: 45.5667 },
+    { name: "Jalalaqsi", lat: 3.4000, lon: 45.5833 },
+    { name: "Jowhar", lat: 2.7830, lon: 45.5000 },
+    { name: "Balcad", lat: 2.3584, lon: 45.3864 },
+    { name: "Afgooye", lat: 2.2292, lon: 45.0853 }
+  ];
+  var jubaTowns = [
+    { name: "Doolow", lat: 4.1500, lon: 42.0833 },
+    { name: "Luuq", lat: 3.6981, lon: 42.5972 },
+    { name: "Baardheere", lat: 2.3394, lon: 42.2868 },
+    { name: "Bu'aale", lat: 1.0833, lon: 42.5833 },
+    { name: "Jamaame", lat: 0.0702, lon: 42.7480 },
+    { name: "Kismayo", lat: -0.3581, lon: 42.5453, note: "Juba river mouth" }
+  ];
+  var mogadishu = { name: "Mogadishu", lat: 2.0371, lon: 45.3438 };
+
+  var map = L.map("exposureMap", { scrollWheelZoom: false });
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 12,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  function addTown(t, river, color) {
+    var m = L.circleMarker([t.lat, t.lon], {
+      radius: 7, color: color, weight: 2, fillColor: color, fillOpacity: 0.55
+    }).addTo(map);
+    m.bindPopup(
+      '<div class="town-pin"><b>' + t.name + "</b>" + river +
+      (t.note ? "<br>" + t.note : "") + "</div>"
+    );
+  }
+
+  shabelleTowns.forEach(function (t) { addTown(t, "Shabelle corridor gauge town", "#1c4f73"); });
+  jubaTowns.forEach(function (t) { addTown(t, "Juba corridor gauge town", "#1c4f73"); });
+
+  var mm = L.circleMarker([mogadishu.lat, mogadishu.lon], {
+    radius: 9, color: "#a6431f", weight: 2.5, fillColor: "#a6431f", fillOpacity: 0.65
+  }).addTo(map);
+  mm.bindPopup(
+    '<div class="town-pin"><b>Mogadishu</b>Urban pluvial flooding case study &mdash; ' +
+    "drainage-limited, no river driver (Section 2)</div>"
+  );
+
+  var allPoints = shabelleTowns.concat(jubaTowns).map(function (t) { return [t.lat, t.lon]; });
+  allPoints.push([mogadishu.lat, mogadishu.lon]);
+  map.fitBounds(allPoints, { padding: [24, 24] });
+})();
+</script>
 </body>
 </html>
