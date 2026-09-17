@@ -43,11 +43,12 @@ in its docstrings and flags each placeholder assumption.
 - [`docs/el-nino-preparedness-brief.html`](docs/el-nino-preparedness-brief.html) —
   "The Somalia El Niño Anticipatory Action", a ministerial brief authored by Hassan Mumin:
   the flood premise with a world teleconnection map, an exposure map of the river
-  corridor, an **interactive 2026 Deyr displacement and cash-planning scenario**
-  (reference event, asset-depletion multiplier, transfer value; live district/timing/
-  map panels), the readiness ladder, and a decisions-and-owners table. Real ONI/DMI,
-  PRMN, geoBoundaries and Natural Earth data; displacement figures are scenario or
-  analogue outputs from stated, uncalibrated assumptions.
+  corridor cross-checked against Google Flood Hub's satellite inundation-history layer,
+  an **interactive 2026 Deyr displacement and cash-planning scenario** anchored on the
+  2023 Gu-Deyr floods (El Niño/IOD strength multiplier vs. 2023, transfer value; live
+  district/timing/map panels), the readiness ladder, and a decisions-and-owners table.
+  Real ONI/DMI, PRMN, geoBoundaries and Natural Earth data; displacement figures are
+  scenario or analogue outputs from stated, uncalibrated assumptions.
   **Not yet updated for the casualties/urban-productivity revamp** — the old
   economic-loss-channel section (crop/livestock/irrigation/recovery) and the
   cost-loss "Trigger Economics" widget have been removed from the brief, but it
