@@ -46,11 +46,16 @@ in its docstrings and flags each placeholder assumption.
   corridor cross-checked against Google Flood Hub's satellite inundation-history layer,
   an **interactive 2026 Deyr displacement scenario** anchored on the 2023 Gu-Deyr floods
   (El Niño/IOD strength multiplier vs. 2023; live district/timing/map panels), **expected
-  casualties** (Mogadishu drowning/electrocution and riverine drowning), **economic loss**
-  (riverine agriculture and Mogadishu productivity), the readiness ladder, and a
-  decisions-and-owners table. Real ONI/DMI, PRMN, geoBoundaries and Natural Earth data;
-  displacement, casualty and economic figures are scenario, analogue or `saat demo`
-  synthetic outputs from stated, uncalibrated assumptions.
+  casualties** and **economic loss**, both anchored on the confirmed 2023 Deyr floods toll
+  (188 deaths; $176M in damage and losses, per the SoDMA/UN/World Bank/EU Rapid
+  Post-Disaster Needs Assessment and OCHA situation reports) and scaled live by the same
+  El Niño/IOD multiplier as the displacement scenario, the readiness ladder, and a
+  decisions-and-owners table. Real ONI/DMI, PRMN, geoBoundaries, Natural Earth and PDNA/OCHA
+  data; the displacement, casualty and economic figures are analogue scenarios (a real 2023
+  baseline scaled by a stated multiplier), not point forecasts — `casualties.py` and
+  `urban_flood.py`'s per-mechanism decomposition (Mogadishu vs. riverine, drowning vs.
+  electrocution) remains `saat demo` synthetic output pending local calibration and is not
+  used in the brief's headline figures.
   Hosted: <https://claude.ai/code/artifact/f79d37b4-ec0c-4f0e-b60a-c6a61c955a20>
 
 ## Quick Start
